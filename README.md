@@ -1,7 +1,6 @@
+# History Course Web Application
 
-# Exchange Web Application
-
-Welcome to our Exchange Web Application project! This application is designed to provide users with a seamless experience in searching, booking, and managing exchanges. Built with modern technologies, it offers a responsive and user-friendly interface.
+Welcome to our History Course Web Application project! This application is designed to provide users with a comprehensive experience in browsing, enrolling in, and managing history courses. Built with modern technologies, it offers a responsive and user-friendly interface.
 
 ## Table of Contents
 - [Team Members](#team-members)
@@ -13,12 +12,12 @@ Welcome to our Exchange Web Application project! This application is designed to
 
 ## Team Members
 Meet the talented individuals behind this project:
-- **Nguyễn Trọng Khang**
-- **Phạm Cao Duy Thuấn**
-- **Phan Kim Ngân**
+- **Đỗ Minh Chính**
+- **Hoàn Tấn Khang**
+- **Lâm Quốc Vinh**
 
 ## Technologies Used
-This project leverages a variety of technologies to deliver a robust exchange experience:
+This project leverages a variety of technologies to deliver an engaging learning experience:
 - **Frontend**:
   - ![ReactJS](https://img.icons8.com/color/48/000000/react-native.png) ReactJS
   - ![Redux](https://img.icons8.com/color/48/000000/redux.png) Redux
@@ -26,23 +25,24 @@ This project leverages a variety of technologies to deliver a robust exchange ex
   - ![SCSS](https://img.icons8.com/color/48/000000/sass.png) SCSS
 
 - **Backend**:
-  - ![.NET](https://img.icons8.com/color/48/000000/net-framework.png) .NET
+  - ![Spring Boot](https://img.icons8.com/color/48/000000/spring-logo.png) Spring Boot
 
 ## Features
-Our exchange web application offers the following features:
-- **User Authentication**: Allow users to sign up, log in, and log out.
-- **Item Search**: Users can search for items based on various criteria.
-- **Item Listing**: Display a list of available items based on the search criteria.
-- **Item Details**: Show detailed information about each item, including description, condition, and availability.
-- **Exchange Booking**: Enable users to make reservations for selected items.
-- **Booking Management**: Allow users to view and manage their bookings.
+Our history course web application offers the following features:
+- **Course Catalog**: Browse a wide range of history courses available for enrollment.
+- **Course Search**: Find courses based on various criteria such as subject, level, and duration.
+- **Course Details**: View detailed information about each course, including syllabus, instructor, and reviews.
+- **Enrollment**: Sign up for courses and manage your enrollments.
+- **User Profiles**: Create and manage personal profiles, track your progress, and view your enrolled courses.
 - **Responsive Design**: Ensure the website is accessible and usable on various devices, including desktops, tablets, and smartphones.
 
 ## Installation
 Ready to explore our project? Follow these simple steps to get started:
 1. Clone the repository: `git clone <repository_url>`
-2. Install dependencies: `npm i`
+2. Install frontend dependencies: `npm install`
 3. Start the frontend server: `npm run dev`
+4. Navigate to the backend directory and install dependencies: `mvn install` (for Maven) or `./gradlew build` (for Gradle)
+5. Start the backend server: `mvn spring-boot:run` (for Maven) or `./gradlew bootRun` (for Gradle)
 
 ## Contribution
 We welcome contributions from the community! Here's how you can get involved:
@@ -54,4 +54,3 @@ We welcome contributions from the community! Here's how you can get involved:
 
 ## License
 This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute it according to your needs.
-
