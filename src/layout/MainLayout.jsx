@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { Breadcrumb, Button, Image, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, theme } from "antd";
 import {
   ApartmentOutlined,
   ContactsOutlined,
@@ -32,13 +32,13 @@ const MainLayout = ({ showFooter = true }) => {
       '3': '/baiviet',
       '4': '/lienhe'
     };
-  
+
     const path = routes[e.key];
     if (path) {
       navigate(path);
     }
   };
-  
+
 
   return (
     <Layout className="min-h-screen">
@@ -75,36 +75,46 @@ const MainLayout = ({ showFooter = true }) => {
           </div>
 
         </div>
-        <Menu
+        <ConfigProvider
+          theme={{
+            components: {
+              Menu: {
+                colorPrimary: '#0072ff',
+              },
+            },
+          }}
+        >
+          <Menu
+            theme="dark"
+            mode="inline"
+            style={{ marginTop: '20px', padding: "0 16px", }}
+            defaultSelectedKeys={["1"]}
+            onClick={handleClick}
+            items={[
+              {
+                key: "1",
+                icon: <HomeFilled />,
+                label: "Trang chủ",
+              },
+              {
+                key: "2",
+                icon: <ApartmentOutlined />,
+                label: "Lộ trình",
+              },
+              {
+                key: "3",
+                icon: <UploadOutlined />,
+                label: "nav 3",
+              },
+              {
+                key: "4",
+                icon: <ContactsOutlined />,
+                label: "Liên hệ",
+              },
+            ]}
+          />
+        </ConfigProvider>
 
-          theme="dark"
-          mode="inline"
-          style={{ marginTop: '20px', padding: "0 16px", }}
-          defaultSelectedKeys={["1"]}
-          onClick={handleClick}
-          items={[
-            {
-              key: "1",
-              icon: <HomeFilled />,
-              label: "Trang chủ",
-            },
-            {
-              key: "2",
-              icon: <ApartmentOutlined />,
-              label: "Lộ trình",
-            },
-            {
-              key: "3",
-              icon: <UploadOutlined />,
-              label: "nav 3",
-            },
-            {
-              key: "4",
-              icon: <ContactsOutlined />,
-              label: "Liên hệ",
-            },
-          ]}
-        />
       </Sider>
 
       <Layout style={{ marginLeft: collapsed ? "80px" : "200px" }}>
