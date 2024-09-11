@@ -10,6 +10,7 @@ const Login = Loadable({ loader: () => import("../pages/login/Login") });
 const Register = Loadable({ loader: () => import("../pages/register/Register") });
 const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
+const Contact = Loadable({ loader: () => import("../pages/contact/Contact") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
 });
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path: "/baiviet",
         element: Post,
+      },
+      {
+        path: "/lienhe",
+        element: Contact,
       },
       {
         path: "/",

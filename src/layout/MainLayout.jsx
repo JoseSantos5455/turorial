@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Breadcrumb, Button, Image, Layout, Menu, theme } from "antd";
 import {
   ApartmentOutlined,
+  ContactsOutlined,
   HomeFilled,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -25,15 +26,19 @@ const MainLayout = ({ showFooter = true }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
-
-    if (e.key === '1') {
-      navigate('/');
-    } else if (e.key === '2') {
-      navigate('/lotrinh');
-    } else if (e.key === '3') {
-      navigate('/baiviet');
+    const routes = {
+      '1': '/',
+      '2': '/lotrinh',
+      '3': '/baiviet',
+      '4': '/lienhe'
+    };
+  
+    const path = routes[e.key];
+    if (path) {
+      navigate(path);
     }
   };
+  
 
   return (
     <Layout className="min-h-screen">
@@ -92,6 +97,11 @@ const MainLayout = ({ showFooter = true }) => {
               key: "3",
               icon: <UploadOutlined />,
               label: "nav 3",
+            },
+            {
+              key: "4",
+              icon: <ContactsOutlined />,
+              label: "Liên hệ",
             },
           ]}
         />

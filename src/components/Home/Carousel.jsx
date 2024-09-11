@@ -11,6 +11,7 @@ const CarouselCustom = () => {
         lineHeight: '160px',
         textAlign: 'center',
         background: '#364d79',
+        borderRadius: '17px',
     };
 
     return (
@@ -29,7 +30,7 @@ const CarouselCustom = () => {
                 }}
             >
                 <Carousel
-                autoplaySpeed={10000}
+                    autoplaySpeed={10000}
                     autoplay
                     dots={true}
                     ref={carouselRef}
