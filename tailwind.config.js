@@ -8,9 +8,13 @@ export default {
     extend: {
 
       fontFamily: {
-        content: ['Nutri-Light', 'sans-serif'],
-        title: ['Nutri-Regular', 'sans-serif'],
-        bold: ['Nutri-Bold', 'sans-serif'],
+        SemiBold: ['R-SemiBold', 'sans-serif'],
+        Regular: ['R-Regular', 'sans-serif'],
+        Light: ['R-Light', 'sans-serif'],
+        ExtraBold: ['R-ExtraBold', 'sans-serif'],
+        ExtraLight: ['R-ExtraLight', 'sans-serif'],
+        Bold: ['R-Bold', 'sans-serif'],
+        Medium: ['R-Medium', 'sans-serif'],
       },
       colors: {
         'blue-main': '#30b2d2',

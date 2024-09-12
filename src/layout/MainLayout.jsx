@@ -12,9 +12,9 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import Search from "antd/es/input/Search";
-import Logo from "./../assets/image/logo_tutorial.jpg"
+import Logo from "./../assets/image/logo.png"
 import HeaderCustom from "../components/Header/Header";
-import Lotrinh from "../assets/image/road.svg"
+
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = ({ showFooter = true }) => {
@@ -66,12 +66,12 @@ const MainLayout = ({ showFooter = true }) => {
           }}
         >
           <div class="flex items-center space-x-3">
-            <img
+            <Image
+              preview={false}
               src={Logo}
               alt="Logo"
-              class="h-12 w-auto"
+              class="h-10 w-auto"
             />
-            {!collapsed && <h1 class="text-xs text-white font-semibold">Ươn mầm sử sách Việt</h1>}
           </div>
 
         </div>

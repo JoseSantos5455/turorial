@@ -1,22 +1,38 @@
 /* src/assets/font/font.scss */
 
 @font-face {
-    font-family: 'Nutri-Light';
-    src: url('./NunitoSans_7pt_Condensed-Light.ttf') format('truetype');
+    font-family: 'R-Black';
+    src: url('./RedditSansCondensed-Black.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Nutri-Regular';
-    src: url('./NunitoSans_7pt_Condensed-Regular.ttf') format('truetype');
+    font-family: 'R-Bold';
+    src: url('./RedditSansCondensed-Bold.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Nutri-Semi';
-    src: url('./NunitoSans_7pt_Condensed-SemiBold.ttf') format('truetype');
+    font-family: 'R-ExtraBold';
+    src: url('./RedditSansCondensed-ExtraBold.ttf') format('truetype');
 }
 @font-face {
-    font-family: 'Nutri-Bold';
-    src: url('./NunitoSans_7pt_Condensed-Bold.ttf') format('truetype');
+    font-family: 'R-ExtraLight';
+    src: url('./RedditSansCondensed-ExtraLight.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'R-Light';
+    src: url('./RedditSansCondensed-Light.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'R-Medium';
+    src: url('./RedditSansCondensed-Medium.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'R-Regular';
+    src: url('RedditSansCondensed-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'R-SemiBold';
+    src: url('./RedditSansCondensed-SemiBold.ttf') format('truetype');
 }
 
 @keyframes fadeInUp {

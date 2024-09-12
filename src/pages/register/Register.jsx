@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 // import { useAddUserMutation } from '../../services/userAPI';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import './Register.scss'
-import imager from '../../assets/image/image-login.jpg';
 import { validationPatterns } from '../../utils/utils';
 import { useRegisterUserMutation } from '../../services/authAPI';
 import dayjs from 'dayjs';
@@ -236,7 +235,7 @@ const Register = () => {
         </Col>
         <Col>
           <div className='image-register'>
-            <Image preview={false} src={imager} />
+            {/* <Image preview={false} src={imager} /> */}
           </div></Col>
       </Row>
 
