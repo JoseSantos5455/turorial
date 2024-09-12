@@ -62,11 +62,11 @@ function CustomFooter() {
         <Col span={5}>
           <div className="containerF">
             <h4 className="title">Subscribe</h4>
-            <p style={{ width: '280px' }} className="content">
+            <p style={{ width: '200px' }} className="content">
               Sign up for Wellmeet newsletter to receive all the news offers and discounts from Medicare eye clinic.
             </p>
             <Input style={{ height: '45px', marginTop: '10px' }} placeholder="Type in your email address" />
-            <Button type="primary" style={{ backgroundColor: '#1c4c93', height: '45px', width: '120px', marginTop: '20px' }}><p style={{fontWeight:'600'}}>Subcribe</p></Button>
+            <Button type="primary" style={{ backgroundColor: '#1c4c93', height: '45px', width: '120px', marginTop: '20px' }}><p style={{ fontWeight: '600' }}>Subcribe</p></Button>
           </div>
         </Col>
         <Col span={5}>
@@ -74,7 +74,7 @@ function CustomFooter() {
             <p className="title">Social networks</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div >
-                <p><FacebookFilled  style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#0866ff', borderRadius: '50%' }} /></p>
+                <p><FacebookFilled style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#0866ff', borderRadius: '50%' }} /></p>
               </div>
               <div>
                 <p className="subtitle">Facebook</p>
@@ -83,7 +83,7 @@ function CustomFooter() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '20px' }}>
               <div >
-                <p><InstagramFilled  style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#ff0268 ', borderRadius: '50%' }} /></p>
+                <p><InstagramFilled style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#ff0268 ', borderRadius: '50%' }} /></p>
               </div>
               <div>
                 <p className="subtitle">Instagram</p>
