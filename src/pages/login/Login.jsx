@@ -14,6 +14,7 @@ import { useResetPasswordMutation, useVerifyOtpMutation } from "../../services/a
 import { useForm } from "antd/es/form/Form.js";
 import ImportIcon from "../../assets/Icon.jsx";
 import ForgotPass from "../forgotpass/ForgotPass.jsx";
+import Register from "../register/Register.jsx";
 function Login({ setIslogin, Islogin }) {
   const token = useSelector(selectCurrentToken);
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ function Login({ setIslogin, Islogin }) {
   const [form] = useForm();
   const [isLoginNormal, setIsLoginNormal] = useState(false)
   const [isForgotPass, setIsForgotPass] = useState(false)
+  const [isPress, setIsPress] = useState(false)
   useEffect(() => {
     if (token) {
       navigate("/");
@@ -101,20 +103,35 @@ function Login({ setIslogin, Islogin }) {
                 </p>
                 {/* button */}
                 <div className="mt-6">
-                  <button
-                    onClick={() => setIsLoginNormal(true)}
-                    className="bg-white 
+                  {Islogin == true ? (
+                    <button
+                      onClick={() => setIsLoginNormal(true)}
+                      className="bg-white 
                   py-2 px-20 relative 
                   rounded-full border-[2.5px] 
                   border-[#dce0e3] hover:bg-[#dce0e3]
                   transition duration-200
                   mb-3 min-w-[326px]
                   ">
-                    <span className="absolute left-3"><UserOutlined style={{ fontSize: '20px', color: 'grey' }} /></span>
-                    <span className="font-SemiBold">Sử dụng email / số điện thoại</span>
-                  </button>
-                  <button
+                      <span className="absolute left-3"><UserOutlined style={{ fontSize: '20px', color: 'grey' }} /></span>
+                      <span className="font-SemiBold">Sử dụng email / số điện thoại</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setIsLoginNormal(true)}
+                      className="bg-white 
+                  py-2 px-20 relative 
+                  rounded-full border-[2.5px] 
+                  border-[#dce0e3] hover:bg-[#dce0e3]
+                  transition duration-200
+                  mb-3 min-w-[326px]
+                  ">
+                      <span className="absolute left-3"><UserOutlined style={{ fontSize: '20px', color: 'grey' }} /></span>
+                      <span className="font-SemiBold">Đăng ký với email</span>
+                    </button>
+                  )}
 
+                  <button
                     className="bg-white 
                   py-2 px-20 relative 
                   rounded-full border-[2.5px] 
@@ -152,9 +169,15 @@ function Login({ setIslogin, Islogin }) {
                 </div>
                 <div>
                   <p className="mt-4">Bạn chưa có tài khoản?
-                    <button onClick={() => setIslogin(!Islogin)} className="text-orange-500 pl-1 text-[15px] font-SemiBold">
-                      <u>Đăng ký</u>
-                    </button>
+                    {Islogin ? (
+                      <button onClick={setIslogin} className="text-orange-500 pl-1 text-[15px] font-SemiBold">
+                        <u>Đăng ký</u>
+                      </button>
+                    ) : (
+                      <button onClick={setIslogin} className="text-orange-500 pl-1 text-[15px] font-SemiBold">
+                        <u>Đăng nhập</u>
+                      </button>
+                    )}
                   </p>
                   <button
                     className="mt-3"
@@ -174,18 +197,25 @@ function Login({ setIslogin, Islogin }) {
 
             <div>
               <Button onClick={handleCloseModal}
-              type="link"
-              icon={<LeftOutlined />}
-              iconPosition="start"
+                type="link"
+                icon={<LeftOutlined />}
+                iconPosition="start"
               >
                 Quay lại
               </Button>
               {!isForgotPass ? (
-                <LoginForm 
-                handleOpenModalForgotPass={handleOpenModalForgotPass} 
-                Islogin={Islogin} 
-                setIslogin={setIslogin}
-                />
+                Islogin == false ? (
+                  <Register
+                    setIslogin={setIslogin}
+                    handleOpenModalForgotPass={handleOpenModalForgotPass}
+                  />
+                ) : (
+                  <LoginForm
+                    handleOpenModalForgotPass={handleOpenModalForgotPass}
+                    Islogin={Islogin}
+                    setIslogin={setIslogin}
+                  />
+                )
               ) : (
                 <ForgotPass />
               )}

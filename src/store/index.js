@@ -5,6 +5,8 @@ import { doctorAPI } from "../services/doctorAPI";
 import doctorReducer from "../slices/doctor.slice";
 import { authApi } from "../services/authAPI";
 import AuthReducer from "../slices/auth.slice";
+import { courseAPI } from "../services/coursesAPI";
+import CourseReducer from "../slices/course.slice";
 // import { postAPI } from "../services/postAPI";
 // import postReducer from "../slices/post.slice";
 // import { exchangeAPI } from "../services/exchangeAPI";
@@ -24,12 +26,13 @@ import sessionStorage from 'redux-persist/lib/storage/session'
 const persistConfig = {
   key: 'root',
   storage: sessionStorage, // Bạn có thể chọn storage là sessionStorage
-  whitelist: ['user', 'token'], 
+  whitelist: ['user', 'token'],
 };
 // const persistedReducer = persistReducer(persistConfig, flowerReducer);
 // const ProductPerisReducer = persistReducer(persistConfig, ProductReducer);
 const DoctorPerisReducer = persistReducer(persistConfig, doctorReducer);
 const AuthPerisReducer = persistReducer(persistConfig, AuthReducer);
+const CousresPerisReducer = persistReducer(persistConfig, CourseReducer);
 // const PostPerisReducer = persistReducer(persistConfig, postReducer);
 // const ExchangePerisReducer = persistReducer(persistConfig, exchangeReducer);
 // const ChatPerisReducer = persistReducer(persistConfig, chatReducer);
@@ -46,8 +49,8 @@ export const store = configureStore({
     user: DoctorPerisReducer,
     [authApi.reducerPath]: authApi.reducer,
     auth: AuthPerisReducer,
-    // [postAPI.reducerPath]: postAPI.reducer,
-    // post: PostPerisReducer,
+    [courseAPI.reducerPath]: courseAPI.reducer,
+    post: CousresPerisReducer,
     // [exchangeAPI.reducerPath]: exchangeAPI.reducer,
     // exchange: ExchangePerisReducer,
     // chat: ChatPerisReducer,
@@ -61,8 +64,8 @@ export const store = configureStore({
       // productAPI.middleware,
       // userAPI.middleware,
       authApi.middleware,
-      doctorAPI.middleware
-      // postAPI.middleware,
+      doctorAPI.middleware,
+      courseAPI.middleware,
       // exchangeAPI.middleware,
       // appealApi.middleware,
     ),

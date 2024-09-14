@@ -21,7 +21,7 @@ const MainLayout = ({ showFooter = true }) => {
   const {
     token: { colorBgContainer, borderRadiusLG, ...other },
   } = theme.useToken();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const navigate = useNavigate();
 
@@ -100,11 +100,6 @@ const MainLayout = ({ showFooter = true }) => {
                 key: "2",
                 icon: <ApartmentOutlined />,
                 label: "Lộ trình",
-              },
-              {
-                key: "3",
-                icon: <UploadOutlined />,
-                label: "nav 3",
               },
               {
                 key: "4",
