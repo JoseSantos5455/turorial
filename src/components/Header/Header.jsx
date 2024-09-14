@@ -1,24 +1,27 @@
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { Button, Layout, Modal, theme } from 'antd'
+
+import { Button, Layout, Modal } from 'antd'
 import Search from 'antd/es/input/Search'
 import React, { useState } from 'react'
 import './Header.scss';
-import LoginForm from '../login/FormLogin';
-import Register from '../../pages/register/Register';
 import Login from '../../pages/login/Login';
-const HeaderCustom = ({ collapsed, setCollapsed }) => {
+const HeaderCustom = ({ collapsed }) => {
 
-    const { Header, Sider, Content } = Layout;
-    const {
-        token: { colorBgContainer, borderRadiusLG, colorBgLayout },
-    } = theme.useToken();
+    const { Header } = Layout;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isRegister, setIsRegister] = useState(true); // Quản lý trạng thái đăng ký/đăng nhập
+    const [isRegister, setIsRegister] = useState(true);
 
-    const showModal = (type) => {
-        setIsRegister(type === 'register');
+
+    const handleShowLoginModal = () => {
+        console.log(isRegister)
+        setIsRegister(false);
         setIsModalOpen(true);
-    };
+    }
+    const handleShowRegisterModal = () => {
+        console.log(isRegister)
+        setIsRegister(true);
+        setIsModalOpen(true);
+    }
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -64,7 +67,7 @@ const HeaderCustom = ({ collapsed, setCollapsed }) => {
                         borderRadius: '25px',
                         padding: '0 30px'
                     }}
-                    onClick={() => showModal('register')}
+                    onClick={() => handleShowRegisterModal()}
 
                 >Đăng ký
                 </Button>
@@ -77,7 +80,7 @@ const HeaderCustom = ({ collapsed, setCollapsed }) => {
                     font-medium rounded-full py-2 px-6 transition-transform duration-800
                      hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg"
                     type="primary"
-                    onClick={() => showModal('login')}
+                    onClick={() => handleShowLoginModal()}
                 >
                     Đăng nhập
                 </Button>
@@ -89,12 +92,16 @@ const HeaderCustom = ({ collapsed, setCollapsed }) => {
                 onCancel={handleCancel}
                 footer={null}
             >
-                {!isRegister ?
+                {isRegister ?
                     <Login
-                        setIslogin={setIsRegister}
-                        Islogin={isRegister}
+                        setIslogin={handleShowLoginModal}
+                        Islogin={false}
                     /> :
-                    <Register />}
+                    <Login
+                        setIslogin={handleShowRegisterModal}
+                        Islogin={true}
+                    />
+                }
             </Modal>
         </Header>
     )

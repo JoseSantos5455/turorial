@@ -7,6 +7,7 @@ import { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomFooter from "../../components/Footer/CustomFooter";
 import CarouselCustom from "../../components/Home/Carousel";
+import CourseList from "../../components/Home/Courses/CourseList";
 
 function Dashboard() {
 
@@ -19,8 +20,8 @@ function Dashboard() {
       }}
     >
       <Row >
-        {/* <Slider /> */}
         <CarouselCustom/>
+        <CourseList/>
       </Row>
       <CustomFooter/>
     </div>
