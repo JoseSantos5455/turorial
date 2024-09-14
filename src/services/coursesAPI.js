@@ -20,7 +20,7 @@ export const courseAPI = createApi({
     }),
     endpoints: (builder) => ({
         getAllCourse: builder.query({
-            query: () => ``,
+            query: () => `eb19b633-0b12-4ee6-996b-6d9b54f08398`,
             providesTags: (result) =>
                 result
                     ? result.map(({ id }) => ({ type: "CourseList", id }))
@@ -33,12 +33,13 @@ export const courseAPI = createApi({
         //         method: "GET",
         //     }),
         // }),
-        // getUserProfileForOther: builder.query({
-        //   query: (userId) => ({
-        //     url: `users/getuserprofile/${userId}`,
-        //     method: "GET",
-        //   }),
-        // }),
+        getCourseDetail: builder.query({
+            query: (userId) => ({
+                // url: `users/getuserprofile/${userId}`,
+                url: `68531f68-c423-486c-8b5a-ec745f00be02`,
+                method: "GET",
+            }),
+        }),
         // addUser: builder.mutation({
         //   query: (body) => {
         //     const newBody = {
@@ -147,6 +148,7 @@ export const courseAPI = createApi({
 
 export const {
     useGetAllCourseQuery,
+    useGetCourseDetailQuery
     //   useGetUserProfileQuery,
     //   useEditProfileMutation,
     //   useAddUserMutation,

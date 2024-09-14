@@ -11,6 +11,7 @@ const Register = Loadable({ loader: () => import("../pages/register/Register") }
 const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
 const Contact = Loadable({ loader: () => import("../pages/contact/Contact") });
+const CourseDetail = Loadable({ loader: () => import("../pages/courseDetail/CourseDetai") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
 });
@@ -37,10 +38,10 @@ export const router = createBrowserRouter([
 
   {
     path: "/",
-    element: <MainLayout showFooter={false} />, 
+    element: <MainLayout showFooter={false} />,
     children: [
       {
-        index: true, 
+        index: true,
         element: Home,
       },
       {
@@ -52,12 +53,16 @@ export const router = createBrowserRouter([
         element: Post,
       },
       {
+        path: "/tutorial/:tutorialId",
+        element: CourseDetail,
+      },
+      {
         path: "/lienhe",
         element: Contact,
       },
       {
         path: "/",
-        element: <AuthGuard />, 
+        element: <AuthGuard />,
         children: [
           {
             index: true,
@@ -65,18 +70,18 @@ export const router = createBrowserRouter([
           },
           {
             path: "profile",
-            element:Profile, 
-           
+            element: Profile,
+
           },
         ],
       },
       {
         path: "admin",
-        element: <AuthGuard />, 
+        element: <AuthGuard />,
         children: [
           {
             index: false,
-            element: <AdminGuard />, 
+            element: <AdminGuard />,
             children: [
               {
                 index: true,
@@ -88,11 +93,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "manage-products",
-        element: <AuthGuard />, 
+        element: <AuthGuard />,
         children: [
           {
             index: false,
-            element: <ManagerGuard />, 
+            element: <ManagerGuard />,
             children: [
               {
                 index: true,
