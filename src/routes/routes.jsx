@@ -12,6 +12,7 @@ const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
 const Contact = Loadable({ loader: () => import("../pages/contact/Contact") });
 const CourseDetail = Loadable({ loader: () => import("../pages/courseDetail/CourseDetai") });
+const Law = Loadable({ loader: () => import("../pages/law/Law") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
 });
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
       {
         path: "/lienhe",
         element: Contact,
+      },
+      {
+        path: "/law",
+        element: Law,
       },
       {
         path: "/",

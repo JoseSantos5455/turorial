@@ -96,10 +96,12 @@ const HeaderCustom = ({ collapsed }) => {
                     <Login
                         setIslogin={handleShowLoginModal}
                         Islogin={false}
+                        handleCancel={handleCancel}
                     /> :
                     <Login
                         setIslogin={handleShowRegisterModal}
                         Islogin={true}
+                        handleCancel={handleCancel}
                     />
                 }
             </Modal>

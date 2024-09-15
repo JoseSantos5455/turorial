@@ -1,7 +1,9 @@
 import React from 'react';
 import './Contact.scss'; // Import your SCSS file
 import CustomFooter from "../../components/Footer/CustomFooter";
-import { Layout } from 'antd';
+import { Image, Layout } from 'antd';
+import { PhoneFilled, MailOutlined } from '@ant-design/icons';
+import location from '../../assets/image/location.svg'
 const ContactUs = () => {
   return (
     <div className="contact-us">
@@ -15,7 +17,9 @@ const ContactUs = () => {
           <h2>Get in touch with us</h2>
 
           <div className="contact-item">
-            <span className="icon phone-icon"></span>
+            {/* <span className="icon phone-icon"></span> */}
+            <p><PhoneFilled style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#2878eb', borderRadius: '50%' }} /></p>
+
             <div>
               <p style={{ fontSize: 18, fontWeight: "bold" }}>Call us on: +03601 885399</p>
               <p>Our office hours are Monday – Friday, 9 am–6 pm</p>
@@ -23,7 +27,9 @@ const ContactUs = () => {
           </div>
 
           <div className="contact-item">
-            <span className="icon email-icon"></span>
+            {/* <span className="icon email-icon"></span> */}
+            <p><MailOutlined style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#ffa100', borderRadius: '50%' }} /></p>
+
             <div>
               <p style={{ fontSize: 18, fontWeight: "bold" }}>Email us directly:</p>
               <p>info@courselog.com</p>
@@ -31,7 +37,23 @@ const ContactUs = () => {
           </div>
 
           <div className="contact-item">
-            <span className="icon location-icon"></span>
+
+            <p>
+              <Image
+                src={location}
+                alt="Location Icon"
+                style={{
+                  width: '50px',
+                  marginRight: '20px',
+                  fontSize: '22px',
+                  color: '#fff',
+                  padding: '12px',
+                  backgroundColor: '#1dc295',
+                  borderRadius: '50%',
+                }}
+              />
+            </p>
+
             <div>
               <p style={{ fontSize: 18, fontWeight: "bold" }}>Our Location:</p>
               <p>70-80 Upper St Norwich NR2 1LT</p>
@@ -43,7 +65,7 @@ const ContactUs = () => {
           {/* Embed the Google Map iframe here */}
           <Layout style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.999873393024!2d2.294481715674226!3d48.85884497928744!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66f03e387c2b3%3A0x4bde99a12b67ac91!2sEiffel%20Tower!5e0!3m2!1sen!2sfr!4v1646320591012!5m2!1sen!2sfr"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.6084923886146!2d106.80801617780807!3d10.841243500173142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgVFAuIEhDTQ!5e0!3m2!1svi!2s!4v1726135289991!5m2!1svi!2s"
               title="Location"
               allowFullScreen=""
               loading="lazy"
@@ -54,7 +76,7 @@ const ContactUs = () => {
 
       <section className="message-section">
         <div className="message-header">
-          <h3 style={{ color: "red" }}>SENT US A MESSAGE</h3>
+          <h3 style={{ color: "red", fontSize: '22px' }}>SENT US A MESSAGE</h3>
           <p >We will Answer all your Questions</p>
         </div>
 
