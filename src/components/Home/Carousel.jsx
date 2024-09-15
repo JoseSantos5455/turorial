@@ -40,13 +40,13 @@ const CarouselCustom = () => {
                     <h3 style={{ ...contentStyle, background: 'linear-gradient(to right, #890aff, #7a4ffa, #6c75fa, #5aa4fa)' }}>1</h3>
                     </div>
                     <div>
-                        <h3 style={contentStyle}>2</h3>
+                        <h3 style={{ ...contentStyle, background: 'linear-gradient(to right, #fe215d, #fe4b3c, #ff5d2e, #fe8f05)' }}>2</h3> 
                     </div>
                     <div>
-                        <h3 style={contentStyle}>3</h3>
+                        <h3 style={{ ...contentStyle, background: 'linear-gradient(to right, #6a2af9, #9b59dc, #d08dbe, #fab5a7)' }}>3</h3> // Chỉ cập nhật background cho div 3
                     </div>
                     <div>
-                        <h3 style={contentStyle}>4</h3>
+                        <h3 style={{ ...contentStyle, background: 'linear-gradient(to right, #2975f9, #5138dd, #6619ce)' }}>4</h3> // Chỉ cập nhật background cho div 4
                     </div>
                 </Carousel>
             </ConfigProvider>
