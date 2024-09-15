@@ -10,7 +10,6 @@ const CarouselCustom = () => {
         color: '#fff',
         lineHeight: '160px',
         textAlign: 'center',
-        background: '#364d79',
         borderRadius: '17px',
     };
 
@@ -38,7 +37,7 @@ const CarouselCustom = () => {
                     infinite={true}
                 >
                     <div>
-                        <h3 style={contentStyle}>1</h3>
+                    <h3 style={{ ...contentStyle, background: 'linear-gradient(to right, #890aff, #7a4ffa, #6c75fa, #5aa4fa)' }}>1</h3>
                     </div>
                     <div>
                         <h3 style={contentStyle}>2</h3>

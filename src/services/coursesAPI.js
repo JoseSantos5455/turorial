@@ -36,7 +36,7 @@ export const courseAPI = createApi({
         getCourseDetail: builder.query({
             query: (userId) => ({
                 // url: `users/getuserprofile/${userId}`,
-                url: `68531f68-c423-486c-8b5a-ec745f00be02`,
+                url: `7ef42b94-1813-41bb-9e4e-71ed1a43b64d`,
                 method: "GET",
             }),
         }),
