@@ -334,7 +334,7 @@ const LearningPage = () => {
                                                         className="text-left w-full"
                                                     >
                                                         <span className={`${isPreviousVideoCompleted || currentChapterProgress?.videos[index]?.isCompleted ? 'text-black' : ''} text-[15px]`}>
-                                                            {`Bài ${chapterIndex * chapter.videos.length + index + 1} ${video.videoName}`}
+                                                            <strong>{`Bài ${chapterIndex * chapter.videos.length + index + 1}`}</strong> {video.videoName}
                                                         </span>
                                                         {currentChapterProgress?.videos[index]?.isCompleted && (
                                                             <Image preview={false} width={15} src={checkIcon} alt="Completed" className="inline ml-2" />
