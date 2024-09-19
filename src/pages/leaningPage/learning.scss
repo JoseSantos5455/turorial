@@ -1,0 +1,14 @@
+.ant-collapse-header {
+    background: linear-gradient(to right, #3b82f6, #22d3ee);
+}
+/* Thêm vào file CSS của bạn */
+/* Thêm vào file CSS của bạn */
+.animated-icon {
+    animation: fadeInOut 2s infinite;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}

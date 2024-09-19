@@ -5,7 +5,7 @@ import { COURSE_API_TEST } from "../config";
 
 export const courseAPI = createApi({
     reducerPath: "courseManager",
-    tagTypes: ["CourseList"],
+    tagTypes: ["CourseList", "Progress"],
     baseQuery: fetchBaseQuery({
         baseUrl: COURSE_API_TEST,
 
@@ -20,7 +20,7 @@ export const courseAPI = createApi({
     }),
     endpoints: (builder) => ({
         getAllCourse: builder.query({
-            query: () => `eb19b633-0b12-4ee6-996b-6d9b54f08398`,
+            query: () => `https://mocki.io/v1/aa4a4531-043d-438d-903b-627c62874975`,
             providesTags: (result) =>
                 result
                     ? result.map(({ id }) => ({ type: "CourseList", id }))
@@ -34,12 +34,44 @@ export const courseAPI = createApi({
         //     }),
         // }),
         getCourseDetail: builder.query({
-            query: (userId) => ({
+            query: () => ({
                 // url: `users/getuserprofile/${userId}`,
-                url: `7ef42b94-1813-41bb-9e4e-71ed1a43b64d`,
+                url: `https://mocki.io/v1/b7297b16-5c12-4399-b84c-4ca495072240`,
                 method: "GET",
             }),
         }),
+        getLearningProgress: builder.query({
+            query: ({ courseId, userId }) => ({
+                // query: (courseId) => `learning-progress/${courseId}`,
+                url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress/${userId}`,
+                providesTags: (result) =>
+                    result ? [{ type: "Progress", id: "LIST" }] : [],
+            }),
+        }),
+        savingNewProgress: builder.mutation({
+            query: (payload) => {
+                console.log(payload)
+                const newBody = {
+                    videoId: payload.videoId, 
+                    progress: payload.progress, 
+                }
+                return {
+                    method: "PUT",
+                    url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress/${payload.userId}`,
+                    body: newBody,
+                };
+            },
+            invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
+        }),
+        // Endpoint để lưu tiến độ học tập
+        // saveLearningProgress: builder.mutation({
+        //     query: (progressData) => ({
+        //         url: '/learning-progress',
+        //         method: 'POST',
+        //         body: progressData,
+        //     }),
+        //     invalidatesTags: [{ type: "Progress", id: progressData.courseId }],
+        // }),
         // addUser: builder.mutation({
         //   query: (body) => {
         //     const newBody = {
@@ -148,7 +180,9 @@ export const courseAPI = createApi({
 
 export const {
     useGetAllCourseQuery,
-    useGetCourseDetailQuery
+    useGetCourseDetailQuery,
+    useGetLearningProgressQuery,
+    useSavingNewProgressMutation
     //   useGetUserProfileQuery,
     //   useEditProfileMutation,
     //   useAddUserMutation,
