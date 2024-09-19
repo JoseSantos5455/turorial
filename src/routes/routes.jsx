@@ -12,6 +12,8 @@ const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
 const Contact = Loadable({ loader: () => import("../pages/contact/Contact") });
 const CourseDetail = Loadable({ loader: () => import("../pages/courseDetail/CourseDetai") });
+const ErrorPage = Loadable({ loader: () => import("../pages/error/ErroePage") });
+const learningPage = Loadable({ loader: () => import("../pages/leaningPage/LearningPage") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
 });
@@ -55,6 +57,10 @@ export const router = createBrowserRouter([
       {
         path: "/tutorial/:tutorialId",
         element: CourseDetail,
+      },
+      {
+        path: "/learning/:courseId",
+        element: learningPage,
       },
       {
         path: "/lienhe",
@@ -111,6 +117,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <div>ERROR</div>,
+    element: ErrorPage ,
   },
 ]);

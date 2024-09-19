@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import Search from "antd/es/input/Search";
 import Logo from "./../assets/image/logo.png"
+import LogoLetter from "./../assets/image/b.svg"
 import HeaderCustom from "../components/Header/Header";
 
 const { Header, Sider, Content } = Layout;
@@ -23,7 +24,10 @@ const MainLayout = ({ showFooter = true }) => {
   } = theme.useToken();
   const [collapsed, setCollapsed] = useState(true);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const handleHome = () => {
+    navigate('/');
+  }
 
   const handleClick = (e) => {
     const routes = {
@@ -43,7 +47,6 @@ const MainLayout = ({ showFooter = true }) => {
   return (
     <Layout className="min-h-screen">
       <Sider
-
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -66,14 +69,27 @@ const MainLayout = ({ showFooter = true }) => {
           }}
         >
           <div class="flex items-center space-x-3">
-            <Image
-              preview={false}
-              src={Logo}
-              alt="Logo"
-              class="h-10 w-auto"
-            />
+            {collapsed ? (
+              <Image
+              width={35}
+                className="cursor-pointer"
+                onClick={handleHome}
+                preview={false}
+                src={LogoLetter} 
+                alt="Logo Letter"
+                class="h-10 w-auto"
+              />
+            ) : (
+              <Image
+                className="cursor-pointer"
+                onClick={handleHome}
+                preview={false}
+                src={Logo}
+                alt="Logo"
+                class="h-10 w-auto"
+              />
+            )}
           </div>
-
         </div>
         <ConfigProvider
           theme={{
