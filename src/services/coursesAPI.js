@@ -28,7 +28,7 @@ export const courseAPI = createApi({
         }),
 
         getMyCourse: builder.query({
-            query: () => `a232df94-f345-4f9c-bdca-585df1a916de`,
+            query: () => `4ace85d5-4d7e-4276-a31c-282ca3f8019a`,
             providesTags: (result) =>
                 result
                     ? result.map(({ id }) => ({ type: "CourseList", id }))
