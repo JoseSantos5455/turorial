@@ -1,16 +1,30 @@
 
-import { Button, Layout, Modal } from 'antd'
+import { Button, Layout, Modal, Popover, Spin } from 'antd'
 import Search from 'antd/es/input/Search'
 import React, { useState } from 'react'
 import './Header.scss';
 import Login from '../../pages/login/Login';
+import { useGetMyCourseQuery } from '../../services/coursesAPI';
+
 const HeaderCustom = ({ collapsed }) => {
+
+    const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
+
 
     const { Header } = Layout;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isRegister, setIsRegister] = useState(true);
 
+    const [open, setOpen] = useState(false);
+
+    const hide = () => {
+        setOpen(false);
+    };
+
+    const handleOpenChange = (newOpen) => {
+        setOpen(newOpen);
+    };
 
     const handleShowLoginModal = () => {
         console.log(isRegister)
@@ -26,6 +40,9 @@ const HeaderCustom = ({ collapsed }) => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    console.log(Mycourses)
+
     return (
         <Header
             style={{
@@ -57,6 +74,38 @@ const HeaderCustom = ({ collapsed }) => {
                     fontSize: '14px'
                 }}
             />
+            <Popover
+                content={isLoading ? <Spin /> : (
+                    <div>
+                        {Mycourses.length > 0 ? (
+                            Mycourses
+                                .filter(course => course.isSub)
+                                .map(course => (
+                                    <div key={course.id} className="flex items-center mb-2">
+                                        <div className="w-[100px] h-[50px] flex-shrink-0 rounded-md ">
+                                            <img
+                                                src={course.img}
+                                                alt={course.name}
+                                                className="w-full h-full object-cover rounded-[10px]"
+                                            />
+                                        </div>
+                                        <span className="ml-2">{course.name}</span>
+                                    </div>
+                                ))
+                        ) : (
+                            <p>Không có khóa học</p>
+                        )}
+                    </div>
+                )}
+                title="Title"
+                trigger="click"
+                open={open}
+                onOpenChange={handleOpenChange}
+                overlayStyle={{ width: '400px' }}
+            >
+                <p className='text-[white]'>Khóa học của tôi</p>
+            </Popover>
+
 
             <div style={{ display: "flex", gap: "10px", paddingRight: "16px" }}>
                 <Button

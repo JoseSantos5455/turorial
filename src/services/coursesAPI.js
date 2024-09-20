@@ -27,6 +27,14 @@ export const courseAPI = createApi({
                     : [{ type: "CourseList", id: "LIST" }],
         }),
 
+        getMyCourse: builder.query({
+            query: () => `a232df94-f345-4f9c-bdca-585df1a916de`,
+            providesTags: (result) =>
+                result
+                    ? result.map(({ id }) => ({ type: "CourseList", id }))
+                    : [{ type: "CourseList", id: "LIST" }],
+        }),
+
         // getUserProfile: builder.query({
         //     query: (userId) => ({
         //         url: `user/${userId}`,
@@ -148,7 +156,8 @@ export const courseAPI = createApi({
 
 export const {
     useGetAllCourseQuery,
-    useGetCourseDetailQuery
+    useGetCourseDetailQuery,
+    useGetMyCourseQuery,
     //   useGetUserProfileQuery,
     //   useEditProfileMutation,
     //   useAddUserMutation,

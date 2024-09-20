@@ -7,6 +7,8 @@ import { authApi } from "../services/authAPI";
 import AuthReducer from "../slices/auth.slice";
 import { courseAPI } from "../services/coursesAPI";
 import CourseReducer from "../slices/course.slice";
+import { userAPI } from "../services/userAPI";
+import UserReducer from "../slices/user.slice";
 // import { postAPI } from "../services/postAPI";
 // import postReducer from "../slices/post.slice";
 // import { exchangeAPI } from "../services/exchangeAPI";
@@ -33,6 +35,7 @@ const persistConfig = {
 const DoctorPerisReducer = persistReducer(persistConfig, doctorReducer);
 const AuthPerisReducer = persistReducer(persistConfig, AuthReducer);
 const CousresPerisReducer = persistReducer(persistConfig, CourseReducer);
+const UserPerisReducer = persistReducer(persistConfig, UserReducer);
 // const PostPerisReducer = persistReducer(persistConfig, postReducer);
 // const ExchangePerisReducer = persistReducer(persistConfig, exchangeReducer);
 // const ChatPerisReducer = persistReducer(persistConfig, chatReducer);
@@ -51,6 +54,8 @@ export const store = configureStore({
     auth: AuthPerisReducer,
     [courseAPI.reducerPath]: courseAPI.reducer,
     post: CousresPerisReducer,
+    [userAPI.reducerPath]: userAPI.reducer,
+    post1: UserPerisReducer,
     // [exchangeAPI.reducerPath]: exchangeAPI.reducer,
     // exchange: ExchangePerisReducer,
     // chat: ChatPerisReducer,
@@ -66,6 +71,7 @@ export const store = configureStore({
       authApi.middleware,
       doctorAPI.middleware,
       courseAPI.middleware,
+      userAPI.middleware
       // exchangeAPI.middleware,
       // appealApi.middleware,
     ),
