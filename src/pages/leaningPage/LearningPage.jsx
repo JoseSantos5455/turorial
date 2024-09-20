@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import checkIcon from './../../assets/image/check.svg'
@@ -17,7 +17,7 @@ const LearningPage = () => {
     const [progress, setProgress] = useState([]);
     const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery(courseId);
     const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId: "user_001" });
-    const [saveLearningProgress, { isLoading: isSavingProgress, error: saveError }] = useSavingNewProgressMutation();
+    const [saveLearningProgress] = useSavingNewProgressMutation();
 
     useEffect(() => {
         if (progressData?.progress) {
@@ -25,66 +25,47 @@ const LearningPage = () => {
         }
     }, [progressData]);
 
+    // update tiến đ
+    const updateProgress = useCallback(async (newProgress) => {
+        try {
+            await saveLearningProgress({
+                userId: progressData.userId,
+                courseId: progressData.courseId,
+                progress: newProgress,
+                dateUpdated: new Date().toISOString(),
+            });
+            setProgress(newProgress);
+        } catch (error) {
+            console.error('Error saving progress', error);
+        }
+    }, [progressData, saveLearningProgress]);
 
     // Quản lý sự kiện khi xem video
-    const handleProgress = (state) => {
-        console.log(playedSeconds)
+    const handleProgress = useCallback((state) => {
         setPlayedSeconds(state.playedSeconds);
-        // console.log(state.playedSeconds)
-        // Gọi API lưu tiến độ học tập sau mỗi 20 giây
+
         if (Math.floor(state.playedSeconds) % 20 === 0 && currentVideo) {
-            // Tìm chương chứa video hiện tại
             const chapterProgress = progress.find(chapter =>
                 chapter.videos.some(video => video.videoId === currentVideo.videoId)
             );
 
             if (chapterProgress) {
-
-                const newProgress = progress.map(chapter => {
-                    if (chapter.chapterId === chapterProgress.chapterId) {
-                        return {
+                const newProgress = progress.map(chapter =>
+                    chapter.chapterId === chapterProgress.chapterId
+                        ? {
                             ...chapter,
                             videos: chapter.videos.map(video =>
                                 video.videoId === currentVideo.videoId
                                     ? { ...video, watchedDuration: state.playedSeconds }
                                     : video
                             )
-                        };
-                    }
-                    return chapter;
-                });
-
-                // Gọi API để lưu lại progress mới
-                saveLearningProgress({
-                    userId: progressData.userId,
-                    courseId: progressData.courseId,
-                    progress: newProgress,
-                    dateUpdated: new Date().toISOString(),
-                })
-                    .then(() => {
-                        setProgress(newProgress);
-                    })
-                    .catch((error) => {
-                        console.error('Error saving progress', error);
-                    });
+                        }
+                        : chapter
+                );
+                updateProgress(newProgress);
             }
         }
-
-        // var watchedTime = currentVideo?.watchedDuration || 0;
-        // console.log(watchedTime)
-        // watchedTime += playedSeconds; 
-        // // console.log(watchedTime)
-        // if (playerRef.current) {
-        //     // Thêm biến để xác định thời gian đã học
-
-
-        //     var WarningMessage = "Bạn đã tua quá nhiều khi học bài !";
-        //     if (state.playedSeconds > watchedTime + 30) { // So sánh với watchedTime
-        //         message.warning(WarningMessage);
-        //         playerRef.current.seekTo(watchedTime, 'seconds'); // Sử dụng watchedTime
-        //     }
-        // }
-    };
+    }, [currentVideo, progress, updateProgress]);
 
     // Xử lý việc cấm tua nhanh
     // const handleSeek = (seconds) => {
@@ -101,67 +82,45 @@ const LearningPage = () => {
     // Khi xem xong 80% thời lượng video, mở khóa bài tiếp theo
     useEffect(() => {
         if (currentVideo && playedSeconds / currentVideo.duration > 0.8) {
-            const nextLesson = unlockedLessons.length;
             const chapterProgress = progress.find(chapter => chapter.videos.some(video => video.videoId === currentVideo.videoId));
+            // Kiểm tra nếu video hiện tại là video cuối cùng của chương
+            const isLastVideoInChapter = chapterProgress.videos[chapterProgress.videos.length - 1].videoId === currentVideo.videoId;
 
-            if (nextLesson < courseDetail.videoContent[0].videos.length) {
-                setUnlockedLessons((prev) => [...prev, nextLesson]);
-                const newProgress = progress.map(chapter => {
-                    if (chapter.chapterId === chapterProgress.chapterId) {
-                        return {
-                            ...chapter,
-                            videos: chapter.videos.map(video =>
-                                video.videoId === currentVideo.videoId
-                                    ? { ...video, watchedDuration: playedSeconds, isCompleted: true }
-                                    : video
-                            )
-                        };
-                    }
-                    return chapter;
-                });
 
-                saveLearningProgress({
-                    userId: progressData.userId,
-                    courseId: progressData.courseId,
-                    progress: newProgress,
-                    dateUpdated: new Date().toISOString(),
-                }).then(() => {
-                    setProgress(newProgress);
-                }).catch((error) => {
-                    console.error('Error saving progress', error);
-                });
-            }
+            const newProgress = progress.map(chapter => {
+                if (chapter.chapterId === chapterProgress.chapterId) {
+                    return {
+                        ...chapter,
+                        videos: chapter.videos.map(video =>
+                            video.videoId === currentVideo.videoId
+                                ? { ...video, watchedDuration: playedSeconds, isCompleted: true }
+                                : video
+                        ),
+                        isChapterCompleted: isLastVideoInChapter // Đánh dấu chương hoàn thành
+                    };
+                }
+                return chapter;
+            });
+
+            updateProgress(newProgress)
         }
+
     }, [playedSeconds, currentVideo, courseDetail, unlockedLessons, progress]);
 
     // Đặt video hiện tại
 
-    const handleSetVideo = (video, index) => {
-        const chapterProgress = progress.find(chapter => chapter.videos.some(v => v.videoId === video.videoId));
-        const completedVideos = chapterProgress.videos.filter(v => v.isCompleted).map(v => v.videoId);
-        const firstUncompletedIndex = chapterProgress.videos.findIndex(v => !v.isCompleted);
-
-        // Set the played seconds to the watched duration if available
+    const handleSetVideo = useCallback((video, index) => {
+        const chapterProgress = progress.find(chapter =>
+            chapter.videos.some(v => v.videoId === video.videoId)
+        );
         const watchedDuration = chapterProgress?.videos.find(v => v.videoId === video.videoId)?.watchedDuration || 0;
+        setCurrentVideo(video);
+        setPlayedSeconds(watchedDuration);
+        setPlaying(true);
+        playerRef.current?.seekTo(watchedDuration, 'seconds');
+    }, [progress]);
 
-        // Allow access to video if it is completed or it is the next video
-        if (completedVideos.includes(video.videoId) ||
-            (firstUncompletedIndex === index && !chapterProgress.videos[firstUncompletedIndex]?.isCompleted) ||
-            (index === firstUncompletedIndex - 1 && chapterProgress.videos[firstUncompletedIndex - 1]?.isCompleted) ||
-            (index === firstUncompletedIndex && chapterProgress.videos[firstUncompletedIndex]?.isCompleted) ||
-            (completedVideos.includes(courseDetail?.videoContent.flatMap(chapter => chapter.videos)[index - 1]?.videoId)) ||
-            completedVideos.includes(video.videoId) ||
-            index === completedVideos.indexOf(video.videoId)
-        ) {
-            setCurrentVideo(video);
-            setPlayedSeconds(watchedDuration);
-            setPlaying(true);
-            if (playerRef.current) {
-                // Đặt video để phát từ watchedDuration
-                playerRef.current.seekTo(watchedDuration, 'seconds');
-            }
-        }
-    };
+
     const handlePlayerReady = () => {
         if (playerRef.current) {
             const chapterProgress = progress.find(chapter => chapter.videos.some(v => v.videoId === currentVideo.videoId));
@@ -169,67 +128,70 @@ const LearningPage = () => {
             playerRef.current.seekTo(watchedDuration, 'seconds'); // Đặt video để phát từ watchedDuration
         }
     };
+
     useEffect(() => {
-        if (progress.length > 0 && courseDetail) {
-            // Tìm chương đã hoàn thành cuối cùng
-            const completedChapters = progress.filter(chapter => chapter.isChapterCompleted);
-            const lastCompletedChapter = completedChapters[completedChapters.length - 1]; // Chương hoàn thành cuối cùng
+        const findNextVideo = () => {
+            if (progress.length > 0 && courseDetail) {
+                // Tìm chương đã hoàn thành cuối cùng
+                const completedChapters = progress.filter(chapter => chapter.isChapterCompleted);
+                const lastCompletedChapter = completedChapters[completedChapters.length - 1]; // Chương hoàn thành cuối cùng
 
-            let nextVideo = null;
+                let nextVideo = null;
 
-            if (lastCompletedChapter) {
-                // Tìm video cuối cùng trong chương hoàn thành gần nhất
-                const lastCompletedVideo = lastCompletedChapter.videos[lastCompletedChapter.videos.length - 1];
-                const flatVideos = courseDetail.videoContent.flatMap(chapter => chapter.videos);
-                const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideo.videoId);
+                if (lastCompletedChapter) {
+                    // Tìm video cuối cùng trong chương hoàn thành gần nhất
+                    const lastCompletedVideo = lastCompletedChapter.videos[lastCompletedChapter.videos.length - 1];
+                    const flatVideos = courseDetail.videoContent.flatMap(chapter => chapter.videos);
+                    const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideo.videoId);
 
-                // Tìm video tiếp theo
-                const nextVideoIndex = lastVideoIndex + 1;
-                if (nextVideoIndex < flatVideos.length) {
-                    nextVideo = flatVideos[nextVideoIndex];
-                }
-            }
-
-            // Nếu không có video tiếp theo, chọn video đầu tiên
-            if (!nextVideo) {
-                const firstChapter = courseDetail.videoContent[0];
-                const completedVideosInFirstChapter = firstChapter.videos.filter(video =>
-                    progress.some(chapter => chapter.chapterId === firstChapter.chapterId && chapter.videos.some(v => v.videoId === video.videoId && v.isCompleted))
-                );
-
-                if (completedVideosInFirstChapter.length > 0) {
-                    const lastCompletedVideoInFirstChapter = completedVideosInFirstChapter[completedVideosInFirstChapter.length - 1];
-                    const flatVideos = firstChapter.videos;
-                    const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideoInFirstChapter.videoId) + 1;
-
-                    // Set video tiếp theo là video hoàn thành cuối cùng + 1
-                    if (lastVideoIndex < flatVideos.length) {
-                        nextVideo = flatVideos[lastVideoIndex];
+                    // Tìm video tiếp theo
+                    const nextVideoIndex = lastVideoIndex + 1;
+                    if (nextVideoIndex < flatVideos.length) {
+                        nextVideo = flatVideos[nextVideoIndex];
                     }
                 }
-            }
 
-            // Nếu không có video tiếp theo, chọn video đầu tiên của chương đầu tiên
-            if (!nextVideo) {
-                const firstVideo = courseDetail.videoContent[0].videos[0];
-                nextVideo = firstVideo;
-            }
+                // Nếu không có video tiếp theo, chọn video đầu tiên
+                if (!nextVideo) {
+                    const firstChapter = courseDetail.videoContent[0];
+                    const completedVideosInFirstChapter = firstChapter.videos.filter(video =>
+                        progress.some(chapter => chapter.chapterId === firstChapter.chapterId && chapter.videos.some(v => v.videoId === video.videoId && v.isCompleted))
+                    );
 
-            // Cập nhật video hiện tại và trạng thái trình phát
-            setCurrentVideo(nextVideo);
-            setPlayedSeconds(0);
-            setPlaying(true);
-        } else if (courseDetail) {
-            // Nếu không có tiến độ, chọn video đầu tiên của khóa học
-            const firstVideo = courseDetail.videoContent.flatMap(chapter => chapter.videos)[0];
-            setCurrentVideo(firstVideo);
-            setPlayedSeconds(0);
-            setPlaying(true);
+                    if (completedVideosInFirstChapter.length > 0) {
+                        const lastCompletedVideoInFirstChapter = completedVideosInFirstChapter[completedVideosInFirstChapter.length - 1];
+                        const flatVideos = firstChapter.videos;
+                        const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideoInFirstChapter.videoId) + 1;
+
+                        // Set video tiếp theo là video hoàn thành cuối cùng + 1
+                        if (lastVideoIndex < flatVideos.length) {
+                            nextVideo = flatVideos[lastVideoIndex];
+                        }
+                    }
+                }
+
+                // Nếu không có video tiếp theo, chọn video đầu tiên của chương đầu tiên
+                if (!nextVideo) {
+                    const firstVideo = courseDetail.videoContent[0].videos[0];
+                    nextVideo = firstVideo;
+                }
+
+                // Cập nhật video hiện tại và trạng thái trình phát
+                setCurrentVideo(nextVideo);
+                setPlayedSeconds(0);
+                setPlaying(true);
+            } else if (courseDetail) {
+                // Nếu không có tiến độ, chọn video đầu tiên của khóa học
+                const firstVideo = courseDetail.videoContent.flatMap(chapter => chapter.videos)[0];
+                setCurrentVideo(firstVideo);
+                setPlayedSeconds(0);
+                setPlaying(true);
+            }
         }
-    }, [progress, courseDetail]);
-
-
-
+        if (progress && courseDetail) { // Chỉ gọi hàm tìm video khi dữ liệu đã sẵn sàng
+            findNextVideo();
+        }
+    },  [ courseDetail]); 
 
     if (isCourseLoading || isProgressLoading) {
         return <Skeleton active />; // Or any custom loader
@@ -244,15 +206,16 @@ const LearningPage = () => {
         <div className="grid grid-cols-3 gap-4 px-6">
             {/* Bên trái: Video Player */}
             <div className="col-span-2">
+                <Breadcrumb
+                    className='mt-[-10px] py-3 mb-5'
+                >
+                    <Breadcrumb.Item><Link to={'/'}><LeftOutlined /> Home</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item className='text-cyan-500'>{courseDetail?.name}</Breadcrumb.Item>
+
+                </Breadcrumb>
                 {currentVideo ? (
                     <>
-                        <Breadcrumb
-                            className='mt-[-10px] py-3 mb-5'
-                        >
-                            <Breadcrumb.Item><Link to={'/'}><LeftOutlined /> Home</Link></Breadcrumb.Item>
-                            <Breadcrumb.Item className='text-cyan-500'>{courseDetail?.name}</Breadcrumb.Item>
 
-                        </Breadcrumb>
 
                         <p className="font-bold text-3xl mb-7">{currentVideo.videoName}</p> {/* Display video name */}
                         <ReactPlayer
@@ -310,10 +273,10 @@ const LearningPage = () => {
                                             <p style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
                                                 {`Chương ${chapterIndex + 1}: ${chapter.chapterName}`}
                                                 {chapter.videos.some(video => video.videoId === currentVideo?.videoId) && (
-                                                    <Image preview={false} width={15} src={activeIcon} alt="Current"  className="inline ml-5 mb-1 animated-icon" />
+                                                    <Image preview={false} width={15} src={activeIcon} alt="Current" className="inline ml-5 mb-1 animated-icon" />
                                                 )}
                                             </p>
-                                        </div> 
+                                        </div>
                                     }
                                     key={chapterIndex}
                                 >
@@ -334,7 +297,7 @@ const LearningPage = () => {
                                                         className="text-left w-full"
                                                     >
                                                         <span className={`${isPreviousVideoCompleted || currentChapterProgress?.videos[index]?.isCompleted ? 'text-black' : ''} text-[15px]`}>
-                                                            <strong>{`Bài ${chapterIndex * chapter.videos.length + index + 1}`}</strong> {video.videoName}
+                                                            {`Bài ${chapterIndex * chapter.videos.length + index + 1} ${video.videoName}`}
                                                         </span>
                                                         {currentChapterProgress?.videos[index]?.isCompleted && (
                                                             <Image preview={false} width={15} src={checkIcon} alt="Completed" className="inline ml-2" />
