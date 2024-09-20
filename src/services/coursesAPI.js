@@ -44,7 +44,7 @@ export const courseAPI = createApi({
         getCourseDetail: builder.query({
             query: () => ({
                 // url: `users/getuserprofile/${userId}`,
-                url: `https://mocki.io/v1/b7297b16-5c12-4399-b84c-4ca495072240`,
+                url: `https://mocki.io/v1/e066a26f-fdc1-4063-a546-80e530457d6b`,
                 method: "GET",
             }),
         }),

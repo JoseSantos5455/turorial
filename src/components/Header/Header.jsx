@@ -1,10 +1,11 @@
 
-import { Button, Layout, Modal, Popover, Spin, Progress } from 'antd'
+import { Button, Empty, Layout, Modal, Popover, Spin } from 'antd'
 import Search from 'antd/es/input/Search'
 import React, { useState } from 'react'
 import './Header.scss';
 import Login from '../../pages/login/Login';
 import { useGetMyCourseQuery } from '../../services/coursesAPI';
+import { Link } from 'react-router-dom';
 
 const HeaderCustom = ({ collapsed }) => {
 
@@ -20,11 +21,6 @@ const HeaderCustom = ({ collapsed }) => {
 
     const hide = () => {
         setOpen(false);
-    };
-
-    const twoColors = {
-        '0%': '#108ee9',
-        '100%': '#87d068',
     };
 
     const handleOpenChange = (newOpen) => {
@@ -79,43 +75,46 @@ const HeaderCustom = ({ collapsed }) => {
                     fontSize: '14px'
                 }}
             />
-            <Popover
-                content={isLoading ? <Spin /> : (
-                    <div>
-                        {Mycourses.length > 0 ? (
-                            Mycourses
-                                .filter(course => course.isSub)
-                                .map(course => (
-                                    <div key={course.id} className="flex items-center mb-2">
-                                        <div className="w-[100px] h-[50px] flex-shrink-0 rounded-md ">
-                                            <img
-                                                src={course.img}
-                                                alt={course.name}
-                                                className="w-full h-full object-cover rounded-[10px]"
-                                            />
-                                        </div>
-                                        <div className="flex-1 ml-2 mr-1">
-                                            <span className="ml-2">{course.name}</span>
-                                            <Progress className="ml-2" percent={course.duration} strokeColor={twoColors} />
-                                        </div>
-                                    </div>
-                                ))
-                        ) : (
-                            <p>Không có khóa học</p>
-                        )}
-                    </div>
-                )}
-                title="Title"
-                trigger="click"
-                open={open}
-                onOpenChange={handleOpenChange}
-                overlayStyle={{ width: '400px' }}
-            >
-                <p className='text-[white]'>Khóa học của tôi</p>
-            </Popover>
 
 
-            <div style={{ display: "flex", gap: "10px", paddingRight: "16px" }}>
+            <div style={{ display: "flex", gap: "10px", paddingRight: "16px", alignItems: 'center' }}>
+                <Popover
+                    content={isLoading ? <Spin /> : (
+                        <div>
+                            {Mycourses.length > 0 ? (
+                                Mycourses
+                                    .filter(course => course.isSub)
+                                    .map(course => (
+                                        <Link to={'learning/course_002'}>
+                                            {/* <Link to={`learning/${Mycourses.courseId}`} */}
+                                            <div key={course.id} className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2">
+                                                <div className="w-[120px] h-[70px] flex-shrink-0 rounded-md ">
+                                                    <img
+                                                        src={course.img}
+                                                        alt={course.name}
+                                                        className="w-full h-full object-cover rounded-[7px]"
+                                                    />
+                                                </div>
+                                                <span className="ml-3 font-semibold">{course.name}</span>
+
+                                            </div>
+                                        </Link>
+                                    ))
+                            ) : (
+                                <Empty />
+                            )}
+                        </div>
+                    )}
+                    title={<span className='ml-2 my-10'>Khóa học của tôi</span>}
+                    trigger="click"
+                    open={open}
+                    onOpenChange={handleOpenChange}
+                    overlayStyle={{ width: '400px' }}
+                    onClickOutside={hide}
+                >
+                    <Button className='text-white' type='link'>Khóa học của tôi</Button>
+                </Popover>
+
                 <Button
                     size='large'
                     className='hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg '
