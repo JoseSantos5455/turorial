@@ -15,7 +15,7 @@ import { useForm } from "antd/es/form/Form.js";
 import ImportIcon from "../../assets/Icon.jsx";
 import ForgotPass from "../forgotpass/ForgotPass.jsx";
 import Register from "../register/Register.jsx";
-function Login({ setIslogin, Islogin }) {
+function Login({ setIslogin, Islogin, handleCancel }) {
   const token = useSelector(selectCurrentToken);
   const navigate = useNavigate();
   const [isSendOTP, setIsSendOTP] = useState(false)
@@ -70,6 +70,11 @@ function Login({ setIslogin, Islogin }) {
       setIsLoadingResetPassword(false);
     }
   };
+
+  const handleNavigate = () => {
+    handleCancel()
+    navigate('/law')
+  }
 
   const handleOpenModalForgotPass = () => {
     setIsLoginNormal(true)
@@ -186,9 +191,9 @@ function Login({ setIslogin, Islogin }) {
                       Quên mật khẩu?
                     </u>
                   </button>
-                  <p className="py-3">Việc bạn tiếp tục sử dụng trang web này đồng nghĩa bạn đồng ý với
-                    <Link className="text-orange-500"> <u className="px-[2px]"> điều khoản sử dụng </u></Link>
-                    của chúng tôi.
+                  <p className="py-3">Việc bạn tiếp tục sử dụng trang web này đồng nghĩa bạn đồng ý với&nbsp;
+                    <button onClick={handleNavigate} className="text-orange-500"> <u className="button x-[2px]"> điều khoản sử dụng </u></button>
+                    &nbsp;của chúng tôi.
                   </p>
                 </div>
               </div>

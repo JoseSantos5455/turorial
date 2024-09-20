@@ -258,9 +258,7 @@ const LearningPage = () => {
                         <ConfigProvider
                             theme={{
                                 components: {
-                                    Collapse: {
-
-                                    },
+                                    Collapse: {},
                                 },
                             }}
                         >
@@ -269,7 +267,7 @@ const LearningPage = () => {
                             >
                                 <Collapse.Panel
                                     header={
-                                        <div style={{ display: 'flex', alignItems: 'center' }}> {/* Added a div to center align */}
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <p style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
                                                 {`Chương ${chapterIndex + 1}: ${chapter.chapterName}`}
                                                 {chapter.videos.some(video => video.videoId === currentVideo?.videoId) && (
