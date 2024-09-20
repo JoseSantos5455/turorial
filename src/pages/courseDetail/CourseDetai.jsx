@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetCourseDetailQuery } from '../../services/coursesAPI';
-import { Tree, Layout, Button, ConfigProvider, Image, Modal } from 'antd';
+import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton } from 'antd';
 import CheckMark from './../../assets/image/check-mark.svg'
 import { CaretDownFilled, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined, PlusOutlined } from '@ant-design/icons';
 import videoIcon from '../../assets/image/video-duration.svg';
@@ -22,12 +22,14 @@ const CourseDetai = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [videoSrc, setVideoSrc] = useState('');
 
+
     useEffect(() => {
         if (courseDetail) {
             setVideoSrc(courseDetail.introductionVideo);
         }
+
     }, [courseDetail]);
-    console.log(videoSrc);
+
     const handleDisplayTypeVideo = {
         "video": <Image preview={false} width={15} src={videoIcon} />,
         "infomation": <Image preview={false} width={15} src={inFoIcon} />,
@@ -56,16 +58,20 @@ const CourseDetai = () => {
         }
     }
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return
+    <div>
+        <Skeleton active />
+    </div>;
+
     if (error) return <div>Error loading course details.</div>;
 
     const totalCourseLessons = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.videos.length, 0);
     const totalCourseDuration = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.videos.reduce((acc, video) => acc + video.duration, 0), 0);
     const totalChapters = courseDetail.videoContent.length;
     const treeData = courseDetail.videoContent.map((chapter, index) => {
-        const chapterIndex = index + 1; // Chapter number
+        const chapterIndex = index + 1;
         const videos = chapter.videos;
-        const totalLessons = videos.length; // Total lessons in the chapter
+        const totalLessons = videos.length;
         const totalDuration = videos.reduce((acc, video) => acc + video.duration, 0);
 
         return {
@@ -167,7 +173,7 @@ const CourseDetai = () => {
             <Sider
                 width={400}
                 theme="light"
-                style={{ position: 'fixed', right: '5%',top: '20%' }}
+                style={{ position: 'fixed', right: '5%', top: '20%' }}
                 className='h-full'
             >
                 <div className='relative w-full flex justify-center cursor-pointer' onClick={showModal}>

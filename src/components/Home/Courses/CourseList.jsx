@@ -12,6 +12,7 @@ const CourseList = () => {
 
     const { data: courses, error, isLoading } = useGetAllCourseQuery();
 
+
     const handleDisplayTime = (time) => {
         if (time < 60) {
             return <span>{time} Phút</span>;
@@ -35,6 +36,11 @@ const CourseList = () => {
 
     if (error) return <div>Error: {error.message}</div>;
 
+    // Log isEnrolled for each course
+    courses?.forEach(course => {
+        console.log(course.isEnrolled);
+    });
+
     return (
         <div className='p-8'>
             <div>
@@ -50,7 +56,7 @@ const CourseList = () => {
                                 <Image preview={false} width={23} src={crown} />
                             </div>
                             <Link
-                                to={'tutorial/' + course.id}
+                                to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
                                 className='text-black'
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[300px]' />
@@ -89,7 +95,7 @@ const CourseList = () => {
                     {freeCourses.length > 0 ? freeCourses.map(course => (
                         <div key={course.id} className="hover:shadow-lg hover:-translate-y-1 transition duration-200 rounded-b-[16px]">
                             <Link
-                                to={'tutorial/' + course.id}
+                                to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
                                 className='text-black'
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[270px]' />
