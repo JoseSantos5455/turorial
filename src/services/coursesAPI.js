@@ -35,16 +35,22 @@ export const courseAPI = createApi({
                     : [{ type: "CourseList", id: "LIST" }],
         }),
 
-        // getUserProfile: builder.query({
-        //     query: (userId) => ({
-        //         url: `user/${userId}`,
-        //         method: "GET",
-        //     }),
-        // }),
+        getQuizzDetail: builder.query({
+            query: (quizzId) => ({
+                url: `https://66ea96c355ad32cda4798cbe.mockapi.io/quizz/${quizzId}`,
+                method: "GET",
+            }),
+        }),
+        getInfoDetail: builder.query({
+            query: (infoId) => ({
+                url: `https://653216574d4c2e3f333d9291.mockapi.io/info/${infoId}`,
+                method: "GET",
+            }),
+        }),
         getCourseDetail: builder.query({
             query: () => ({
                 // url: `users/getuserprofile/${userId}`,
-                url: `https://mocki.io/v1/e066a26f-fdc1-4063-a546-80e530457d6b`,
+                url: `https://mocki.io/v1/d479b798-4d03-40ed-891b-2ffccea673b8`,
                 method: "GET",
             }),
         }),
@@ -58,7 +64,6 @@ export const courseAPI = createApi({
         }),
         savingNewProgress: builder.mutation({
             query: (payload) => {
-                console.log(payload)
                 const newBody = {
                     videoId: payload.videoId,
                     progress: payload.progress,
@@ -191,7 +196,9 @@ export const {
     useGetCourseDetailQuery,
     useGetMyCourseQuery,
     useGetLearningProgressQuery,
-    useSavingNewProgressMutation
+    useSavingNewProgressMutation,
+    useGetQuizzDetailQuery,
+    useGetInfoDetailQuery
     //   useGetUserProfileQuery,
     //   useEditProfileMutation,
     //   useAddUserMutation,

@@ -1,3 +1,9 @@
+import React from 'react';
+import videoIcon from '../assets/image/video-duration.svg';
+import inFoIcon from '../assets/image/document.svg';
+import quizIcon from '../assets/image/web-test.svg';
+import { Image } from 'antd';
+
 export const VietnameseProvinces = [
     "An Giang",
     "Bà Rịa - Vũng Tàu",
@@ -62,7 +68,7 @@ export const VietnameseProvinces = [
     "Hải Phòng",
     "Hà Nội",
     "TP Hồ Chí Minh"
-  ];
+];
 export const validationPatterns = {
     name: {
         pattern: /^[^\d\s][\p{L}'\s-]{4,49}$/u,
@@ -85,3 +91,19 @@ export const validationPatterns = {
         message: "Mật khẩu phải có ít nhất 1 chữ cái viết hoa, 6 ký tự, ít nhất 1 số!"
     }
 };
+
+export const handleDisplayTypeVideo = {
+    "video": React.createElement(Image, { preview: false, width: 12, src: videoIcon }),
+    "information": React.createElement(Image, { preview: false, width: 12, src: inFoIcon }),
+    "quiz": React.createElement(Image, { preview: false, width: 12, src: quizIcon })
+}
+
+export const handleDisplayTime = (time) => {
+    if (time < 60) {
+        return <span> 0: {time} </span>;
+    } else {
+        const hours = Math.floor(time / 60);
+        const minutes = time % 60;
+        return <span>{hours}:{minutes > 10 ? `${minutes}` : `0${minutes}` }</span>;
+    }
+}

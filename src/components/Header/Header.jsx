@@ -42,7 +42,6 @@ const HeaderCustom = ({ collapsed }) => {
         setIsModalOpen(false);
     };
 
-    console.log(Mycourses)
 
     return (
         <Header

@@ -14,8 +14,12 @@ const courseSlice = createSlice({
         clearCourse: (state) => {
             state.course = null;
         },
+        setNote: (state, action) => {
+            // Assuming you want to store notes in the state
+            state.note = action.payload; 
+        },
     },
 });
 
-export const { setDoctor, clearDoctor } = courseSlice.actions;
+export const { setDoctor, clearDoctor,setNote } = courseSlice.actions;
 export default courseSlice.reducer;
