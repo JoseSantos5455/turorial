@@ -8,10 +8,10 @@ import { useLoginUserMutation } from "../../services/authAPI";
 import { setToken, setUser } from "../../slices/auth.slice";
 import Cookies from "js-cookie";
 import Logo from '../../assets/image/logo.png';
+import Hi from '../../assets/image/hi.svg'
 
 
-
-const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
+const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCancel }) => {
   const [form] = Form.useForm();
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
 
     if (savedEmail && savedPassword) {
       form.setFieldsValue({
-        email: savedEmail,
+        login_identifier: savedEmail,
         password: savedPassword,
       });
       setRememberMe(true);
@@ -36,7 +36,8 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
   }, [form]);
 
   const handleLoginSuccess = (data) => {
-    const user = data.data.user;
+    console.log(data);
+    const user = data.data;
     const token = data.data.token;
 
     dispatch(setUser(user));
@@ -52,26 +53,28 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
       Cookies.remove("rememberPassword");
     }
 
-    notification.success({
-      message: "Login successfully",
+    notification.info({
+      message: "Chào mừng học viên",
       duration: 2,
       description: (
-        <div>
-          Welcome {user.userName} <SmileOutlined />
+        <div className="flex items-center relative">
+          <p className="font-bold ">{user.fullName} </p><Image className="ml-2 absolute bottom-[-10px]" width={35} src={Hi} />
         </div>
       ),
     });
 
+    handleCancel();
     const from = location.state?.from || "/";
     navigate(from);
+
   };
 
   const handleLoginFailure = (error, email) => {
     if (error.data) {
-      setError(error.data.message); // Set error message
+      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!"); // Set error message
       // message.error(error.data.message);
     } else {
-      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!"); // Set default error message
+      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!");
       notification.error({
         message: "Lỗi đăng nhập",
         description: "Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!",
@@ -83,12 +86,12 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
 
   const handleSubmit = async (values) => {
     try {
-      const result = await loginUser({ email: values.email, password: values.password });
+      const result = await loginUser({ login_identifier: values.login_identifier, password: values.password });
       console.log(result);
       if (result.data) {
         handleLoginSuccess(result.data);
       } else {
-        handleLoginFailure(result.error, values.email);
+        handleLoginFailure(result.error, values.login_identifier);
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -121,7 +124,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
           <Form.Item
 
             style={{ marginBottom: '0.5rem' }}
-            name="email"
+            name="login_identifier"
             rules={[{ required: true, message: "Trường này không được để trống" }]}
           // rules={[
           //   {
@@ -170,7 +173,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin }) => {
               type="primary"
               htmlType="submit"
               loading={isLoading}
-              onClick={() => showModal('login')}
+            // onClick={() => showModal('login')}
             >
               Đăng nhập
             </Button>

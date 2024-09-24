@@ -30,7 +30,7 @@ const CourseDetai = () => {
 
     const handleDisplayTypeVideo = {
         "video": <Image preview={false} width={15} src={videoIcon} />,
-        "infomation": <Image preview={false} width={15} src={inFoIcon} />,
+        "information": <Image preview={false} width={15} src={inFoIcon} />,
         "quiz": <Image preview={false} width={15} src={quizIcon} />
     }
 
@@ -53,7 +53,7 @@ const CourseDetai = () => {
         } else {
             const hours = Math.floor(time / 60);
             const minutes = time % 60;
-            return <span>{hours} giờ {minutes > 0 ? `${minutes} phút` : ''}</span>;
+            return <span>({hours}:{minutes > 10 ? `${minutes}` : '0' + minutes})</span>;
         }
     }
 
@@ -90,8 +90,16 @@ const CourseDetai = () => {
                         <span className='text-black flex items-center'>
                             <span className='px-2'>{handleDisplayTypeVideo[lesson.type]}</span>
                             <span className='font-semibold'>Bài {lessonNumber}</span>:
-                            <p className='mr-4'>  {lesson.videoName || lesson.quizName}</p>
-                            ({lesson.duration ? handleDisplayTime(lesson.duration) : 'Quiz'})
+                            <p className='mr-4 ml-1 flex justify-between min-w-[300px]'>  {lesson.videoName || lesson.quizName || lesson.infoTitle}
+                                <div className='text-left'>
+                                    <p >
+                                        {lesson.type === "video" ? <span>Video {handleDisplayTime(lesson.duration)}</span> :
+                                            lesson.type === "quiz" ? 'Kiểm tra' :
+                                                lesson.type === "information" ? 'Bài học' : null}
+                                    </p>
+                                </div>
+                            </p>
+
                         </span>
                     ),
                     key: `lesson_${chapterIndex}_${lessonNumber}`,
