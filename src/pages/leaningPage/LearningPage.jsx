@@ -38,8 +38,6 @@ const LearningPage = () => {
 
 
 
-
-
     // update tiến độ
     const updateProgress = useCallback(async (newProgress) => {
         try {
@@ -383,7 +381,6 @@ const LearningPage = () => {
 
                                                         (lesson.videoId === currentVideo?.videoId && currentVideo?.type === 'video') ||
                                                         (lesson.quizId === currentQuiz?.quizId && currentQuiz?.type === 'quiz') ||
-
                                                         (lesson.infoId === currentInfo?.infoId && currentInfo?.type === 'information');
 
                                                     const lessonClass = isLessonEnabled ? 'text-black' : 'text-gray-400'; // Màu đen cho bài học hiện tại, xám cho bài học không được mở

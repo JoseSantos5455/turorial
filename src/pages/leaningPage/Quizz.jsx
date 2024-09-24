@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetQuizzDetailQuery } from '../../services/coursesAPI';
-import { Card, Radio, Spin, Alert, Row, Col, Form, Button, ConfigProvider } from 'antd';
+import { Card, Radio, Spin, Alert, Row, Col, Form, Button, ConfigProvider, Skeleton } from 'antd';
 
 const QuestionDisplay = ({ quizz }) => {
     const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizzDetailQuery(quizz.quizId);
@@ -10,7 +10,7 @@ const QuestionDisplay = ({ quizz }) => {
         console.log('Received values of form: ', values); // Xử lý giá trị form tại đây, thay thế console.log bằng hàm gửi API
     };
 
-    if (isQuizzLoading) return <Spin tip="Loading..." />;
+    if (isQuizzLoading) return <Skeleton />;
     if (quizzError) return <Alert message="Error" description="Error loading quiz details" type="error" showIcon />;
 
     return (
