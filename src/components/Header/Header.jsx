@@ -1,5 +1,5 @@
 
-import { Button, Dropdown, Empty, Image, Layout, Modal, Popover, Spin } from 'antd'
+import { Button, Dropdown, Empty, Image, Layout, Modal, Popover, Spin, Progress } from 'antd'
 import Search from 'antd/es/input/Search'
 import React, { useCallback, useMemo, useState } from 'react'
 import './Header.scss';
@@ -36,6 +36,11 @@ const HeaderCustom = ({ collapsed }) => {
 
     const hide = () => {
         setOpen(false);
+    };
+
+    const twoColors = {
+        '0%': '#108ee9',
+        '100%': '#87d068',
     };
 
     const handleOpenChange = (newOpen) => {
@@ -128,8 +133,12 @@ const HeaderCustom = ({ collapsed }) => {
                                                                 className="w-full h-full object-cover rounded-[7px]"
                                                             />
                                                         </div>
-                                                        <span className="ml-3 font-semibold">{course.name}</span>
 
+
+                                                        <div className="flex-1 ml-2 mb-8">
+                                                            <span className="ml-2">{course.name}</span>
+                                                            <Progress className="ml-2" percent={parseInt(course.duration)} strokeColor={twoColors} />
+                                                        </div>
                                                     </div>
                                                 </Link>
                                             ))

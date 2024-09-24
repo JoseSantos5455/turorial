@@ -64,8 +64,9 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
     });
 
     handleCancel();
-    const from = location.state?.from || "/";
-    navigate(from);
+    setTimeout(() => {
+      navigate('/admin');
+    }, 100);
 
   };
 
