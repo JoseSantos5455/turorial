@@ -22,19 +22,18 @@ const CourseDetai = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [videoSrc, setVideoSrc] = useState('');
 
-
     useEffect(() => {
         if (courseDetail) {
             setVideoSrc(courseDetail.introductionVideo);
         }
-
     }, [courseDetail]);
 
     const handleDisplayTypeVideo = {
         "video": <Image preview={false} width={15} src={videoIcon} />,
-        "infomation": <Image preview={false} width={15} src={inFoIcon} />,
+        "information": <Image preview={false} width={15} src={inFoIcon} />,
         "quiz": <Image preview={false} width={15} src={quizIcon} />
     }
+
     const toggleExpand = () => {
         if (isExpland) {
             setExpandedKeys([]);
@@ -54,25 +53,28 @@ const CourseDetai = () => {
         } else {
             const hours = Math.floor(time / 60);
             const minutes = time % 60;
-            return <span>{hours} giờ {minutes > 0 ? `${minutes} phút` : ''}</span>;
+            return <span>({hours}:{minutes > 10 ? `${minutes}` : '0' + minutes})</span>;
         }
     }
 
-    if (isLoading) return
-    <div>
-        <Skeleton active />
-    </div>;
+    if (isLoading) return (
+        <div>
+            <Skeleton active />
+        </div>
+    );
 
     if (error) return <div>Error loading course details.</div>;
 
-    const totalCourseLessons = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.videos.length, 0);
-    const totalCourseDuration = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.videos.reduce((acc, video) => acc + video.duration, 0), 0);
+    if (!courseDetail || !courseDetail.videoContent) return <div>No course details available.</div>;
+
+    const totalCourseLessons = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.lessons.length, 0);
+    const totalCourseDuration = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.lessons.reduce((acc, lesson) => acc + (lesson.duration || 0), 0), 0);
     const totalChapters = courseDetail.videoContent.length;
     const treeData = courseDetail.videoContent.map((chapter, index) => {
         const chapterIndex = index + 1;
-        const videos = chapter.videos;
-        const totalLessons = videos.length;
-        const totalDuration = videos.reduce((acc, video) => acc + video.duration, 0);
+        const lessons = chapter.lessons;
+        const totalLessons = lessons.length;
+        const totalDuration = lessons.reduce((acc, lesson) => acc + (lesson.duration || 0), 0);
 
         return {
             title: (
@@ -81,15 +83,26 @@ const CourseDetai = () => {
                 </p>
             ),
             key: `chapter_${chapterIndex}`,
-            children: videos.map((video, videoIndex) => {
-                const videoNumber = totalCourseLessons - (totalCourseLessons - (chapterIndex - 1) * totalLessons - videoIndex) + 1;
+            children: lessons.map((lesson, lessonIndex) => {
+                const lessonNumber = totalCourseLessons - (totalCourseLessons - (chapterIndex - 1) * totalLessons - lessonIndex) + 1;
                 return {
                     title: (
                         <span className='text-black flex items-center'>
-                            <span className='px-2'>{handleDisplayTypeVideo[video.type]}</span> <span className='font-SemiBold'>Bài  {videoNumber}</span>: {video.videoName} ({video.duration} phút)
+                            <span className='px-2'>{handleDisplayTypeVideo[lesson.type]}</span>
+                            <span className='font-semibold'>Bài {lessonNumber}</span>:
+                            <p className='mr-4 ml-1 flex justify-between min-w-[300px]'>  {lesson.videoName || lesson.quizName || lesson.infoTitle}
+                                <div className='text-left'>
+                                    <p >
+                                        {lesson.type === "video" ? <span>Video {handleDisplayTime(lesson.duration)}</span> :
+                                            lesson.type === "quiz" ? 'Kiểm tra' :
+                                                lesson.type === "information" ? 'Bài học' : null}
+                                    </p>
+                                </div>
+                            </p>
+
                         </span>
                     ),
-                    key: `video_${chapterIndex}_${videoNumber}`,
+                    key: `lesson_${chapterIndex}_${lessonNumber}`,
                 };
             }),
         };
@@ -167,7 +180,7 @@ const CourseDetai = () => {
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Thông tin bổ sung </p>
                 <div>
-                    {courseDetail.moreInfomation}
+                    {courseDetail.moreInformation}
                 </div>
             </div>
             <Sider

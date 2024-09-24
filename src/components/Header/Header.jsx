@@ -1,23 +1,38 @@
 
-import { Button, Empty, Layout, Modal, Popover, Spin, Progress } from 'antd'
+import { Button, Dropdown, Empty, Image, Layout, Modal, Popover, Spin, Progress } from 'antd'
 import Search from 'antd/es/input/Search'
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import './Header.scss';
 import Login from '../../pages/login/Login';
 import { useGetMyCourseQuery } from '../../services/coursesAPI';
 import { Link } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut, selectCurrentToken } from '../../slices/auth.slice';
+import { navigate } from '../../utils/navigate';
+import { LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import userIcon from '../../assets/image/graduate.svg'
 const HeaderCustom = ({ collapsed }) => {
 
     const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
-
-
     const { Header } = Layout;
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isRegister, setIsRegister] = useState(true);
-
     const [open, setOpen] = useState(false);
+    const dispatch = useDispatch()
+    const [isActive, setIsActive] = useState(false);
+    const user = useSelector(selectCurrentToken);
+
+
+    const handleLogout = useCallback(() => {
+        dispatch(logOut());
+        notification.success({
+            message: "Logout successfully",
+            description: "See you again!",
+            duration: 1.5
+        });
+        navigate("/login");
+    }, [dispatch, navigate]);
+
 
     const hide = () => {
         setOpen(false);
@@ -46,8 +61,24 @@ const HeaderCustom = ({ collapsed }) => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
-    console.log(Mycourses)
+    const items = useMemo(() => [
+        {
+            key: '1',
+            label: (
+                <Link to='/profile' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <p style={{ paddingRight: '20px' }}>Profile</p> <LoginOutlined />
+                </Link>
+            ),
+        },
+        {
+            key: '2',
+            label: (
+                <p onClick={handleLogout} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <p style={{ paddingRight: '20px' }}>Log out</p> <LogoutOutlined />
+                </p>
+            ),
+        },
+    ], [handleLogout]);
 
     return (
         <Header
@@ -83,71 +114,89 @@ const HeaderCustom = ({ collapsed }) => {
 
 
             <div style={{ display: "flex", gap: "10px", paddingRight: "16px", alignItems: 'center' }}>
-                <Popover
-                    content={isLoading ? <Spin /> : (
-                        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                            {Mycourses.length > 0 ? (
-                                Mycourses
-                                    .filter(course => course.isSub)
-                                    .map(course => (
-                                        <Link to={'learning/course_002'}>
-                                            {/* <Link to={`learning/${Mycourses.courseId}`} */}
-                                            <div key={course.id} className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2">
-                                                <div className="w-[120px] h-[70px] flex-shrink-0 rounded-md ">
-                                                    <img
-                                                        src={course.img}
-                                                        alt={course.name}
-                                                        className="w-full h-full object-cover rounded-[7px]"
-                                                    />
-                                                </div>
+                {user ? (
+                    <div className='mr-10 flex items-center justify-center'>
+                        <Popover
+                            content={isLoading ? <Spin /> : (
+                                <div>
+                                    {Mycourses.length > 0 ? (
+                                        Mycourses
+                                            .filter(course => course.isSub)
+                                            .map(course => (
+                                                <Link to={'learning/course_002'}>
+                                                    {/* <Link to={`learning/${Mycourses.courseId}`} */}
+                                                    <div key={course.id} className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2">
+                                                        <div className="w-[120px] h-[70px] flex-shrink-0 rounded-md ">
+                                                            <img
+                                                                src={course.img}
+                                                                alt={course.name}
+                                                                className="w-full h-full object-cover rounded-[7px]"
+                                                            />
+                                                        </div>
 
-                                                <div className="flex-1 ml-2 mb-8">
-                                                    <span className="ml-2">{course.name}</span>
-                                                    <Progress className="ml-2" percent={parseInt(course.duration)} strokeColor={twoColors} />
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))
-                            ) : (
-                                <Empty />
+
+                                                        <div className="flex-1 ml-2 mb-8">
+                                                            <span className="ml-2">{course.name}</span>
+                                                            <Progress className="ml-2" percent={parseInt(course.duration)} strokeColor={twoColors} />
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            ))
+                                    ) : (
+                                        <Empty />
+                                    )}
+                                </div>
                             )}
-                        </div>
-                    )}
-                    title={<span className='ml-2 my-10'>Khóa học của tôi</span>}
-                    trigger="click"
-                    open={open}
-                    onOpenChange={handleOpenChange}
-                    overlayStyle={{ width: '400px' }}
-                    onClickOutside={hide}
-                >
-                    <Button className='text-white' type='link'>Khóa học của tôi</Button>
-                </Popover>
+                            title={<span className='ml-2 my-10'>Khóa học của tôi</span>}
+                            trigger="click"
+                            open={open}
+                            onOpenChange={handleOpenChange}
+                            overlayStyle={{ width: '400px' }}
+                            onClickOutside={hide}
+                        >
+                            <Button className='text-white' type='link'>Khóa học của tôi</Button>
+                        </Popover>
+                        <Dropdown
+                            trigger="click"
+                            menu={{ items: items }}
+                            placement="bottom"
+                            onOpenChange={(open) => setIsActive(open)}
+                        >
+                            <div className='flex items-center justify-center bg-cyan-600 rounded-full'>
+                                <button className='flex rounded-full p-1' aria-label="User menu">
+                                    <Image className='rounded-full hover:shadow-xl hover:shadow-cyan-300' preview={false} width={40} src={userIcon} />
+                                </button>
+                            </div>
+                        </Dropdown>
+                    </div>
+                ) : (
+                    <>
+                        <Button
+                            size='large'
+                            className='hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg '
+                            style={{
+                                fontSize: '14px',
+                                borderRadius: '25px',
+                                padding: '0 30px'
+                            }}
+                            onClick={() => handleShowRegisterModal()}
 
-                <Button
-                    size='large'
-                    className='hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg '
-                    style={{
-                        fontSize: '14px',
-                        borderRadius: '25px',
-                        padding: '0 30px'
-                    }}
-                    onClick={() => handleShowRegisterModal()}
-
-                >Đăng ký
-                </Button>
-                <Button
-
-                    size='large'
-                    className="
+                        >Đăng ký
+                        </Button>
+                        <Button
+                            size='large'
+                            className="
                     bg-gradient-to-r 
                     from-blue-500 to-cyan-400 text-white 
                     font-medium rounded-full py-2 px-6 transition-transform duration-800
                      hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg"
-                    type="primary"
-                    onClick={() => handleShowLoginModal()}
-                >
-                    Đăng nhập
-                </Button>
+                            type="primary"
+                            onClick={() => handleShowLoginModal()}
+                        >
+                            Đăng nhập
+                        </Button>
+                    </>
+                )}
             </div>
 
             <Modal

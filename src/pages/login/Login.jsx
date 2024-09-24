@@ -29,6 +29,7 @@ function Login({ setIslogin, Islogin, handleCancel }) {
   const [isLoginNormal, setIsLoginNormal] = useState(false)
   const [isForgotPass, setIsForgotPass] = useState(false)
   const [isPress, setIsPress] = useState(false)
+
   useEffect(() => {
     if (token) {
       navigate("/");
@@ -84,6 +85,7 @@ function Login({ setIslogin, Islogin, handleCancel }) {
     setIsLoginNormal(false)
     setIsForgotPass(false);
   }
+
   return (
     <>
       {isLoading ? (
@@ -216,13 +218,14 @@ function Login({ setIslogin, Islogin, handleCancel }) {
                   />
                 ) : (
                   <LoginForm
+                    handleCancel={handleCancel}
                     handleOpenModalForgotPass={handleOpenModalForgotPass}
                     Islogin={Islogin}
                     setIslogin={setIslogin}
                   />
                 )
               ) : (
-                <ForgotPass />
+                <ForgotPass   setIsForgotPass={setIsForgotPass} />
               )}
             </div>
           )}
