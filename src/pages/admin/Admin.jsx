@@ -4,7 +4,7 @@ const Admin = () => {
   return (
     <div>
       <p>Admin</p>
-      <iframe
+      {/* <iframe
         width="560"
         height="315"
         src="https://www.youtube.com/embed/GMYUq0PIwho"
@@ -12,7 +12,7 @@ const Admin = () => {
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen>
-      </iframe>
+      </iframe> */}
 
     </div>
 
