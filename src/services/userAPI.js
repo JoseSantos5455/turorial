@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { navigate } from "../utils/navigate";
 import { selectTokens } from "../slices/auth.slice";
-import { BE_API_LOCAL } from "../config";
+import { COURSE_API_TEST, BE_API_LOCAL } from "../config";
+
 
 export const userAPI = createApi({
     reducerPath: "userManager",
@@ -9,6 +10,7 @@ export const userAPI = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BE_API_LOCAL,
         prepareHeaders: (headers, { getState }) => {
+
             const token = selectTokens(getState());
             if (token) {
                 headers.append("Authorization", `Bearer ${token}`);
@@ -16,14 +18,28 @@ export const userAPI = createApi({
             // headers.append("Content-Type", "application/json");
             return headers;
         },
+
+  
+        },
+        fetchFn: async (url, options) => {
+            console.log(`Fetching URL: ${BE_API_LOCAL}users/get-all-user?page=0&limit=10`);
+            return fetch(url, options);
+        }
     }),
+
     endpoints: (builder) => ({
+
         getAllUser: builder.query({
-            query: () => `7377510e-759d-4464-af99-14c868776d43`,
-            providesTags: (result) =>
-                result
-                    ? result.map(({ id }) => ({ type: "UserList", id }))
-                    : [{ type: "UserList", id: "LIST" }],
+            query: () => ({
+                url: `users/get-all-user?page=0&limit=10`,
+                method: "GET",
+            }),
+        }),
+        getUserDetail: builder.query({
+            query: (id) => ({
+                url: `users/get-user/${id}`,
+                method: "GET",
+            }),
         }),
         getUserById: builder.query({
             query: (id) => `users/get-user/${id}`,
@@ -55,5 +71,6 @@ export const {
     useGetAllUserQuery,
     useGetUserByIdQuery,
     useChangePasswordMutation,
-    useUpdateAvatarMutation
+    useUpdateAvatarMutation,
+    useGetUserDetailQuery
 } = userAPI;

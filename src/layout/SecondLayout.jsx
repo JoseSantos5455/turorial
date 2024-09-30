@@ -11,6 +11,7 @@ import {
     UploadOutlined,
     UserOutlined,
     VideoCameraAddOutlined,
+    ReadOutlined
 } from "@ant-design/icons";
 import { useState } from "react";
 import Search from "antd/es/input/Search";
@@ -32,7 +33,8 @@ const SecondLayout = ({ showFooter = true }) => {
             '1': '/admin',
             '2': '/users',
             '3': '/videos',
-            '4': '/money'
+            '4': '/quizs',
+            '5': '/money'
         };
 
         const path = routes[e.key];
@@ -43,19 +45,27 @@ const SecondLayout = ({ showFooter = true }) => {
 
     // Tìm key tương ứng với đường dẫn hiện tại
     const getSelectedKey = () => {
-        switch (location.pathname) {
-            case '/admin':
-                return '1';
-            case '/users':
-                return '2';
-            case '/videos':
-                return '3';
-            case '/money':
-                return '4';
-            default:
-                return '1'; // Mặc định chọn Dashboard
+        const { pathname } = location;
+
+        if (pathname.startsWith('/admin')) {
+            return '1';
         }
+        if (pathname.startsWith('/users')) {
+            return '2';
+        }
+        if (pathname.startsWith('/videos')) {
+            return '3';
+        }
+        if (pathname.startsWith('/quizs')) {
+            return '4';
+        }
+        if (pathname.startsWith('/money')) {
+            return '5';
+        }
+
+        return '1'; // Mặc định chọn Dashboard
     };
+
 
     return (
         <Layout className="min-h-screen">
@@ -123,6 +133,11 @@ const SecondLayout = ({ showFooter = true }) => {
                             },
                             {
                                 key: "4",
+                                icon: <ReadOutlined />,
+                                label: "Bài Tập",
+                            },
+                            {
+                                key: "5",
                                 icon: <DollarOutlined />,
                                 label: "Doanh Thu",
                             },
