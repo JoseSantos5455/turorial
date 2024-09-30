@@ -52,6 +52,7 @@ export const router = createBrowserRouter([
         index: true,
         element: Home,
       },
+
       {
         path: "/lotrinh",
         element: Lotrinh,
@@ -80,15 +81,16 @@ export const router = createBrowserRouter([
         path: "/",
         element: <AuthGuard />,
         children: [
+          // {
+          //   index: true,
+          //   element: Home,
+          // },
           {
-            index: true,
-            element: Home,
-          },
-          {
-            path: "profile",
+            path: "/profile",
             element: Profile,
 
           },
+
         ],
       },
 

@@ -43,6 +43,24 @@ const MainLayout = ({ showFooter = true }) => {
     }
   };
 
+  const navbarForUser = [
+    {
+      key: "1",
+      icon: <HomeFilled />,
+      label: "Trang chủ",
+    },
+    {
+      key: "2",
+      icon: <ApartmentOutlined />,
+      label: "Lộ trình",
+    },
+    {
+      key: "4",
+      icon: <ContactsOutlined />,
+      label: "Liên hệ",
+    }
+  ]
+
 
   return (
     <Layout className="min-h-screen">
@@ -71,11 +89,11 @@ const MainLayout = ({ showFooter = true }) => {
           <div class="flex items-center space-x-3">
             {collapsed ? (
               <Image
-              width={35}
+                width={35}
                 className="cursor-pointer"
                 onClick={handleHome}
                 preview={false}
-                src={LogoLetter} 
+                src={LogoLetter}
                 alt="Logo Letter"
                 class="h-10 w-auto"
               />
@@ -106,23 +124,7 @@ const MainLayout = ({ showFooter = true }) => {
             style={{ marginTop: '20px', padding: "0 16px", }}
             defaultSelectedKeys={["1"]}
             onClick={handleClick}
-            items={[
-              {
-                key: "1",
-                icon: <HomeFilled />,
-                label: "Trang chủ",
-              },
-              {
-                key: "2",
-                icon: <ApartmentOutlined />,
-                label: "Lộ trình",
-              },
-              {
-                key: "4",
-                icon: <ContactsOutlined />,
-                label: "Liên hệ",
-              },
-            ]}
+            items={navbarForUser}
           />
         </ConfigProvider>
 
