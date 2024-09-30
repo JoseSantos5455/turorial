@@ -67,6 +67,7 @@ const SecondLayout = ({ showFooter = true }) => {
     };
 
 
+
     return (
         <Layout className="min-h-screen">
             <Sider

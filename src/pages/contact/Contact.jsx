@@ -17,7 +17,6 @@ const ContactUs = () => {
           <h2>Get in touch with us</h2>
 
           <div className="contact-item">
-            {/* <span className="icon phone-icon"></span> */}
             <p><PhoneFilled style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#2878eb', borderRadius: '50%' }} /></p>
 
             <div>
@@ -27,7 +26,6 @@ const ContactUs = () => {
           </div>
 
           <div className="contact-item">
-            {/* <span className="icon email-icon"></span> */}
             <p><MailOutlined style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#ffa100', borderRadius: '50%' }} /></p>
 
             <div>
@@ -82,7 +80,7 @@ const ContactUs = () => {
 
         <div className="message-content">
           <div className="message-image">
-            <img src="https://demo-themewinter.com/turitor/coursehub/wp-content/uploads/sites/3/2022/07/contact_1.jpg" alt="Description of image" />
+            <img src="https://tienhieu.vn/image/catalog/sranee/services/bannerpc_1.jpg" alt="Description of image" />
           </div>
           <div>
             <form className="message-form">

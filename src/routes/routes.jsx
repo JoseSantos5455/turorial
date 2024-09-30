@@ -38,6 +38,97 @@ const Admin = Loadable({
 
 export const router = createBrowserRouter([
   {
+    path: "/",
+    element: <MainLayout showFooter={false} />, // Unified layout
+    children: [
+      {
+        index: true,
+        element: Home,
+      },
+      {
+        path: "lotrinh",
+        element: Lotrinh,
+      },
+      {
+        path: "baiviet",
+        element: Post,
+      },
+      {
+        path: "tutorial/:tutorialId",
+        element: CourseDetail,
+      },
+      {
+        path: "learning/:courseId",
+        element: learningPage,
+      },
+      {
+        path: "lienhe",
+        element: Contact,
+      },
+      {
+        path: "law",
+        element: Law,
+      },
+
+      {
+        element: <AuthGuard />,
+        children: [
+          {
+            path: "profile",
+            element: Profile,
+          },
+          {
+            path: "admin",
+            element: <AdminGuard />,
+            children: [
+              {
+                index: true,
+                element: Admin,
+              },
+              {
+                path: "users",
+                children: [
+                  {
+                    index: true,
+                    element: ManageUser,
+                  },
+                  {
+                    path: "user-details/:userId",
+                    element: Detail,
+                  },
+                ],
+              },
+              {
+                path: "videos",
+                element: ManageCourse,
+              },
+              {
+                path: "money",
+                element: Cost,
+              },
+              {
+                path: "quizs",
+                element: Quiz,
+              },
+              {
+                path: "manage-products",
+                element: <ManagerGuard />,
+                children: [
+                  {
+                    index: true,
+                    element: Admin,
+                  },
+                ],
+              },
+            ],
+          },
+
+
+        ],
+      },
+    ],
+  },
+  {
     path: "/login",
     element: Login,
   },
@@ -45,127 +136,9 @@ export const router = createBrowserRouter([
     path: "/register",
     element: Register,
   },
-
-  {
-    path: "/",
-    element: <MainLayout showFooter={false} />,
-    children: [
-      {
-        index: true,
-        element: Home,
-      },
-      {
-        path: "/lotrinh",
-        element: Lotrinh,
-      },
-      {
-        path: "/baiviet",
-        element: Post,
-      },
-      {
-        path: "/tutorial/:tutorialId",
-        element: CourseDetail,
-      },
-      {
-        path: "/learning/:courseId",
-        element: learningPage,
-      },
-      {
-        path: "/lienhe",
-        element: Contact,
-      },
-      {
-        path: "/law",
-        element: Law,
-      },
-      {
-        path: "/",
-        element: <AuthGuard />,
-        children: [
-          {
-            index: true,
-            element: Home,
-          },
-          {
-            path: "profile",
-            element: Profile,
-
-          },
-        ],
-      },
-
-    ],
-  },
-  {
-    path: "/",
-    element: <SecondLayout showFooter={false} />,
-    children: [
-      {
-        path: "admin",
-        element: <AuthGuard />,
-        children: [
-          {
-            index: false,
-            element: <AdminGuard />,
-            children: [
-              {
-                index: true,
-                element: Admin,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        path: "users",
-        children: [
-          {
-            index: true,
-            element: ManageUser,
-          },
-          {
-            path: "user-details/:userId",
-            element: Detail,
-          }
-        ]
-      },
-      {
-        path: "/videos",
-        element: ManageCourse,
-      },
-      {
-        path: "/money",
-        element: Cost,
-      },
-      {
-        path: "/quizs",
-        element: Quiz,
-      },
-      {
-        path: "/money",
-        element: Cost,
-      },
-
-      {
-        path: "manage-products",
-        element: <AuthGuard />,
-        children: [
-          {
-            index: false,
-            element: <ManagerGuard />,
-            children: [
-              {
-                index: true,
-                element: Admin,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
   {
     path: "*",
     element: ErrorPage,
   },
 ]);
+
