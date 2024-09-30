@@ -10,7 +10,7 @@ import CourseReducer from "../slices/course.slice";
 import { userAPI } from "../services/userAPI";
 import UserReducer from "../slices/user.slice";
 // import { postAPI } from "../services/postAPI";
-// import postReducer from "../slices/post.slice";
+import modalReducer from "../slices/modal.slice";
 // import { exchangeAPI } from "../services/exchangeAPI";
 // import exchangeReducer from "../slices/exchange.slice";
 // import { chatAPI } from "../services/chatAPI";
@@ -56,6 +56,7 @@ export const store = configureStore({
     post: CousresPerisReducer,
     [userAPI.reducerPath]: userAPI.reducer,
     post1: UserPerisReducer,
+    modal: modalReducer,
     // [exchangeAPI.reducerPath]: exchangeAPI.reducer,
     // exchange: ExchangePerisReducer,
     // chat: ChatPerisReducer,

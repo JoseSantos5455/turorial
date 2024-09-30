@@ -36,13 +36,12 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
   }, [form]);
 
   const handleLoginSuccess = (data) => {
-    console.log(data);
     const user = data.data;
     const token = data.data.token;
+ 
 
     dispatch(setUser(user));
     dispatch(setToken(token));
-
     // remember me
     if (rememberMe) {
       Cookies.set("rememberEmail", form.getFieldValue("email"), { expires: 7 }); // Lưu trong 7 ngày
@@ -62,11 +61,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
         </div>
       ),
     });
-
     handleCancel();
-    setTimeout(() => {
-      navigate('/admin');
-    }, 100);
 
   };
 

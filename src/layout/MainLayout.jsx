@@ -98,11 +98,24 @@ const MainLayout = () => {
     }
   };
 
-  useEffect(() => {
-    if (user?.id === 1) {
-      navigate('/admin');
+  const navbarForUser = [
+    {
+      key: "1",
+      icon: <HomeFilled />,
+      label: "Trang chủ",
+    },
+    {
+      key: "2",
+      icon: <ApartmentOutlined />,
+      label: "Lộ trình",
+    },
+    {
+      key: "4",
+      icon: <ContactsOutlined />,
+      label: "Liên hệ",
     }
-  }, [user, navigate]);
+  ]
+
 
   return (
     <Layout className="min-h-screen">
@@ -120,7 +133,15 @@ const MainLayout = () => {
         <div style={{ paddingTop: '20px', height: "60px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
           <div className="flex items-center space-x-3">
             {collapsed ? (
-              <Image width={35} className="cursor-pointer" onClick={handleHome} preview={false} src={LogoLetter} alt="Logo Letter" />
+              <Image
+                width={35}
+                className="cursor-pointer"
+                onClick={handleHome}
+                preview={false}
+                src={LogoLetter}
+                alt="Logo Letter"
+                class="h-10 w-auto"
+              />
             ) : (
               <Image className="cursor-pointer" onClick={handleHome} preview={false} src={Logo} alt="Logo" />
             )}
@@ -141,7 +162,7 @@ const MainLayout = () => {
             style={{ marginTop: '20px', padding: "0 16px" }}
             defaultSelectedKeys={[String(user?.id === 1 ? '1' : '6')]} // Chọn key đầu tiên dựa trên user
             onClick={handleClick}
-            items={menuItems}
+            items={navbarForUser}
           />
         </ConfigProvider>
       </Sider>
