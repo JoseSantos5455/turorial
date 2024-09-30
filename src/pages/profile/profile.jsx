@@ -6,7 +6,8 @@ import { selectCurrentUser } from '../../slices/auth.slice';
 import ChangePassword from '../../components/profile/ChangePassword';
 import profileIcon from './../../assets/image/profile.svg'
 import shieldIcon from './../../assets/image/shield.svg'
-import { useGetUserByIdQuery } from '../../services/userAPI';
+import { useGetUserDetailQuery } from '../../services/userAPI';
+
 
 const { Sider, Content } = Layout;
 
@@ -18,7 +19,7 @@ const ProfilePage = () => {
     };
     const user = useSelector(selectCurrentUser);
     console.log(user)
-    const { data: profile, isLoading } = useGetUserByIdQuery(user?.id);
+    const { data: profile, isLoading } = useGetUserDetailQuery(user?.id);
 
     console.log(profile);
     return (

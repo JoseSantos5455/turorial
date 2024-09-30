@@ -1,5 +1,5 @@
 
-import { Button, Dropdown, Empty, Image, Layout, Modal, Popover, Spin, Progress } from 'antd'
+import { Button, Dropdown, Empty, Image, Layout, Modal, Popover, Spin, Progress, notification } from 'antd'
 import Search from 'antd/es/input/Search'
 import React, { useCallback, useMemo, useState } from 'react'
 import './Header.scss';
@@ -28,8 +28,8 @@ const HeaderCustom = ({ collapsed }) => {
     const handleLogout = useCallback(() => {
         dispatch(logOut());
         notification.success({
-            message: "Logout successfully",
-            description: "See you again!",
+            message: "Đăng xuất thành công",
+            description: "Hẹn gặp lại!",
             duration: 1.5
         });
         navigate("/login");
