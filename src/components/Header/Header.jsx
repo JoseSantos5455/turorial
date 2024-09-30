@@ -9,14 +9,16 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut, selectCurrentToken } from '../../slices/auth.slice';
 import { navigate } from '../../utils/navigate';
-import { LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import userIcon from '../../assets/image/graduate.svg'
+import AuthGuard from '../../routes/AuthGuard';
+import { hideLoginModal, hideRegisterModal, selectIsLoginModalVisible, selectIsRegisterModalVisible, showLoginModal, showRegisterModal } from '../../slices/modal.slice';
 const HeaderCustom = ({ collapsed }) => {
 
     const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
     const { Header } = Layout;
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isRegister, setIsRegister] = useState(true);
+    const isModalVisible = useSelector(selectIsLoginModalVisible);
+    const isRegisterModalVisible = useSelector(selectIsRegisterModalVisible);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch()
     const [isActive, setIsActive] = useState(false);
@@ -34,6 +36,7 @@ const HeaderCustom = ({ collapsed }) => {
     }, [dispatch, navigate]);
 
 
+
     const hide = () => {
         setOpen(false);
     };
@@ -48,25 +51,23 @@ const HeaderCustom = ({ collapsed }) => {
     };
 
     const handleShowLoginModal = () => {
-        console.log(isRegister)
-        setIsRegister(false);
-        setIsModalOpen(true);
-    }
+        dispatch(showLoginModal());
+    };
+
     const handleShowRegisterModal = () => {
-        console.log(isRegister)
-        setIsRegister(true);
-        setIsModalOpen(true);
-    }
+        dispatch(showRegisterModal());
+    };
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        dispatch(hideLoginModal());
+        dispatch(hideRegisterModal());
     };
     const items = useMemo(() => [
         {
             key: '1',
             label: (
                 <Link to='/profile' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <p style={{ paddingRight: '20px' }}>Profile</p> <LoginOutlined />
+                    <p style={{ paddingRight: '20px' }}>Cài đặt</p> <SettingOutlined />
                 </Link>
             ),
         },
@@ -74,7 +75,7 @@ const HeaderCustom = ({ collapsed }) => {
             key: '2',
             label: (
                 <p onClick={handleLogout} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <p style={{ paddingRight: '20px' }}>Log out</p> <LogoutOutlined />
+                    <p style={{ paddingRight: '20px' }}>Đăng xuất</p> <LogoutOutlined />
                 </p>
             ),
         },
@@ -198,14 +199,14 @@ const HeaderCustom = ({ collapsed }) => {
                     </>
                 )}
             </div>
-
+            {/* <AuthGuard onRequireLogin={handleShowLoginModal} /> */}
             <Modal
                 className='custom-modal'
-                open={isModalOpen}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 footer={null}
             >
-                {isRegister ?
+                {isRegisterModalVisible ?
                     <Login
                         setIslogin={handleShowLoginModal}
                         Islogin={false}
