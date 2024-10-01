@@ -1,16 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { selectCurrentToken } from "../slices/auth.slice";
+import { selectCurrentToken, selectCurrentUser } from "../slices/auth.slice";
 import { showLoginModal } from "../slices/modal.slice";
 
 const AuthGuard = () => {
   const token = useSelector(selectCurrentToken);
+  const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch();
 
   if (!token) {
     dispatch(showLoginModal());
-    return null; 
-}
+    return null;
+  }
+ 
 
   return <Outlet />;
 };
