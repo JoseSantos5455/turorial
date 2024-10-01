@@ -39,7 +39,7 @@ const SecondLayout = ({ showFooter = true }) => {
 
     const handleClick = (e) => {
         const routes = {
-            '1': '/admin',
+            '1': '/admin/dashboard',
             '2': '/admin/users',
             '3': '/admin/videos',
             '4': '/admin/quizs',
