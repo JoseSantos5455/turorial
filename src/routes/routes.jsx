@@ -45,96 +45,42 @@ export const router = createBrowserRouter([
     path: "/register",
     element: Register,
   },
-
   {
     path: "/",
     element: <MainLayout showFooter={false} />,
     children: [
+      { index: true, element: Home },
+      { path: "/lotrinh", element: Lotrinh },
+      { path: "/baiviet", element: Post },
+      { path: "/tutorial/:tutorialId", element: CourseDetail },
+      { path: "/learning/:courseId", element: learningPage },
+      { path: "/lienhe", element: Contact },
+      { path: "/law", element: Law },
       {
-        index: true,
-        element: Home,
-      },
-
-      {
-        path: "/lotrinh",
-        element: Lotrinh,
-      },
-      {
-        path: "/baiviet",
-        element: Post,
-      },
-      {
-        path: "/tutorial/:tutorialId",
-        element: CourseDetail,
-      },
-      {
-        path: "/learning/:courseId",
-        element: learningPage,
-      },
-      {
-        path: "/lienhe",
-        element: Contact,
-      },
-      {
-        path: "/law",
-        element: Law,
-      },
-      {
-        path: "/",
+        path: "/profile",
         element: <AuthGuard />,
         children: [
-          // {
-          //   index: true,
-          //   element: Home,
-          // },
           {
-            path: "/profile",
-            element: Profile,
-
+            path: "/profile", element: Profile,
           },
-
-        ],
+        ]
       },
-
     ],
   },
   {
     path: "/admin",
-    element: <SecondLayout showFooter={false} />,
+    element: <SecondLayout />,
     children: [
       {
         path: "/admin",
-        element: <AdminGuard />, 
+        element: <AdminGuard />,
         children: [
-          {
-            index: true,
-            element: Admin, 
-          },
-          {
-            path: "users",
-            children: [
-              {
-                index: true,
-                element: ManageUser,
-              },
-              {
-                path: "user-details/:userId",
-                element: Detail,
-              },
-            ],
-          },
-          {
-            path: "/admin/videos",
-            element: ManageCourse,
-          },
-          {
-            path: "/admin/money",
-            element: Cost,
-          },
-          {
-            path: "/admin/quizs",
-            element: Quiz,
-          },
+          { path: "dashboard", element: Admin },
+          { path: "users", element: ManageUser },
+          { path: "users/user-details/:userId", element: Detail },
+          { path: "videos", element: ManageCourse },
+          { path: "money", element: Cost },
+          { path: "quizs", element: Quiz },
         ],
       },
     ],
@@ -144,3 +90,4 @@ export const router = createBrowserRouter([
     element: ErrorPage,
   },
 ]);
+
