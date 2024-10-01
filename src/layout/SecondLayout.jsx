@@ -31,10 +31,10 @@ const SecondLayout = ({ showFooter = true }) => {
     const handleClick = (e) => {
         const routes = {
             '1': '/admin',
-            '2': '/users',
-            '3': '/videos',
-            '4': '/quizs',
-            '5': '/money'
+            '2': '/admin/users',
+            '3': '/admin/videos',
+            '4': '/admin/quizs',
+            '5': '/admin/money'
         };
 
         const path = routes[e.key];

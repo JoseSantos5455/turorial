@@ -11,7 +11,8 @@ import ManagerGuard from "./ManagerGuard";
 const Login = Loadable({ loader: () => import("../pages/login/Login") });
 const ManageUser = Loadable({ loader: () => import("../pages/admin/ManageUser/ManageUser") });
 const Detail = Loadable({ loader: () => import("../pages/admin/ManageUser/Detail/Detail") });
-const ManageCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse") });
+const ManageCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/ManageCourse") });
+const CreateCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/CreateCourse") });
 const Cost = Loadable({ loader: () => import("../pages/admin/Cost") });
 const Quiz = Loadable({ loader: () => import("../pages/admin/Quiz") });
 const Register = Loadable({ loader: () => import("../pages/register/Register") });
@@ -120,6 +121,10 @@ export const router = createBrowserRouter([
               {
                 path: "videos",
                 element: ManageCourse,
+              },
+              {
+                path: "create-course",
+                element: CreateCourse,
               },
               {
                 path: "money",
