@@ -13,6 +13,8 @@ import QuestionDisplay from './Quizz';
 import { handleDisplayTime, handleDisplayTypeVideo } from '../../utils/utils';
 import TakeNote from './TakeNote';
 import InforLesson from './InforLesson';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../slices/auth.slice';
 
 
 
@@ -24,12 +26,14 @@ const LearningPage = () => {
     const [playedSeconds, setPlayedSeconds] = useState(0);
     const playerRef = useRef(null);
     const [progress, setProgress] = useState([]);
-    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery(courseId);
-    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId: "user_001" });
-    const [saveLearningProgress] = useSavingNewProgressMutation();
     const progressSavedRef = useRef(false);
     const [currentInfo, setCurrentInfo] = useState(null);
     const [takeNote, setTakeNote] = useState(false);
+    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery(courseId);
+    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId: "user_001" });
+    const [saveLearningProgress] = useSavingNewProgressMutation();
+    const user =useSelector(selectCurrentUser)
+
     useEffect(() => {
         if (progressData?.progress) {
             setProgress(progressData.progress);
@@ -67,11 +71,12 @@ const LearningPage = () => {
                 chapter.chapterId === chapterProgress.chapterId
                     ? {
                         ...chapter,
-                        videos: chapter.videos.map(video =>
-                            video.videoId === currentVideoId
-                                ? { ...video, watchedDuration: newPlayedSeconds, isCompleted: isCompleted || video.duration <= newPlayedSeconds }
-                                : video
-                        ),
+                        videos: chapter.videos.map(video => {
+                            const isVideoCompleted = video.isCompleted;
+                            return video.videoId === currentVideoId
+                                ? { ...video, watchedDuration: newPlayedSeconds, isCompleted: isCompleted || video.duration <= newPlayedSeconds && !isVideoCompleted }
+                                : video;
+                        }),
                         isChapterCompleted: chapter.videos.every(video => video.isCompleted) &&
                             chapter.quizz.every(quiz => quiz.isCompleted) &&
                             chapter.information.every(info => info.isViewed)
@@ -251,7 +256,7 @@ const LearningPage = () => {
                 <Breadcrumb
                     className='mt-[-10px] py-3 mb-5'
                 >
-                    <Breadcrumb.Item><Link to={'/'}><LeftOutlined /> Home</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item><Link to={'/'}><LeftOutlined /> Trang chủ</Link></Breadcrumb.Item>
                     <Breadcrumb.Item className='text-cyan-500'>{courseDetail?.name}</Breadcrumb.Item>
 
                 </Breadcrumb>
@@ -272,7 +277,7 @@ const LearningPage = () => {
                             onClick={() => setTakeNote(!takeNote)}
                             className='flex items-center absolute top-12 right-10 bg-slate-100 px-3 py-2 rounded-xl shadow-lg hover:shadow-lg hover:shadow-cyan-300'>
                             <Image width={30} preview={false} className='mr-3' src={takenote} />
-                            <span className='ml-4 font-bold'>+ Take note </span>
+                            <span className='ml-4 font-bold'>+ Thêm ghi chú </span>
                         </button>
                     </>
                 ) : currentQuiz ? (
@@ -306,6 +311,7 @@ const LearningPage = () => {
                     <TakeNote
                         video={currentVideo}
                         setTakeNote={handleSettakeNote}
+                        userId={user.id}
                     />
                 </div>
             ) : (

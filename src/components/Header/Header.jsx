@@ -7,12 +7,13 @@ import Login from '../../pages/login/Login';
 import { useGetMyCourseQuery } from '../../services/coursesAPI';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logOut, selectCurrentToken } from '../../slices/auth.slice';
+import { logOut, selectCurrentToken, selectCurrentUser } from '../../slices/auth.slice';
 import { navigate } from '../../utils/navigate';
 import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import userIcon from '../../assets/image/graduate.svg'
 import AuthGuard from '../../routes/AuthGuard';
 import { hideLoginModal, hideRegisterModal, selectIsLoginModalVisible, selectIsRegisterModalVisible, showLoginModal, showRegisterModal } from '../../slices/modal.slice';
+import { useGetUserDetailQuery } from '../../services/userAPI';
 const HeaderCustom = ({ collapsed }) => {
 
     const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
@@ -22,7 +23,9 @@ const HeaderCustom = ({ collapsed }) => {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch()
     const [isActive, setIsActive] = useState(false);
-    const user = useSelector(selectCurrentToken);
+    const user = useSelector(selectCurrentUser);
+    const { data: profile, isLoading: isloadingProfile } = useGetUserDetailQuery(user?.id);
+
 
 
     const handleLogout = useCallback(() => {
@@ -165,7 +168,7 @@ const HeaderCustom = ({ collapsed }) => {
                         >
                             <div className='flex items-center justify-center bg-cyan-600 rounded-full'>
                                 <button className='flex rounded-full p-1' aria-label="User menu">
-                                    <Image className='rounded-full hover:shadow-xl hover:shadow-cyan-300' preview={false} width={40} src={userIcon} />
+                                    <Image className='rounded-full hover:shadow-xl hover:shadow-cyan-300' preview={false} width={40} height={40} src={profile?.avatar || userIcon} />
                                 </button>
                             </div>
                         </Dropdown>
@@ -199,7 +202,6 @@ const HeaderCustom = ({ collapsed }) => {
                     </>
                 )}
             </div>
-            {/* <AuthGuard onRequireLogin={handleShowLoginModal} /> */}
             <Modal
                 className='custom-modal'
                 open={isModalVisible}

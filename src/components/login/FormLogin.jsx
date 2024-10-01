@@ -38,19 +38,16 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
   const handleLoginSuccess = (data) => {
     const user = data.data;
     const token = data.data.token;
- 
-
+    const avatar = data.data.avatar;
     dispatch(setUser(user));
     dispatch(setToken(token));
+    
+
     // remember me
     if (rememberMe) {
-      Cookies.set("rememberEmail", form.getFieldValue("email"), { expires: 7 }); // Lưu trong 7 ngày
+      Cookies.set("rememberEmail", form.getFieldValue("login_identifier"), { expires: 7 }); 
       Cookies.set("rememberPassword", form.getFieldValue("password"), { expires: 7 });
-    } else {
-
-      Cookies.remove("rememberEmail");
-      Cookies.remove("rememberPassword");
-    }
+    } 
 
     notification.info({
       message: "Chào mừng học viên",
@@ -67,7 +64,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
 
   const handleLoginFailure = (error, email) => {
     if (error.data) {
-      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!"); // Set error message
+      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!"); 
       // message.error(error.data.message);
     } else {
       setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!");
