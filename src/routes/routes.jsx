@@ -99,68 +99,41 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/",
+    path: "/admin",
     element: <SecondLayout showFooter={false} />,
     children: [
       {
-        path: "admin",
-        element: <AuthGuard />,
-        children: [
-          {
-            index: false,
-            element: <AdminGuard />,
-            children: [
-              {
-                index: true,
-                element: Admin,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        path: "users",
+        path: "/admin",
+        element: <AdminGuard />, 
         children: [
           {
             index: true,
-            element: ManageUser,
+            element: Admin, 
           },
           {
-            path: "user-details/:userId",
-            element: Detail,
-          }
-        ]
-      },
-      {
-        path: "/videos",
-        element: ManageCourse,
-      },
-      {
-        path: "/money",
-        element: Cost,
-      },
-      {
-        path: "/quizs",
-        element: Quiz,
-      },
-      {
-        path: "/money",
-        element: Cost,
-      },
-
-      {
-        path: "manage-products",
-        element: <AuthGuard />,
-        children: [
-          {
-            index: false,
-            element: <ManagerGuard />,
+            path: "users",
             children: [
               {
                 index: true,
-                element: Admin,
+                element: ManageUser,
+              },
+              {
+                path: "user-details/:userId",
+                element: Detail,
               },
             ],
+          },
+          {
+            path: "/admin/videos",
+            element: ManageCourse,
+          },
+          {
+            path: "/admin/money",
+            element: Cost,
+          },
+          {
+            path: "/admin/quizs",
+            element: Quiz,
           },
         ],
       },

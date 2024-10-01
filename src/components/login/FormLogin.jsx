@@ -11,6 +11,7 @@ import Logo from '../../assets/image/logo.png';
 import Hi from '../../assets/image/hi.svg'
 
 
+
 const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCancel }) => {
   const [form] = Form.useForm();
   const [error, setError] = useState(null);
@@ -36,18 +37,23 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
   }, [form]);
 
   const handleLoginSuccess = (data) => {
+    if (data.data.roles[0] == "ROLE_ADMIN") {
+      setTimeout(() => {
+        navigate('/admin');
+      }, 100)
+    }
     const user = data.data;
     const token = data.data.token;
-    const avatar = data.data.avatar;
+    const avatar = data.data.avatar;         // set avatar de update ngay luc update avatar moi chưa sử dụng
     dispatch(setUser(user));
     dispatch(setToken(token));
-    
+
 
     // remember me
     if (rememberMe) {
-      Cookies.set("rememberEmail", form.getFieldValue("login_identifier"), { expires: 7 }); 
+      Cookies.set("rememberEmail", form.getFieldValue("login_identifier"), { expires: 7 });
       Cookies.set("rememberPassword", form.getFieldValue("password"), { expires: 7 });
-    } 
+    }
 
     notification.info({
       message: "Chào mừng học viên",
@@ -64,7 +70,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
 
   const handleLoginFailure = (error, email) => {
     if (error.data) {
-      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!"); 
+      setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!");
       // message.error(error.data.message);
     } else {
       setError("Tài khoản hoặc mật khẩu không đúng. vui lòng thử lại!");
@@ -80,8 +86,9 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
   const handleSubmit = async (values) => {
     try {
       const result = await loginUser({ login_identifier: values.login_identifier, password: values.password });
-      console.log(result);
+      // console.log(result);
       if (result.data) {
+
         handleLoginSuccess(result.data);
       } else {
         handleLoginFailure(result.error, values.login_identifier);
