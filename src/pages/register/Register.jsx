@@ -19,11 +19,11 @@ const Register = ({ setIslogin, handleOpenModalForgotPass }) => {
       const user = await registerUser(values);
       console.log(user);
       if (user.data.status !== "CREATED") {
-        const messsage = "User registered unsuccessfully!"
+        const messsage = "Đăng ký thành công !"
         message.success(messsage);
         return;
       }
-      const messsage = "User registered successfully!"
+      const messsage = "Đăng ký thành công !"
       message.success(messsage);
       form.resetFields();
 
