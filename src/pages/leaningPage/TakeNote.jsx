@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react'; // Removed useEffect and useRef
-import { useDispatch } from 'react-redux'; // Thêm useDispatch
-import ReactQuill, { Quill } from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import ReactQuill styles
-import { Button, Card, Layout } from 'antd'; // Import Ant Design Card
+import React, { useState, useEffect } from 'react'; 
+import { useDispatch } from 'react-redux'; 
+import ReactQuill, { Quill } from 'react-quill'; 
+import 'react-quill/dist/quill.snow.css';
+import { Button, Card, Layout } from 'antd'; 
 import { setNote } from '../../slices/course.slice';
 import { CloseOutlined } from '@ant-design/icons';
 import './takenote.scss'
 
-const TakeNote = ({ video, setTakeNote }) => {
+const TakeNote = ({ video, setTakeNote, userId }) => { 
   const [text, setText] = useState('');
   const dispatch = useDispatch();
-  console.log(video)
+
 
   useEffect(() => {
-    const savedNote = localStorage.getItem(`note_${video?.videoId}`); // Update key to include videoId
+    const savedNote = localStorage.getItem(`note_${video?.videoId}_${userId}`); 
     if (savedNote) {
       setText(savedNote);
     }
-  }, [video?.videoId]);
+  }, [video?.videoId, userId]); 
 
   // Lưu ghi chú vào localStorage và dispatch action khi text thay đổi
   useEffect(() => {
-    localStorage.setItem(`note_${video?.videoId}`, text);
-    dispatch(setNote({ noteId: video?.videoId, text }));
-  }, [text, dispatch, video?.videoId]);
+    localStorage.setItem(`note_${video?.videoId}_${userId}`, text); 
+    dispatch(setNote({ noteId: `${video?.videoId}_${userId}`, text })); 
+  }, [text, dispatch, video?.videoId, userId]); 
 
   const modules = {
     toolbar: [
@@ -39,7 +39,7 @@ const TakeNote = ({ video, setTakeNote }) => {
     'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
   ];
 
-  console.log(text);
+
 
   return (
     <Layout className='relative flex items-center rounded-xl h-full mt-[20px] drop-shadow-lg'>

@@ -18,7 +18,6 @@ const ProfilePage = () => {
         setSelectedKey(e.key);
     };
     const user = useSelector(selectCurrentUser);
-    console.log(user)
     const { data: profile, isLoading } = useGetUserDetailQuery(user?.id);
 
     console.log(profile);

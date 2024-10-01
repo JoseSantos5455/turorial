@@ -15,7 +15,6 @@ const courseSlice = createSlice({
             state.course = null;
         },
         setNote: (state, action) => {
-            // Assuming you want to store notes in the state
             state.note = action.payload; 
         },
     },
