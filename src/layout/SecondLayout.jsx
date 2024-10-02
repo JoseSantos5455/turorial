@@ -1,36 +1,45 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, theme } from "antd";
 import {
-    ApartmentOutlined,
-    ContactsOutlined,
     DashboardOutlined,
     DollarOutlined,
-    HomeFilled,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    UploadOutlined,
     UserOutlined,
     VideoCameraAddOutlined,
     ReadOutlined
 } from "@ant-design/icons";
-import { useState } from "react";
-import Search from "antd/es/input/Search";
+import { useState, useEffect } from "react";
 import Logo from "./../assets/image/logo.png";
 
 const { Header, Sider, Content } = Layout;
 
+// Extract getSelectedKey function outside the component
+const getSelectedKey = (pathname) => {
+    if (pathname.startsWith('/admin/users')) return '2';
+    if (pathname.startsWith('/admin/videos')) return '3';
+    if (pathname.startsWith('/admin/quizs')) return '4';
+    if (pathname.startsWith('/admin/money')) return '5';
+    return '1'; // Default to Dashboard
+};
+
 const SecondLayout = ({ showFooter = true }) => {
     const {
-        token: { colorBgContainer, borderRadiusLG, ...other },
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
     const [collapsed, setCollapsed] = useState(true);
+    const [selectedKey, setSelectedKey] = useState("1");
 
     const navigate = useNavigate();
-    const location = useLocation(); // Lấy thông tin về đường dẫn hiện tại
+    const location = useLocation();
+
+    useEffect(() => {
+        // Update selected key when location changes
+        setSelectedKey(getSelectedKey(location.pathname));
+    }, [location]);
 
     const handleClick = (e) => {
         const routes = {
-            '1': '/admin',
+            '1': '/admin/dashboard',
             '2': '/admin/users',
             '3': '/admin/videos',
             '4': '/admin/quizs',
@@ -41,32 +50,8 @@ const SecondLayout = ({ showFooter = true }) => {
         if (path) {
             navigate(path);
         }
+        setSelectedKey(e.key);
     };
-
-    // Tìm key tương ứng với đường dẫn hiện tại
-    const getSelectedKey = () => {
-        const { pathname } = location;
-
-        if (pathname.startsWith('/admin')) {
-            return '1';
-        }
-        if (pathname.startsWith('/users')) {
-            return '2';
-        }
-        if (pathname.startsWith('/videos')) {
-            return '3';
-        }
-        if (pathname.startsWith('/quizs')) {
-            return '4';
-        }
-        if (pathname.startsWith('/money')) {
-            return '5';
-        }
-
-        return '1'; // Mặc định chọn Dashboard
-    };
-
-
 
     return (
         <Layout className="min-h-screen">
@@ -91,14 +76,14 @@ const SecondLayout = ({ showFooter = true }) => {
                         alignItems: "center",
                     }}
                 >
-                    <div class="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3">
                         <Image
                             preview={false}
                             src={Logo}
                             alt="Logo"
-                            class="h-10 w-auto"
+                            className="h-10 w-auto"
                         />
-                        {!collapsed && <p className="text-[white] font-bold text-xl mt-2">FOR ADMIN</p>}
+                        {!collapsed && <p className="text-white font-bold text-xl mt-2">FOR ADMIN</p>}
                     </div>
                 </div>
                 <ConfigProvider
@@ -113,8 +98,8 @@ const SecondLayout = ({ showFooter = true }) => {
                     <Menu
                         theme="dark"
                         mode="inline"
-                        style={{ marginTop: '20px', padding: "0 16px", }}
-                        selectedKeys={[getSelectedKey()]} // Sử dụng selectedKeys thay vì defaultSelectedKeys
+                        style={{ marginTop: '20px', padding: "0 16px" }}
+                        selectedKeys={[selectedKey]}
                         onClick={handleClick}
                         items={[
                             {
@@ -150,7 +135,7 @@ const SecondLayout = ({ showFooter = true }) => {
             <Layout style={{ marginLeft: collapsed ? "80px" : "200px" }}>
                 <Content
                     style={{
-                        margin: "24px 16px 24px",
+                        margin: "24px 16px",
                         padding: 24,
                         minHeight: 280,
                         background: colorBgContainer,

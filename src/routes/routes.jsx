@@ -39,115 +39,49 @@ const Admin = Loadable({
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <MainLayout showFooter={false} />, // Unified layout
-    children: [
-      {
-        index: true,
-        element: Home,
-      },
-
-      {
-        path: "lotrinh",
-        element: Lotrinh,
-      },
-      {
-        path: "baiviet",
-        element: Post,
-      },
-      {
-        path: "tutorial/:tutorialId",
-        element: CourseDetail,
-      },
-      {
-        path: "learning/:courseId",
-        element: learningPage,
-      },
-      {
-        path: "lienhe",
-        element: Contact,
-      },
-      {
-        path: "law",
-        element: Law,
-      },
-
-      {
-        element: <AuthGuard />,
-        children: [
-          // {
-          //   index: true,
-          //   element: Home,
-          // },
-          {
-            path: "/profile",
-            element: Profile,
-          },
-
-        ],
-      },
-
-    ],
+    path: "/login",
+    element: Login,
+  },
+  {
+    path: "/register",
+    element: Register,
   },
   {
     path: "/",
-    element: <SecondLayout showFooter={false} />,
+    element: <MainLayout showFooter={false} />, // Unified layout
     children: [
+      { index: true, element: Home },
+      { path: "/lotrinh", element: Lotrinh },
+      { path: "/baiviet", element: Post },
+      { path: "/tutorial/:tutorialId", element: CourseDetail },
+      { path: "/learning/:courseId", element: learningPage },
+      { path: "/lienhe", element: Contact },
+      { path: "/law", element: Law },
       {
-        path: "admin",
+        path: "/profile",
         element: <AuthGuard />,
         children: [
           {
-            index: false,
-            element: <AdminGuard />,
-            children: [
-              {
-                index: true,
-                element: Admin,
-              },
-              {
-                path: "users",
-                children: [
-                  {
-                    index: true,
-                    element: ManageUser,
-                  },
-                  {
-                    path: "user-details/:userId",
-                    element: Detail,
-                  },
-                ],
-              },
-              {
-                path: "videos",
-                element: ManageCourse,
-              },
-              {
-                path: "create-course",
-                element: CreateCourse,
-              },
-              {
-                path: "money",
-                element: Cost,
-              },
-              {
-                path: "quizs",
-                element: Quiz,
-              },
-              {
-                path: "manage-products",
-                element: <ManagerGuard />,
-                children: [
-                  {
-                    index: true,
-                    element: Admin,
-                  },
-                ],
-              },
-            ],
+            path: "/profile", element: Profile,
           },
-
-
+        ]
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <SecondLayout />,
+    children: [
+      {
+        path: "/admin",
+        element: <AdminGuard />,
+        children: [
+          { path: "dashboard", element: Admin },
+          { path: "users", element: ManageUser },
+          { path: "users/user-details/:userId", element: Detail },
+          { path: "videos", element: ManageCourse },
+          { path: "money", element: Cost },
+          { path: "quizs", element: Quiz },
         ],
       },
     ],
