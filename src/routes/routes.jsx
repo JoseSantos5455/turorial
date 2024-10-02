@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
         path: "/admin",
         element: <AdminGuard />,
         children: [
-          { path: "dashboard", element: Admin },
+          { index: true, path: "dashboard", element: Admin },
           { path: "users", element: ManageUser },
           { path: "users/user-details/:userId", element: Detail },
           { path: "videos", element: ManageCourse },
