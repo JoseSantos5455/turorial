@@ -99,7 +99,7 @@ const SecondLayout = ({ showFooter = true }) => {
                         theme="dark"
                         mode="inline"
                         style={{ marginTop: '20px', padding: "0 16px" }}
-                        selectedKeys={[selectedKey]} 
+                        selectedKeys={[selectedKey]}
                         onClick={handleClick}
                         items={[
                             {

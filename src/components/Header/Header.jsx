@@ -122,14 +122,14 @@ const HeaderCustom = ({ collapsed }) => {
                     <div className='mr-10 flex items-center justify-center'>
                         <Popover
                             content={isLoading ? <Spin /> : (
-                                <div>
+                                <div style={{ maxHeight: '400px', overflowY: 'auto', marginRight: 0 }}>
                                     {Mycourses.length > 0 ? (
                                         Mycourses
                                             .filter(course => course.isSub)
                                             .map(course => (
-                                                <Link to={'learning/course_002'}>
+                                                <Link to={'learning/course_002'} key={course.id}>
                                                     {/* <Link to={`learning/${Mycourses.courseId}`} */}
-                                                    <div key={course.id} className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2">
+                                                    <div className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2 mr-2">
                                                         <div className="w-[120px] h-[70px] flex-shrink-0 rounded-md ">
                                                             <img
                                                                 src={course.img}
@@ -137,7 +137,6 @@ const HeaderCustom = ({ collapsed }) => {
                                                                 className="w-full h-full object-cover rounded-[7px]"
                                                             />
                                                         </div>
-
 
                                                         <div className="flex-1 ml-2 mb-8">
                                                             <span className="ml-2">{course.name}</span>
@@ -160,6 +159,7 @@ const HeaderCustom = ({ collapsed }) => {
                         >
                             <Button className='text-white' type='link'>Khóa học của tôi</Button>
                         </Popover>
+
                         <Dropdown
                             trigger="click"
                             menu={{ items: items }}

@@ -8,30 +8,28 @@ const ContactUs = () => {
   return (
     <div className="contact-us">
       <section className="header-section">
-        <h1>Contact Us</h1>
+        <h1>Liên Hệ Với Chúng Tôi</h1>
         <p>Home / Contact Us</p>
       </section>
 
       <section className="contact-details">
         <div className="contact-info">
-          <h2>Get in touch with us</h2>
+          <h2>Hãy liên lạc với chúng tôi</h2>
 
           <div className="contact-item">
-            {/* <span className="icon phone-icon"></span> */}
             <p><PhoneFilled style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#2878eb', borderRadius: '50%' }} /></p>
 
             <div>
-              <p style={{ fontSize: 18, fontWeight: "bold" }}>Call us on: +03601 885399</p>
-              <p>Our office hours are Monday – Friday, 9 am–6 pm</p>
+              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gọi chúng tôi: +03601 885399</p>
+              <p>Giờ làm việc của chúng tôi Thứ 2 – Thứ 6, 9 am–6 pm</p>
             </div>
           </div>
 
           <div className="contact-item">
-            {/* <span className="icon email-icon"></span> */}
             <p><MailOutlined style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#ffa100', borderRadius: '50%' }} /></p>
 
             <div>
-              <p style={{ fontSize: 18, fontWeight: "bold" }}>Email us directly:</p>
+              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gửi email trực tiếp:</p>
               <p>info@courselog.com</p>
             </div>
           </div>
@@ -55,8 +53,8 @@ const ContactUs = () => {
             </p>
 
             <div>
-              <p style={{ fontSize: 18, fontWeight: "bold" }}>Our Location:</p>
-              <p>70-80 Upper St Norwich NR2 1LT</p>
+              <p style={{ fontSize: 18, fontWeight: "bold" }}>Vị Trí:</p>
+              <p>Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh</p>
             </div>
           </div>
         </div>
@@ -76,13 +74,13 @@ const ContactUs = () => {
 
       <section className="message-section">
         <div className="message-header">
-          <h3 style={{ color: "red", fontSize: '22px' }}>SENT US A MESSAGE</h3>
-          <p >We will Answer all your Questions</p>
+          <h3 style={{ color: "red", fontSize: '22px' }}>GỬI THƯ CHO CHÚNG TÔI</h3>
+          <p >Chúng Tôi Sẽ Trả Lời Câu Hỏi Của Bạn</p>
         </div>
 
         <div className="message-content">
           <div className="message-image">
-            <img src="https://demo-themewinter.com/turitor/coursehub/wp-content/uploads/sites/3/2022/07/contact_1.jpg" alt="Description of image" />
+            <img src="https://tienhieu.vn/image/catalog/sranee/services/bannerpc_1.jpg" alt="Description of image" />
           </div>
           <div>
             <form className="message-form">
@@ -91,9 +89,9 @@ const ContactUs = () => {
               <textarea placeholder="Textarea"></textarea>
               <label className='terms-label'>
                 <input type="checkbox" />
-                <span>I agree to the Terms</span>
+                <span>Tôi đồng ý với điều khoảng</span>
               </label>
-              <button type="submit" className="send-btn">Send</button>
+              <button type="submit" className="send-btn">Gửi</button>
             </form>
           </div>
         </div>
