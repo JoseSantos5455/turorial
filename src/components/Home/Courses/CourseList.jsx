@@ -8,9 +8,8 @@ import clock from '../../../assets/image/clock.svg'
 import crown from '../../../assets/image/king.svg'
 import free from '../../../assets/image/free.svg'
 import { Link } from 'react-router-dom';
-const CourseList = () => {
+const CourseList = ({ courses }) => {
 
-    const { data: courses, error, isLoading } = useGetAllCourseQuery();
 
 
     const handleDisplayTime = (time) => {
@@ -24,21 +23,13 @@ const CourseList = () => {
     }
 
     // Phân loại khóa học
-    const freeCourses = courses?.filter(course => !course.isPaidCourse);
-    const paidCourses = courses?.filter(course => course.isPaidCourse);
-    if (isLoading)
-        return
-    <div>
-        <Spin tip="Loading" size="large">
-            Đợi một xíu nha
-        </Spin>;
-    </div>;
+    const freeCourses = courses?.filter(course => course.price === 0);
+    const paidCourses = courses?.filter(course => course.price > 0);
 
-    if (error) return <div>Error: {error.message}</div>;
 
     // Log isEnrolled for each course
     courses?.forEach(course => {
-        console.log(course.isEnrolled);
+        console.log(course?.isEnrolled);
     });
 
     return (
@@ -50,8 +41,8 @@ const CourseList = () => {
                     <Image className='mb-[-3px] ml-4' width={30} src={crown} />
                 </h2>
                 <div className='flex gap-5 flex-wrap'>
-                    {paidCourses.length > 0 ? paidCourses.map(course => (
-                        <div key={course.id} className="hover:shadow-lg relative hover:-translate-y-1 transition duration-200 rounded-b-[16px]">
+                    {paidCourses?.length > 0 ? paidCourses.map(course => (
+                        <div key={course?.id} className="hover:shadow-lg relative hover:-translate-y-1 transition duration-200 rounded-b-[16px]">
                             <div className='px-[8px] py-[4px] w-fit rounded-lg absolute top-3 left-3' style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
                                 <Image preview={false} width={23} src={crown} />
                             </div>
@@ -68,11 +59,11 @@ const CourseList = () => {
                                     <div className='flex mt-6 mb-2 justify-between flex-row text-black items-center px-5'>
                                         <p className='flex gap-2 '>
                                             <Image preview={false} width={20} src={group} />
-                                            {course.numberUSerSubcribe.toLocaleString('vi-VN')}
+                                            {/* {course.numberUSerSubcribe.toLocaleString('vi-VN')} */}
                                         </p>
                                         <p className='flex gap-2'>
                                             <Image preview={false} width={20} src={play} />
-                                            {course.totalLessons.toLocaleString('vi-VN')}
+                                            {/* {course.totalLessons.toLocaleString('vi-VN')} */}
                                         </p>
                                         <p className='flex gap-2'>
                                             <Image preview={false} width={20} src={clock} />
@@ -92,7 +83,7 @@ const CourseList = () => {
                     <Image preview={false} className='mb-[-10px] ml-4' width={35} src={free} />
                 </h2>
                 <div className='flex gap-5 flex-wrap'>
-                    {freeCourses.length > 0 ? freeCourses.map(course => (
+                    {freeCourses?.length > 0 ? freeCourses.map(course => (
                         <div key={course.id} className="hover:shadow-lg hover:-translate-y-1 transition duration-200 rounded-b-[16px]">
                             <Link
                                 to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
@@ -105,11 +96,11 @@ const CourseList = () => {
                                     <div className='flex mt-6 mb-2 justify-between flex-row text-black items-center px-5'>
                                         <p className='flex gap-2 '>
                                             <Image preview={false} width={20} src={group} />
-                                            {course.numberUSerSubcribe.toLocaleString('vi-VN')}
+                                            {/* {course.numberUSerSubcribe.toLocaleString('vi-VN')} */}
                                         </p>
                                         <p className='flex gap-2'>
                                             <Image preview={false} width={20} src={play} />
-                                            {course.totalLessons.toLocaleString('vi-VN')}
+                                            {/* {course.totalLessons.toLocaleString('vi-VN')} */}
                                         </p>
                                         <p className='flex gap-2'>
                                             <Image preview={false} width={20} src={clock} />

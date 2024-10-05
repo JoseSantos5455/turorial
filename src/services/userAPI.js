@@ -24,19 +24,18 @@ export const userAPI = createApi({
             // Kiểm tra nếu response có Content-Type là application/json
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.includes("application/json")) {
-                return response.json();  // Phân tích cú pháp JSON
+                return response.json();
             } else {
-                return response.text();  // Trả về chuỗi text nếu không phải JSON
+                return response.text();
             }
         },
     }),
     endpoints: (builder) => ({
         // Fetch all users with dynamic pagination
         getAllUser: builder.query({
-            query: ({ page = 0, limit = 10 }) => ({
-                url: `users/get-all-user`,
-                method: "GET",
-                params: { page, limit }, // Use query params for pagination
+            query: ({ page, limit }) => ({
+                url: `users/get-all-user?page=${page}&limit=${limit}`,
+                method: "GET"
             }),
             providesTags: ["UserList"],
         }),
