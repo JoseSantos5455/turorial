@@ -123,7 +123,7 @@ const HeaderCustom = ({ collapsed }) => {
                         <Popover
                             content={isLoading ? <Spin /> : (
                                 <div style={{ maxHeight: '400px', overflowY: 'auto', marginRight: 0 }}>
-                                    {Mycourses.length > 0 ? (
+                                    {Mycourses?.length > 0 ? (
                                         Mycourses
                                             .filter(course => course.isSub)
                                             .map(course => (

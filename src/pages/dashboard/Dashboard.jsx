@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Col, Form, Input, Row, Select } from "antd";
+import { Badge, Button, Card, Col, Form, Input, Row, Select, Spin } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import Meta from "antd/es/card/Meta";
 import "./Dashboard.scss"
@@ -8,8 +8,23 @@ import { SearchOutlined } from "@ant-design/icons";
 import CustomFooter from "../../components/Footer/CustomFooter";
 import CarouselCustom from "../../components/Home/Carousel";
 import CourseList from "../../components/Home/Courses/CourseList";
+import { useGetAllCourseQuery } from "../../services/coursesAPI";
+
+
 
 function Dashboard() {
+
+  const { data: courses, error, isLoading } = useGetAllCourseQuery();
+console.log(courses)
+  if (isLoading)
+    return
+  <div>
+    <Spin tip="Loading" size="large">
+      Đợi một xíu nha
+    </Spin>;
+  </div>;
+
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div
@@ -20,10 +35,10 @@ function Dashboard() {
       }}
     >
       <Row >
-        <CarouselCustom/>
-        <CourseList/>
+        <CarouselCustom />
+        <CourseList courses={courses.data.content} />
       </Row>
-      <CustomFooter/>
+      <CustomFooter />
     </div>
   );
 }

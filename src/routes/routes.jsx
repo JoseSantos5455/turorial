@@ -12,7 +12,6 @@ const Login = Loadable({ loader: () => import("../pages/login/Login") });
 const ManageUser = Loadable({ loader: () => import("../pages/admin/ManageUser/ManageUser") });
 const Detail = Loadable({ loader: () => import("../pages/admin/ManageUser/Detail/Detail") });
 const ManageCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/ManageCourse") });
-const CreateCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/CreateCourse") });
 const Cost = Loadable({ loader: () => import("../pages/admin/Cost") });
 const Quiz = Loadable({ loader: () => import("../pages/admin/Quiz") });
 const Register = Loadable({ loader: () => import("../pages/register/Register") });
@@ -25,6 +24,9 @@ const ErrorPage = Loadable({ loader: () => import("../pages/error/ErroePage") })
 const learningPage = Loadable({ loader: () => import("../pages/leaningPage/LearningPage") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
+});
+const CreateCourse = Loadable({
+  loader: () => import("../pages/admin/ManageCourse/CreateCourse"),
 });
 // const Home = Loadable({ loader: () => import("../pages/home/Home") });
 const Home = Loadable({
@@ -76,12 +78,13 @@ export const router = createBrowserRouter([
         path: "/admin",
         element: <AdminGuard />,
         children: [
-          { path: "dashboard", element: Admin },
+          { index: true, path: "dashboard", element: Admin },
           { path: "users", element: ManageUser },
           { path: "users/user-details/:userId", element: Detail },
           { path: "videos", element: ManageCourse },
           { path: "money", element: Cost },
           { path: "quizs", element: Quiz },
+          { path: "create-course", element: CreateCourse },
         ],
       },
     ],
