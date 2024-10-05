@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, LockOutlined, SearchOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
-import { useGetAllUserQuery } from '../../../services/userAPI';
+import { useGetAllUserQuery, userAPI } from '../../../services/userAPI';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
@@ -236,9 +236,20 @@ const ManageUser = () => {
         ...item,
         key: index + 1,
     }));
-    console.log("tra", transformedData)
+    console.log("tra", users)
     return (
-        <Table columns={columns} dataSource={transformedData} loading={isLoading} />
+        <div>
+            <Button
+                onClick={() => clearFilters && handleReset(clearFilters)}
+                size="small"
+                style={{
+                    width: 90,
+                }}
+            >
+                Reset
+            </Button>
+            <Table columns={columns} dataSource={users} loading={isLoading} />
+        </div>
     )
 }
 

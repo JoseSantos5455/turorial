@@ -31,7 +31,7 @@ const MainLayout = () => {
     navigate('/');
   };
 
-  const menuItems = user?.id === 1
+  const menuItems = user?.id !== 1
     ? [
       {
         key: "1",
