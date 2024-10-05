@@ -107,3 +107,11 @@ export const handleDisplayTime = (time) => {
         return <span>{hours}:{minutes > 10 ? `${minutes}` : `0${minutes}` }</span>;
     }
 }
+
+export const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });

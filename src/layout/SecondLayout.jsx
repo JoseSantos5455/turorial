@@ -1,16 +1,17 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, notification, theme } from "antd";
 import {
     DashboardOutlined,
     DollarOutlined,
     UserOutlined,
     VideoCameraAddOutlined,
-    ReadOutlined
+    ReadOutlined,
+    LogoutOutlined
 } from "@ant-design/icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Logo from "./../assets/image/logo.png";
-import HeaderCustom from "../components/Header/Header";
-
+import { logOut } from "../slices/auth.slice";
+import { useDispatch } from "react-redux";
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,11 +34,23 @@ const SecondLayout = ({ showFooter = true }) => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch()
 
     useEffect(() => {
         // Update selected key when location changes
         setSelectedKey(getSelectedKey(location.pathname));
     }, [location]);
+
+
+    const handleLogout = useCallback(() => {
+        dispatch(logOut());
+        notification.success({
+            message: "Đăng xuất thành công",
+            description: "Hẹn gặp lại!",
+            duration: 1.5
+        });
+        navigate('/')
+    }, [dispatch]);
 
     const handleClick = (e) => {
         const routes = {
@@ -45,12 +58,15 @@ const SecondLayout = ({ showFooter = true }) => {
             '2': '/admin/users',
             '3': '/admin/videos',
             '4': '/admin/quizs',
-            '5': '/admin/money'
+            '5': '/admin/money',
+            '6': null
         };
 
         const path = routes[e.key];
         if (path) {
             navigate(path);
+        } else if (e.key === '6') {
+            handleLogout();
         }
         setSelectedKey(e.key);
     };
@@ -128,6 +144,11 @@ const SecondLayout = ({ showFooter = true }) => {
                                 key: "5",
                                 icon: <DollarOutlined />,
                                 label: "Doanh Thu",
+                            },
+                            {
+                                key: "6",
+                                icon: <LogoutOutlined />,
+                                label: "Đăng xuất",
                             },
                         ]}
                     />
