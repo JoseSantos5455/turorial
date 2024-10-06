@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Loadable from "./Loadable";
 import MainLayout from "../layout/MainLayout";
 import SecondLayout from "../layout/SecondLayout";
@@ -76,26 +76,22 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/admin",
+        element: <Navigate to="/" replace />, 
+      },
+      {
         element: <AdminGuard />,
         children: [
+          { index: true, element: Admin },
           { index: true, path: "dashboard", element: Admin },
           { path: "users", element: ManageUser },
           { path: "users/user-details/:userId", element: Detail },
-          { path: "videos", element: ManageCourse },
+          { path: "courses", element: ManageCourse },
           { path: "money", element: Cost },
           { path: "quizs", element: Quiz },
           { path: "create-course", element: CreateCourse },
         ],
       },
     ],
-  },
-  {
-    path: "/login",
-    element: Login,
-  },
-  {
-    path: "/register",
-    element: Register,
   },
   {
     path: "*",

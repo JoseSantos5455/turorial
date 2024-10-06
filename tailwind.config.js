@@ -6,7 +6,9 @@ export default {
   ],
   theme: {
     extend: {
-
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(to right,#52b788, #3a86ff)',
+      },
       fontFamily: {
         SemiBold: ['R-SemiBold', 'sans-serif'],
         Regular: ['R-Regular', 'sans-serif'],

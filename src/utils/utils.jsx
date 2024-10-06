@@ -93,9 +93,9 @@ export const validationPatterns = {
 };
 
 export const handleDisplayTypeVideo = {
-    "video": React.createElement(Image, { preview: false, width: 12, src: videoIcon }),
-    "information": React.createElement(Image, { preview: false, width: 12, src: inFoIcon }),
-    "quiz": React.createElement(Image, { preview: false, width: 12, src: quizIcon })
+    "video": React.createElement(Image, { preview: false, width: 14, src: videoIcon }),
+    "info": React.createElement(Image, { preview: false, width: 14, src: inFoIcon }),
+    "quiz": React.createElement(Image, { preview: false, width: 14, src: quizIcon })
 }
 
 export const handleDisplayTime = (time) => {

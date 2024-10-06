@@ -185,21 +185,31 @@ const ManageUser = () => {
     };
 
     return (
-        <Table
-            columns={columns}
-            dataSource={filteredUsers}
-            rowKey="id"
-            loading={isLoading}
-            pagination={{
-                current: page + 1,
-                pageSize: limit,
-                total: users?.total,
-                onChange: (pageNumber, pageSize) => {
-                    setPage(pageNumber - 1);
-                    setLimit(pageSize);
-                },
-            }}
-        />
+        <div className='flex flex-col justify-center items-center'>
+            <p className="font-bold text-center w-fit text-4xl mb-9 mt-3 bg-custom-gradient bg-clip-text text-transparent"
+                style={{
+                    textShadow: '2px 4px 8px rgba(0, 0, 0, 0.2)',
+                }}
+            >
+                Quản lý tài khoản
+            </p>
+            <Table
+                className='w-full'
+                columns={columns}
+                dataSource={filteredUsers}
+                rowKey="id"
+                loading={isLoading}
+                pagination={{
+                    current: page + 1,
+                    pageSize: limit,
+                    total: users?.total,
+                    onChange: (pageNumber, pageSize) => {
+                        setPage(pageNumber - 1);
+                        setLimit(pageSize);
+                    },
+                }}
+            />
+        </div>
     );
 };
 

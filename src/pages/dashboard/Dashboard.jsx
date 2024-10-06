@@ -14,17 +14,19 @@ import { useGetAllCourseQuery } from "../../services/coursesAPI";
 
 function Dashboard() {
 
-  const { data: courses, error, isLoading } = useGetAllCourseQuery();
-console.log(courses)
-  if (isLoading)
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(20);
+  const { data: CourseData, isLoading: isLoadingCourses, refetch } = useGetAllCourseQuery({ page, size });
+
+
+  if (isLoadingCourses)
     return
   <div>
     <Spin tip="Loading" size="large">
       Đợi một xíu nha
     </Spin>;
   </div>;
-
-  if (error) return <div>Error: {error.message}</div>;
+  
 
   return (
     <div
@@ -36,7 +38,7 @@ console.log(courses)
     >
       <Row >
         <CarouselCustom />
-        <CourseList courses={courses.data.content} />
+        <CourseList courses={CourseData.data.content} />
       </Row>
       <CustomFooter />
     </div>
