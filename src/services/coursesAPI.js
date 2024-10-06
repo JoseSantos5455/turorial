@@ -18,10 +18,10 @@ export const courseAPI = createApi({
             return headers;
         },
     }),
- 
+
     endpoints: (builder) => ({
         getAllCourse: builder.query({
-            query: () => `courses/get-all`,
+            query: ({ page, size }) => `courses/get-all?page=${page}&size=${size}`,
             providesTags: (result) =>
                 result
                     ? result.data?.content.map(({ id }) => ({ type: "CourseList", id }))

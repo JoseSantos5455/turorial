@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetCourseDetailQuery } from '../../services/coursesAPI';
 import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton } from 'antd';
-import CheckMark from './../../assets/image/check-mark.svg'
+import CheckMark from './../../assets/image/check.svg'
 import { CaretDownFilled, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined, PlusOutlined } from '@ant-design/icons';
 import videoIcon from '../../assets/image/video-duration.svg';
 import inFoIcon from '../../assets/image/document.svg';
@@ -126,7 +126,7 @@ const CourseDetai = () => {
                 <p className='font-bold text-xl mt-4 py-2'>Bạn sẽ học được gì ?</p>
                 <div className='grid grid-cols-2 mt-3 gap-4'>
                     {courseDetail.whatYouWillLearn.map((item, index) => (
-                        <p key={index} className='col-span-1 flex'><Image preview={false} width={20} src={CheckMark} /> {item}</p>
+                        <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item} </p>
                     ))}
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Nội dung khóa học</p>
@@ -175,7 +175,7 @@ const CourseDetai = () => {
                 <p className='font-bold text-xl mt-4 py-2'>Yêu cầu</p>
                 <div className='grid grid-cols-1 mt-3 gap-4'>
                     {courseDetail.requirements.map((item, index) => (
-                        <p key={index} className='col-span-1 flex'><Image preview={false} width={20} src={CheckMark} /> {item}</p>
+                        <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item}</p>
                     ))}
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Thông tin bổ sung </p>

@@ -37,10 +37,9 @@ const CreateCourse = () => {
         'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
     ];
     return (
-        <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }} >
+        <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }} >
             {/* <h1>Tạo Khóa Học</h1> */}
             <Form
-            
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
@@ -259,11 +258,13 @@ const CreateCourse = () => {
 
                 {/* Nút Gửi */}
                 <Form.Item>
-                    <Button type="primary"
-                        htmlType='submit'
-                        className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-medium rounded-full py-5 px-6 transition-transform duration-800 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg">
-                        Tạo khóa học
-                    </Button>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button type="primary"
+                            htmlType='submit'
+                            className="bg-gradient-to-r w-[50%] from-blue-500 to-cyan-400 text-white font-medium rounded-full py-5 px-6 transition-transform duration-800 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg">
+                            Tạo khóa học
+                        </Button>
+                    </div>
                 </Form.Item>
             </Form>
         </div>
