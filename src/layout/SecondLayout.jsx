@@ -156,11 +156,10 @@ const SecondLayout = ({ showFooter = true }) => {
             </Sider>
 
             <Layout style={{ marginLeft: collapsed ? "80px" : "200px" }}>
-                <HeaderCustom collapsed={collapsed} setCollapsed={setCollapsed} />
 
                 <Content
                     style={{
-                        margin: "80px 24px 16px",
+                        margin: "24px 16px",
                         padding: 24,
                         minHeight: 280,
                         background: colorBgContainer,

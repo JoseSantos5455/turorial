@@ -1,21 +1,39 @@
 import React, { useRef, useState } from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, LockOutlined, SearchOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, Image, Input, Space, Table, Tag, Tooltip } from 'antd';
 import { useGetAllUserQuery, userAPI } from '../../../services/userAPI';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../../slices/auth.slice';
+import clearFilter from '../../../assets/image/clear-filter.svg'
+
 
 const ManageUser = () => {
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(10);
-    const { data: users, error, isLoading } = useGetAllUserQuery({ page, limit });
+    const { data: users, error, isLoading, refetch } = useGetAllUserQuery({ page, limit });
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const searchInput = useRef(null);
+    const [filteredInfo, setFilteredInfo] = useState({});
+    const [isVisible, setIsVisible] = useState(false);
+    const [sortedInfo, setSortedInfo] = useState({});
 
-    // const user = useSelector(selectCurrentUser); khong hien thi ban than tren table user 
+    let searchInput = null;
+
+
+    const admin = useSelector(selectCurrentUser);
+
+    React.useEffect(() => {
+        setIsVisible(Object.keys(filteredInfo).length > 0 || sortedInfo.order || searchText);
+    }, [filteredInfo]);
+
+
+    React.useEffect(() => {
+        if (location.state?.reload) {
+            refetch();
+        }
+    }, [location, refetch]);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -26,14 +44,17 @@ const ManageUser = () => {
     const handleReset = (clearFilters) => {
         clearFilters();
         setSearchText('');
-        setSearchedColumn('');
     };
+
+
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
-                    ref={searchInput}
+                    ref={(node) => {
+                        searchInput = node;
+                    }}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -48,28 +69,10 @@ const ManageUser = () => {
                         size="small"
                         style={{ width: 90 }}
                     >
-                        Search
+                        Tìm kiếm
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{ width: 90 }}
-                    >
-                        Reset
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            confirm({ closeDropdown: false });
-                            setSearchText(selectedKeys[0]);
-                            setSearchedColumn(dataIndex);
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button type="link" size="small" onClick={() => close()}>
-                        Close
+                    <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+                        xóa
                     </Button>
                 </Space>
             </div>
@@ -83,8 +86,28 @@ const ManageUser = () => {
             }
         },
     });
+
+    const handleChange = (pagination, filters, sorter) => {
+        setFilteredInfo(filters);
+        setSortedInfo(sorter);
+    };
+
+
+    // Clear all filters and sorters
+    const clearAll = () => {
+        setFilteredInfo({});
+        setSortedInfo({});
+        setSearchText('');
+        setSearchedColumn('');
+        setIsVisible(false);
+    };
+
+
     const filteredUsers = users?.users.filter(user => {
-        if (!searchText || !searchedColumn) return user;
+
+        if (user.id == admin.id) return false;
+        if (Object.keys(filteredInfo).length === 0 && !searchText) return true;
+        if (!searchText || !searchedColumn) return true;
         return user[searchedColumn].toString().toLowerCase().includes(searchText.toLowerCase());
     });
     const columns = [
@@ -95,6 +118,7 @@ const ManageUser = () => {
             ...getColumnSearchProps('full_name'),
             sorter: (a, b) => a.full_name.length - b.full_name.length,
             sortDirections: ['descend', 'ascend'],
+            sortOrder: sortedInfo.columnKey === 'full_name' && sortedInfo.order,
         },
         {
             title: 'Email',
@@ -115,6 +139,7 @@ const ManageUser = () => {
             sorter: (a, b) => new Date(a.date_of_birth) - new Date(b.date_of_birth),
             sortDirections: ['descend', 'ascend'],
             render: (date_of_birth) => dayjs(date_of_birth).format('DD/MM/YYYY'),
+            sortOrder: sortedInfo.columnKey === 'date_of_birth' && sortedInfo.order,
         },
         {
             title: 'Status',
@@ -175,31 +200,36 @@ const ManageUser = () => {
         },
     ];
 
-    const transformedData = users?.users?.map((item, index) => ({
-        ...item,
-        key: index + 1,
-    }));
-
-    const handlePageChange = (newPage) => {
-        setPage(newPage - 1); // AntD pages are 1-based, convert to 0-based
-    };
 
     return (
-        <Table
-            columns={columns}
-            dataSource={filteredUsers}
-            rowKey="id"
-            loading={isLoading}
-            pagination={{
-                current: page + 1,
-                pageSize: limit,
-                total: users?.total,
-                onChange: (pageNumber, pageSize) => {
-                    setPage(pageNumber - 1);
-                    setLimit(pageSize);
-                },
-            }}
-        />
+        <div>
+            {Object.keys(filteredInfo).length > 0 && (
+                <Button
+                    onClick={clearAll}
+                    type='primary'
+                    className={`mb-3 fade-in ${isVisible ? 'show' : ''}`}
+                >
+                    Bỏ lọc <Image preview={false} width={25} src={clearFilter} />
+                </Button>
+            )}
+
+            <Table
+                columns={columns}
+                dataSource={filteredUsers}
+                rowKey="id"
+                loading={isLoading}
+                onChange={handleChange}
+                pagination={{
+                    current: page + 1,
+                    pageSize: limit,
+                    total: users?.total,
+                    onChange: (pageNumber, pageSize) => {
+                        setPage(pageNumber - 1);
+                        setLimit(pageSize);
+                    },
+                }}
+            />
+        </div>
     );
 };
 
