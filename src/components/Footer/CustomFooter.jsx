@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Row, Col, Divider, Image, Input, Button } from "antd";
-import logo from './../../assets/image/logo.svg'
+import logo from "./../../assets/image/logo.png";
 const { Footer } = Layout;
 import './Footer.scss'
 import { FacebookFilled, InstagramFilled, PhoneFilled, PhoneOutlined, SendOutlined } from "@ant-design/icons";
@@ -10,7 +10,7 @@ function CustomFooter() {
   return (
     <Footer style={{ backgroundColor: "#f0f2f5", padding: "20px 50px 80px 50px" }}>
       <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid #d9d9db', marginBottom: '40px' }}>
-        <Image style={{ height: '160px' }} src={logo} preview={false} />
+        <Image width={80} src={logo} className="mb-4" preview={false} />
       </div>
       <Row justify={"space-between"} style={{ margin: '0 100px' }}>
         <Col span={5}>

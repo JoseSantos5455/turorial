@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Table, Input, Button, Space, Spin, Tooltip, Image, Tag, message, Modal, List, Collapse, ConfigProvider } from 'antd';
+import { Table, Input, Button, Space, Spin, Tooltip, Image, Tag, message, Modal, Collapse, ConfigProvider, Dropdown } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { CaretRightOutlined, DeleteFilled, EditFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CloseOutlined, DeleteFilled, EditFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { useDeleteCourseMutation, useGetAllCourseQuery } from '../../../services/coursesAPI';
+import { useDeleteCourseMutation, useDeleteInfoLessonMutation, useDeleteQuizLessonMutation, useDeleteVideoLessonMutation, useGetAllCourseAdminQuery } from '../../../services/coursesAPI';
 import clearFilter from '../../../assets/image/clear-filter.svg'
 import './ManageCourse.scss'
 import { handleDisplayTypeVideo } from '../../../utils/utils';
+import VideoLesson from './ManageVideo/CreateVideo';
+import InfoLesson from './ManageInfo/CreateInfo';
+import QuizLesson from './ManageQuiz/CreateQuiz';
+import EditVideo from './ManageVideo/EditVideo';
+import EditInfo from './ManageInfo/EditInfo';
+import EditQuiz from './ManageQuiz/EditQuiz';
+
 const ManageCourse = () => {
-    const [page, setPage] = useState(0); 
-    const [size, setSize] = useState(20); 
-    const { data: CourseData, isLoading: isLoadingCourses, refetch } = useGetAllCourseQuery({ page, size });
-    const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation()
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [filteredInfo, setFilteredInfo] = useState({});
@@ -19,8 +22,23 @@ const ManageCourse = () => {
     const [isVisible, setIsVisible] = useState(false);
     const location = useLocation();
     const [deletingId, setDeletingId] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [lessonType, setLessonType] = useState('');
+    const [stt, setStt] = useState(null)
+    const [chapterId, setChapterId] = useState(null);
+    const [lessonIdEdit, setLessonIdEdit] = useState(null);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
-    console.log(CourseData)
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
+    const { data: CourseData, isLoading: isLoadingCourses, refetch } = useGetAllCourseAdminQuery({ page, size });
+    const [deleteCourse] = useDeleteCourseMutation()
+    const [deleteVideoLesson] = useDeleteVideoLessonMutation()
+    const [deleteInfoLesson] = useDeleteInfoLessonMutation()
+    const [deleteQuizLesson] = useDeleteQuizLessonMutation()
+
+
+    // console.log(CourseData)
     let searchInput = null;
 
     React.useEffect(() => {
@@ -33,6 +51,7 @@ const ManageCourse = () => {
             refetch();
         }
     }, [location, refetch]);
+
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -135,6 +154,98 @@ const ManageCourse = () => {
         setIsVisible(false);
     };
 
+    // Function to handle adding a lesson
+    const handleAddLesson = (type, chapter) => {
+        console.log(chapter)
+        setStt(getNextLessonStt(chapter))
+        setChapterId(chapter.id)
+        setIsModalVisible(true);
+        setLessonType(type)
+    };
+
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+    }
+
+
+
+    //props Create
+    const lessonPropsCreate = {
+        lessonId: chapterId,
+        refetch: refetch,
+        handleCloseModal: handleCloseModal,
+        stt: stt,
+    }
+
+    //props Edit
+    const handleEditLesson = (record, type) => {
+        setIsEditModalVisible(true)
+        setIsModalVisible(true);
+        setLessonType(type)
+        setLessonIdEdit(record.type === "video" ? record.videoId : record.type === "quiz" ? record.quizId : record.infoId);
+
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalVisible(false)
+        setIsModalVisible(false);
+        setLessonIdEdit(null);
+    };
+
+    const lessonPropsEdit = {
+        lessonId: lessonIdEdit,
+        refetch: refetch,
+        handleCloseEditModal: handleCloseEditModal,
+    }
+
+
+
+    const renderLessonComponent = () => {
+        if (isEditModalVisible) {
+            switch (lessonType) {
+                case 'video':
+                    return <EditVideo {...lessonPropsEdit} />;
+                case 'info':
+                    return <EditInfo {...lessonPropsEdit} />;
+                case 'quiz':
+                    return <EditQuiz {...lessonPropsEdit} />;
+                default:
+                    return null;
+            }
+        } else {
+            switch (lessonType) {
+                case 'video':
+                    return <VideoLesson {...lessonPropsCreate} />;
+                case 'info':
+                    return <InfoLesson {...lessonPropsCreate} />;
+                case 'quiz':
+                    return <QuizLesson {...lessonPropsCreate} />;
+                default:
+                    return null;
+            }
+        }
+    };
+
+
+    const getNextLessonStt = (chapter) => {
+        const allLessons = [];
+        chapter.lesson.forEach((lesson) => {
+            lesson.videos.forEach(() => {
+                allLessons.push({});
+            });
+            lesson.infos.forEach(() => {
+                allLessons.push({});
+            });
+            lesson.quizs.forEach(() => {
+                allLessons.push({});
+            });
+        });
+
+        return allLessons.length + 1;
+    };
+
+
     const columns = [
         {
             title: 'Tên khóa học',
@@ -205,10 +316,37 @@ const ManageCourse = () => {
         },
     ];
 
-    // Add expandable feature to the table
+
+    const handleDeleteLesson = async (chapter, record) => {
+        console.log(record)
+        Modal.confirm({
+            title: 'Xác nhận xóa',
+            content: 'Bạn có chắc chắn muốn xóa bài học này?',
+            okText: 'Có',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk: async () => {
+                try {
+                    if (record.type === "video") {
+                        await deleteVideoLesson({ chapterId: chapter, lessonId: record.videoId }).unwrap();
+                    } else if (record.type === "quiz") {
+                        await deleteQuizLesson({ chapterId: chapter, lessonId: record.quizId }).unwrap();
+                    } else {
+                        await deleteInfoLesson({ chapterId: chapter, lessonId: record.infoId }).unwrap();
+                    }
+                    refetch();
+                    message.success('Bài học đã được xóa!');
+                } catch (error) {
+                    message.error("xóa bài học thất bại !");
+                }
+            },
+        });
+    };
+
+
     const expandable = {
         expandedRowRender: (record) => {
-            // Xử lý dữ liệu các bài học của chương
+
             return record.chapters.map((chapter) => {
                 // Tạo mảng chung chứa tất cả bài học từ các loại khác nhau (videos, infos, quizs)
                 const allLessons = [];
@@ -217,6 +355,7 @@ const ManageCourse = () => {
                     // Thêm videos vào mảng
                     lesson.videos.forEach((video) => {
                         allLessons.push({
+                            videoId: video.videoId,
                             stt: video.stt,
                             type: 'video',
                             content: video.videoName,
@@ -226,6 +365,7 @@ const ManageCourse = () => {
                     // Thêm infos vào mảng
                     lesson.infos.forEach((info) => {
                         allLessons.push({
+                            infoId: info.infoId,
                             stt: info.stt,
                             type: 'info',
                             content: info.infoTitle,
@@ -235,6 +375,7 @@ const ManageCourse = () => {
                     // Thêm quizs vào mảng
                     lesson.quizs.forEach((quiz) => {
                         allLessons.push({
+                            quizId: quiz.id,
                             stt: quiz.stt,
                             type: 'quiz',
                             content: quiz.title,
@@ -266,7 +407,35 @@ const ManageCourse = () => {
                             return <p className='flex items-center gap-2'>{handleDisplayTypeVideo[type]}<p>{type}</p> </p>
                         },
                     },
+                    {
+                        title: 'Hành động',
+                        key: 'action',
+                        render: (_, record) => (
+                            <Space>
+                                <Tooltip title="Chỉnh sửa" color='blue'>
+                                    <Button
+                                        type='link'
+                                        icon={<EditFilled />}
+                                        style={{ backgroundColor: 'white', color: 'blue' }}
+                                        onClick={() => handleEditLesson(record, record.type)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Xóa" color='red'>
+                                    <Button
+                                        type='link'
+                                        danger
+                                        icon={<DeleteFilled />}
+                                        onClick={() => handleDeleteLesson(chapter.id, record)}
+                                    />
+                                </Tooltip>
+                            </Space>
+                        ),
+                    }
+
+
                 ];
+
+
 
                 return (
                     <ConfigProvider
@@ -280,11 +449,37 @@ const ManageCourse = () => {
                     >
                         <Collapse
                             className='mb-4'
-                            // bordered={false}
                             defaultActiveKey={[]}
-                            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-                        >
-                            <Collapse.Panel header={<p className='font-semibold flex justify-between'>{chapter.chapterName} <Button>Thêm bài học mới</Button></p>} key={chapter.id} >
+                            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                            <Collapse.Panel header={<p className='font-semibold flex justify-between'>{chapter.chapterName} </p>} key={chapter.id} >
+                                <Space>
+                                    <Dropdown
+                                        menu={{
+                                            items: [
+                                                {
+                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('video', chapter)}>{handleDisplayTypeVideo["video"]}<p>Video</p></p>,
+                                                    key: 'video',
+                                                },
+                                                {
+                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('info', chapter)}>{handleDisplayTypeVideo["info"]}<p>Thông tin</p></p>,
+                                                    key: 'info',
+                                                },
+                                                {
+                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('quiz', chapter)}>{handleDisplayTypeVideo["quiz"]}<p>Kiểm tra</p></p>,
+                                                    key: 'quiz',
+                                                },
+                                            ],
+                                        }}
+                                        trigger={['click']}
+                                    >
+                                        <Button type="primary"
+                                            icon={<PlusOutlined />}
+                                            className='mb-4 w-full'
+                                        >
+                                            Thêm bài học mới
+                                        </Button>
+                                    </Dropdown>
+                                </Space>
                                 <Table
                                     dataSource={sortedLessons}
                                     columns={columnsLesson}
@@ -294,8 +489,6 @@ const ManageCourse = () => {
                             </Collapse.Panel>
                         </Collapse>
                     </ConfigProvider>
-
-
                 );
             });
         },
@@ -369,14 +562,29 @@ const ManageCourse = () => {
                     pagination={{
                         current: page + 1,
                         pageSize: size,
-                        total: CourseData?.total,
+                        total: CourseData?.data.totalElements,
                         onChange: (pageNumber, pageSize) => {
                             setPage(pageNumber - 1);
-                            setSize(pageSize); 
+                            setSize(pageSize);
                         },
                     }}
                 />
             </div>
+            <Modal
+                width={"70%"}
+                title={
+                    <div className='w-full flex justify-center'>
+                        <p className=' text-center rounded-lg  py-2'>{!isEditModalVisible ? "Thêm bài học mới" : "Chỉnh sửa bài học "}</p>
+                    </div>
+                }
+                open={isModalVisible}
+                onCancel={handleCloseEditModal}
+                footer={null}
+                closeIcon={<CloseOutlined className='text-white bg-red-500 p-3 rounded-lg' />}
+            >
+                {renderLessonComponent()}
+            </Modal>
+
         </div>
     );
 };
