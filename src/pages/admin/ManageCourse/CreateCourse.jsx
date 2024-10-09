@@ -19,11 +19,12 @@ const CreateCourse = () => {
             await createCourse(values).unwrap();
             message.success('Khóa học đã được tạo thành công!');
             form.resetFields();
-            navigate('/admin/videos', { state: { reload: true } });
+            navigate('/admin/courses', { state: { reload: true } });
         } catch (error) {
             message.error('Đã xảy ra lỗi khi tạo khóa học!');
         }
     };
+
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, false] }],
@@ -33,6 +34,7 @@ const CreateCourse = () => {
             [{ 'color': [] }, { 'background': [] }]
         ],
     };
+    
     const formats = [
         'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
     ];
@@ -261,6 +263,7 @@ const CreateCourse = () => {
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button type="primary"
                             htmlType='submit'
+                            loading={isLoading}
                             className="bg-gradient-to-r w-[50%] from-blue-500 to-cyan-400 text-white font-medium rounded-full py-5 px-6 transition-transform duration-800 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg">
                             Tạo khóa học
                         </Button>
