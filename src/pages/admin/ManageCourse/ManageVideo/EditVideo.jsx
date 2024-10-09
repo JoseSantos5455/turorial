@@ -1,35 +1,38 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, InputNumber, Space, message } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Input, Button, InputNumber, Space, message, Spin } from 'antd';
+import { EditFilled, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-// import { useGetCourseVideoQuery, useUpdateCourseVideoMutation } from '../../../../services/coursesAPI';
+import { useEditVideoMutation, useGetVideoDetailsQuery, } from '../../../../services/coursesAPI';
 
-const EditVideo = ({ lessonId, videoId, refetch, handleCloseEditModal }) => {
+const EditVideo = ({ lessonId, refetch, handleCloseEditModal }) => {
+
     const [form] = Form.useForm();
-    // const { data: videoData, isFetching } = useGetCourseVideoQuery({ lessonId, videoId });
-    // const [updateVideo, { isLoading }] = useUpdateCourseVideoMutation();
+    const { data: videoData, isLoading: isloadingData } = useGetVideoDetailsQuery(lessonId);
+    const [updateVideo, { isLoading }] = useEditVideoMutation();
 
-    // useEffect(() => {
-    //     if (videoData) {
-    //         form.setFieldsValue({
-    //             videoName: videoData.videoName,
-    //             lessonVideo: videoData.lessonVideo,
-    //             duration: videoData.duration,
-    //             moreInformation: videoData.moreInformation,
-    //             supportingMaterials: videoData.supportingMaterials || [],
-    //         });
-    //     }
-    // }, [videoData, form]);
+
+    useEffect(() => {
+        if (videoData) {
+            form.setFieldsValue({
+                videoName: videoData.data.videoName,
+                lessonVideo: videoData.data.lessonVideo,
+                duration: videoData.data.duration,
+                moreInformation: videoData.data.moreInformation || '',
+                supportingMaterials: videoData.data.supportingMaterials || [],
+            });
+        }
+    }, [videoData, form]);
 
     const onFinish = async (values) => {
+        const valueWithStt = { ...values, stt: videoData.data.stt };
         try {
-            // await updateVideo({ lessonId, videoId, body: values }).unwrap();
+            await updateVideo({ videoId: lessonId, body: valueWithStt }).unwrap();
             message.success('Cập nhật video thành công!');
             handleCloseEditModal();
-            form.resetFields();
             refetch();
         } catch (error) {
+            console.error(error);
             message.error('Cập nhật video thất bại, vui lòng kiểm tra lại!');
         }
     };
@@ -47,6 +50,16 @@ const EditVideo = ({ lessonId, videoId, refetch, handleCloseEditModal }) => {
     const formats = [
         'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
     ];
+
+    if (isloadingData) {
+        return (
+            <div>
+                <Spin tip="Loading" size="large">
+                    Đợi một xíu nha
+                </Spin>
+            </div>
+        );
+    }
 
     return (
         <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -117,9 +130,9 @@ const EditVideo = ({ lessonId, videoId, refetch, handleCloseEditModal }) => {
 
             <Form.Item>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    {/* <Button icon={<PlusOutlined />} size='large' type="primary" htmlType="submit" loading={isLoading || isFetching}>
+                    <Button icon={<EditFilled />} size='large' type="primary" htmlType="submit" loading={isLoading}>
                         Cập nhật bài học
-                    </Button> */}
+                    </Button>
                 </div>
             </Form.Item>
         </Form>
