@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { ConfigProvider, Image, Layout, Menu, theme } from "antd";
+import { ConfigProvider, Image, Layout, Menu, Tag, theme } from "antd";
 import {
   ApartmentOutlined,
   ContactsOutlined,
@@ -77,20 +77,13 @@ const MainLayout = () => {
       },
     ];
 
-  const routes = user?.id === 1
-    ? {
-      '1': '/admin',
-      '2': '/admin/users',
-      '3': '/admin/videos',
-      '4': '/admin/quizs',
-      '5': '/admin/money',
-    }
-    : {
-      '6': '/',
-      '7': '/lotrinh',
-      '8': '/lienhe',
-      '9': '/combo',
-    };
+  const routes =
+  {
+    '1': '/',
+    '2': '/lotrinh',
+    '3': '/lienhe'
+  }
+
 
   const handleClick = (e) => {
     const path = routes[e.key];
@@ -111,7 +104,7 @@ const MainLayout = () => {
       label: "Lộ trình",
     },
     {
-      key: "8",
+      key: "3",
       icon: <ContactsOutlined />,
       label: "Liên hệ",
     },
@@ -139,6 +132,7 @@ const MainLayout = () => {
         <div style={{ paddingTop: '20px', height: "60px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
           <div className="flex items-center space-x-3">
             {collapsed ? (
+
               <Image
                 width={35}
                 className="cursor-pointer"
@@ -148,8 +142,13 @@ const MainLayout = () => {
                 alt="Logo Letter"
                 class="h-10 w-auto"
               />
+
+
             ) : (
-              <Image className="cursor-pointer" onClick={handleHome} preview={false} src={Logo} alt="Logo" />
+              <div className="flex flex-col relative" >
+                <Image className="cursor-pointer" onClick={handleHome} preview={false} src={Logo} alt="Logo" />
+                <Tag className="absolute bottom-[-32px]" color="#f50"><span className="text-yellow-300 font-semibold">Education</span> </Tag>
+              </div>
             )}
           </div>
         </div>
@@ -165,7 +164,7 @@ const MainLayout = () => {
           <Menu
             theme="dark"
             mode="inline"
-            style={{ marginTop: '20px', padding: "0 16px" }}
+            style={{ marginTop: '40px', padding: "0 16px" }}
             defaultSelectedKeys={[String(user?.id === 1 ? '1' : '6')]} // Chọn key đầu tiên dựa trên user
             onClick={handleClick}
             items={navbarForUser}

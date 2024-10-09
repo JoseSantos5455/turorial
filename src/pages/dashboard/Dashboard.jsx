@@ -22,8 +22,7 @@ function Dashboard() {
   if (isLoadingCourses)
     return
   <div>
-    <Spin tip="Loading" size="large">
-      Đợi một xíu nha
+    <Spin tip="Đợi một xíu nha" size="large">
     </Spin>;
   </div>;
 

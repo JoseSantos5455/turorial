@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { navigate } from "../utils/navigate";
 import { selectTokens } from "../slices/auth.slice";
 import { BE_API_LOCAL } from "../config";
 
@@ -22,6 +21,14 @@ export const courseAPI = createApi({
     endpoints: (builder) => ({
         getAllCourse: builder.query({
             query: ({ page, size }) => `courses/get-all?page=${page}&size=${size}`,
+            providesTags: (result) =>
+                result
+                    ? result.data?.content.map(({ id }) => ({ type: "CourseList", id }))
+                    : [{ type: "CourseList", id: "LIST" }],
+        }),
+
+        getAllCourseAdmin: builder.query({
+            query: ({ page, size }) => `courses/get-all-admin?page=${page}&size=${size}`,
             providesTags: (result) =>
                 result
                     ? result.data?.content.map(({ id }) => ({ type: "CourseList", id }))
@@ -83,6 +90,92 @@ export const courseAPI = createApi({
             invalidatesTags: (res, err, arg) => [{ type: "Progress", id: "LIST" }],
 
         }),
+
+        deleteCourse: builder.mutation({
+            query: (courseId) => ({
+                method: "DELETE",
+                url: `courses/delete/${courseId}`,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        CreateCourse: builder.mutation({
+            query: (body) => {
+                return {
+                    method: "POST",
+                    url: `courses/create-full-course`,
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        CreateCourseVideo: builder.mutation({
+            query: ({ body, lessonId }) => {
+                console.log(body)
+                return {
+                    method: "POST",
+                    url: `videos/create/${lessonId}`,
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        CreateCourseInfo: builder.mutation({
+            query: ({ body, lessonId }) => {
+                console.log(body)
+                return {
+                    method: "POST",
+                    url: `infos/create/${lessonId}`,
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        CreateCourseQuiz: builder.mutation({
+            query: (body) => {
+
+                return {
+                    method: "POST",
+                    url: `quizzes/create-quiz`,
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+
+        deleteVideoLesson: builder.mutation({
+            query: ({ chapterId, lessonId }) => {
+                return {
+                    method: "DELETE",
+                    url: `videos/delete/${chapterId}/${lessonId}`,
+                };
+            },
+            invalidatesTags: (_res, _err, _arg) => [
+                { type: "CourseList", id: "LIST" },
+            ],
+        }),
+        deleteInfoLesson: builder.mutation({
+            query: ({ chapterId, lessonId }) => {
+                return {
+                    method: "DELETE",
+                    url: `infos/delete/${chapterId}/${lessonId}`,
+                };
+            },
+            invalidatesTags: (_res, _err, _arg) => [
+                { type: "CourseList", id: "LIST" },
+            ],
+        }),
+        deleteQuizLesson: builder.mutation({
+            query: ({ chapterId, lessonId }) => {
+                return {
+                    method: "DELETE",
+                    url: `quizzes/delete-quiz/${chapterId}/${lessonId}`,
+                };
+            },
+            invalidatesTags: (_res, _err, _arg) => [
+                { type: "CourseList", id: "LIST" },
+            ],
+        }),
+
         // Endpoint để lưu tiến độ học tập
         // saveLearningProgress: builder.mutation({
         //     query: (progressData) => ({
@@ -92,29 +185,6 @@ export const courseAPI = createApi({
         //     }),
         //     invalidatesTags: [{ type: "Progress", id: progressData.courseId }],
         // }),
-        CreateCourse: builder.mutation({
-            query: (body) => {
-                // console.log(body);
-                // const newBody = {
-                //   address: body.address,
-                //   username: body.userName,
-                //   email: body.email,
-                //   phoneNumber: body.phoneNumber,
-                //   dob: body.dob,
-                //   roleId: body.roleId,
-                //   gender: body.gender,
-                //   status: body.status,
-                //   imgUrl: "https://static.vecteezy.com/system/resources/previews/024/983/914/original/simple-user-default-icon-free-png.png",
-                // }
-                return {
-                    method: "POST",
-                    url: `courses/create-full-course`,
-                    body: body,
-                }
-            },
-            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
-        }),
-
 
         // editUser: builder.mutation({
         //   query: (payload) => {
@@ -154,17 +224,7 @@ export const courseAPI = createApi({
         //   },
         // }),
 
-        // deleteUser: builder.mutation({
-        //   query: (payload) => {
-        //     return {
-        //       method: "DELETE",
-        //       url: `users/` + payload,
-        //     };
-        //   },
-        //   invalidatesTags: (_res, _err, _arg) => [
-        //     { type: "UserList", id: "LIST" },
-        //   ],
-        // }),
+
         // getAllTransaction: builder.query({
         //   query: () => `order/getallorder`,
         //   providesTags: (result) =>
@@ -179,34 +239,11 @@ export const courseAPI = createApi({
         //       ? result.map(({ id }) => ({ type: "NotificationList", id }))
         //       : [{ type: "NotificationList", id: "LIST" }],
         // }),
-        // BanUser: builder.mutation({
-        //   query: (payload) => {
-        //     const reason = payload.reason;
-        //     return {
-        //       method: "PUT",
-        //       url: `bannedaccount/banuser/${payload.id}?reason=${reason}`,
-        //     };
-        //   },
-        //   invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
-        // }),
-        // UnBanUser: builder.mutation({
-        //   query: (payload) => {
-        //     return {
-        //       method: "PUT",
-        //       url: `bannedaccount/unbanuser/${payload}`,
-        //     };
-        //   },
-        //   invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
-        // }),
-        deleteCourse: builder.mutation({
-            query: (courseId) => ({
-                method: "DELETE",
-                url: `courses/delete/${courseId}`,
-            }),
-            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
-        }),
+
+
+
     }),
-});
+})
 
 export const {
     useGetAllCourseQuery,
@@ -217,17 +254,12 @@ export const {
     useGetQuizzDetailQuery,
     useGetInfoDetailQuery,
     useCreateCourseMutation,
-
-    //   useGetUserProfileQuery,
-    //   useEditProfileMutation,
-    //   useAddUserMutation,
-    //   useEditUserMutation,
-    //   useDeleteUserMutation,
-    //   useBanUserMutation,
-    //   useUnBanUserMutation,
-    //   useGetUserProfileForOtherQuery,
-    //   useGetAllTransactionQuery,
-    //   useUpdatePasswordMutation,
-    //   useGetAllNotificationQuery
     useDeleteCourseMutation,
+    useGetAllCourseAdminQuery,
+    useCreateCourseVideoMutation,
+    useCreateCourseInfoMutation,
+    useCreateCourseQuizMutation,
+    useDeleteVideoLessonMutation,
+    useDeleteInfoLessonMutation,
+    useDeleteQuizLessonMutation,
 } = courseAPI;
