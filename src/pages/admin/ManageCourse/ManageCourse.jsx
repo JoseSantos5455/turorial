@@ -156,7 +156,6 @@ const ManageCourse = () => {
 
     // Function to handle adding a lesson
     const handleAddLesson = (type, chapter) => {
-        console.log(chapter)
         setStt(getNextLessonStt(chapter))
         setChapterId(chapter.id)
         setIsModalVisible(true);
