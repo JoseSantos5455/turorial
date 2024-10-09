@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, notification, theme } from "antd";
+import { Breadcrumb, Button, ConfigProvider, Image, Layout, Menu, notification, theme, Modal } from "antd";
 import {
     DashboardOutlined,
     DollarOutlined,
@@ -18,7 +18,7 @@ const { Header, Sider, Content } = Layout;
 // Extract getSelectedKey function outside the component
 const getSelectedKey = (pathname) => {
     if (pathname.startsWith('/admin/users')) return '2';
-    if (pathname.startsWith('/admin/videos')) return '3';
+    if (pathname.startsWith('/admin/courses')) return '3';
     if (pathname.startsWith('/admin/quizs')) return '4';
     if (pathname.startsWith('/admin/money')) return '5';
     return '1'; // Default to Dashboard
@@ -43,20 +43,26 @@ const SecondLayout = ({ showFooter = true }) => {
 
 
     const handleLogout = useCallback(() => {
-        dispatch(logOut());
-        notification.success({
-            message: "Đăng xuất thành công",
-            description: "Hẹn gặp lại!",
-            duration: 1.5
+        Modal.confirm({ // Hiển thị hộp thoại xác nhận
+            title: 'Xác nhận đăng xuất',
+            content: 'Bạn có chắc chắn muốn đăng xuất không?',
+            onOk: () => {
+                dispatch(logOut());
+                notification.success({
+                    message: "Đăng xuất thành công",
+                    description: "Hẹn gặp lại!",
+                    duration: 1.5
+                });
+                navigate('/')
+            },
         });
-        navigate('/')
     }, [dispatch]);
 
     const handleClick = (e) => {
         const routes = {
             '1': '/admin/dashboard',
             '2': '/admin/users',
-            '3': '/admin/videos',
+            '3': '/admin/courses',
             '4': '/admin/quizs',
             '5': '/admin/money',
             '6': null

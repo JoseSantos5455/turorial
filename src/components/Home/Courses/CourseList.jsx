@@ -10,8 +10,6 @@ import free from '../../../assets/image/free.svg'
 import { Link } from 'react-router-dom';
 const CourseList = ({ courses }) => {
 
-
-
     const handleDisplayTime = (time) => {
         if (time < 60) {
             return <span>{time} Phút</span>;
