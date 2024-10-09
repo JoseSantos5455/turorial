@@ -7,12 +7,13 @@ import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../../slices/auth.slice';
 import clearFilter from '../../../assets/image/clear-filter.svg'
+import Highlighter from 'react-highlight-words';
 
 
 const ManageUser = () => {
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(10);
-    const { data: users, error, isLoading, refetch } = useGetAllUserQuery({ page, limit });
+    const { data: users, error, reload, isLoading, refetch } = useGetAllUserQuery({ page, limit });
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [filteredInfo, setFilteredInfo] = useState({});
@@ -21,13 +22,11 @@ const ManageUser = () => {
 
     let searchInput = null;
 
-
     const admin = useSelector(selectCurrentUser);
 
     React.useEffect(() => {
-        setIsVisible(Object.keys(filteredInfo).length > 0 || sortedInfo.order || searchText);
-    }, [filteredInfo]);
-
+        setIsVisible(Object.keys(filteredInfo).length > 0);
+    }, [filteredInfo, searchText, sortedInfo]);
 
     React.useEffect(() => {
         if (location.state?.reload) {
@@ -85,6 +84,17 @@ const ManageUser = () => {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
     });
 
     const handleChange = (pagination, filters, sorter) => {
@@ -97,16 +107,16 @@ const ManageUser = () => {
     const clearAll = () => {
         setFilteredInfo({});
         setSortedInfo({});
-        setSearchText('');
+        setSearchText("");
         setSearchedColumn('');
         setIsVisible(false);
+        reload();
     };
-
 
     const filteredUsers = users?.users.filter(user => {
 
         if (user.id == admin.id) return false;
-        if (Object.keys(filteredInfo).length === 0 && !searchText) return true;
+        // if (Object.keys(filteredInfo).length === 0 && !searchText) return true;
         if (!searchText || !searchedColumn) return true;
         return user[searchedColumn].toString().toLowerCase().includes(searchText.toLowerCase());
     });
@@ -202,18 +212,27 @@ const ManageUser = () => {
 
 
     return (
-        <div>
+        <div className='flex flex-col justify-center items-center'>
+            <p className="font-bold text-center w-fit text-4xl mb-9 mt-3 bg-custom-gradient bg-clip-text text-transparent"
+                style={{
+                    textShadow: '2px 4px 8px rgba(0, 0, 0, 0.2)',
+                }}
+            >
+                Quản lý tài khoản
+            </p>
             {Object.keys(filteredInfo).length > 0 && (
                 <Button
-                    onClick={clearAll}
+                    onClick={() => clearAll()}
                     type='primary'
                     className={`mb-3 fade-in ${isVisible ? 'show' : ''}`}
                 >
                     Bỏ lọc <Image preview={false} width={25} src={clearFilter} />
                 </Button>
+
             )}
 
             <Table
+                className='w-full'
                 columns={columns}
                 dataSource={filteredUsers}
                 rowKey="id"

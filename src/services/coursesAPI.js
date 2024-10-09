@@ -41,7 +41,7 @@ export const courseAPI = createApi({
             }),
         }),
         getMyCourse: builder.query({
-            query: () => `4ace85d5-4d7e-4276-a31c-282ca3f8019a`,
+            query: () => `https://mocki.io/v1/4ace85d5-4d7e-4276-a31c-282ca3f8019a`,
             providesTags: (result) =>
                 result
                     ? result.map(({ id }) => ({ type: "CourseList", id }))

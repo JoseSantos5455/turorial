@@ -4,6 +4,7 @@ import CustomFooter from "../../components/Footer/CustomFooter";
 import { Image, Layout } from 'antd';
 import { PhoneFilled, MailOutlined } from '@ant-design/icons';
 import location from '../../assets/image/location.svg'
+import contact from '../../assets/image/contact.jpg'
 const ContactUs = () => {
   return (
     <div className="contact-us">
@@ -80,7 +81,7 @@ const ContactUs = () => {
 
         <div className="message-content">
           <div className="message-image">
-            <img src="https://tienhieu.vn/image/catalog/sranee/services/bannerpc_1.jpg" alt="Description of image" />
+            <img src={contact} alt="Description of image" />
           </div>
           <div>
             <form className="message-form">

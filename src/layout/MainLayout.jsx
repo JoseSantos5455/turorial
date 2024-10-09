@@ -89,6 +89,7 @@ const MainLayout = () => {
       '6': '/',
       '7': '/lotrinh',
       '8': '/lienhe',
+      '9': '/combo',
     };
 
   const handleClick = (e) => {
@@ -100,19 +101,24 @@ const MainLayout = () => {
 
   const navbarForUser = [
     {
-      key: "1",
+      key: "6",
       icon: <HomeFilled />,
       label: "Trang chủ",
     },
     {
-      key: "2",
+      key: "7",
       icon: <ApartmentOutlined />,
       label: "Lộ trình",
     },
     {
-      key: "4",
+      key: "8",
       icon: <ContactsOutlined />,
       label: "Liên hệ",
+    },
+    {
+      key: "9",
+      icon: <DollarOutlined />,
+      label: "Mua gói",
     }
   ]
 

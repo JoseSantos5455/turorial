@@ -26,7 +26,7 @@ function Dashboard() {
       Đợi một xíu nha
     </Spin>;
   </div>;
-  
+
 
   return (
     <div
@@ -38,7 +38,7 @@ function Dashboard() {
     >
       <Row >
         <CarouselCustom />
-        <CourseList courses={CourseData.data.content} />
+        <CourseList courses={CourseData?.data?.content} />
       </Row>
       <CustomFooter />
     </div>
