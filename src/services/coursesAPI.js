@@ -55,8 +55,8 @@ export const courseAPI = createApi({
         }),
 
         getCourseDetail: builder.query({
-            query: () => ({
-                url: `https://mocki.io/v1/d479b798-4d03-40ed-891b-2ffccea673b8`,
+            query: ({ courseId }) => ({
+                url: `courses/getDetail/${courseId}`,
                 method: "GET",
             }),
         }),
