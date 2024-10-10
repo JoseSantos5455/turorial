@@ -181,7 +181,7 @@ const ManageUser = () => {
     }));
 
     const handlePageChange = (newPage) => {
-        setPage(newPage - 1); // AntD pages are 1-based, convert to 0-based
+        setPage(newPage - 1); 
     };
 
     return (
