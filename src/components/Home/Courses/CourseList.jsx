@@ -27,7 +27,7 @@ const CourseList = ({ courses }) => {
 
     // Log isEnrolled for each course
     courses?.forEach(course => {
-        console.log(course?.isEnrolled);
+        // console.log(course?.isEnrolled);
     });
 
     return (

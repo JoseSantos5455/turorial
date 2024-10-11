@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button, Alert, notification, message, Image, Checkbox } from "antd";
 import "./Login.scss";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import { setToken, setUser } from "../../slices/auth.slice";
 import Cookies from "js-cookie";
 import Logo from '../../assets/image/logo.png';
 import Hi from '../../assets/image/hi.svg'
+import { selectLoacation, setLocation } from "../../slices/user.slice";
 
 
 
@@ -20,7 +21,9 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [loginUser, { isLoading }] = useLoginUserMutation();
+  dispatch(setLocation(location.pathname));
 
+  const previousLocation = useSelector(selectLoacation);
 
   useEffect(() => {
 
@@ -42,9 +45,17 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
         navigate('/admin');
       }, 100)
     }
+
+    if (data.data.roles[0] == "ROLE_CUSTOMER") {
+      console.log('location nè', previousLocation);
+      setTimeout(() => {
+        navigate(previousLocation);
+      }, 100)
+    }
+
     const user = data.data;
     const token = data.data.token;
-    const avatar = data.data.avatar;         // set avatar de update ngay luc update avatar moi chưa sử dụng
+    const avatar = data.data.avatar;
     dispatch(setUser(user));
     dispatch(setToken(token));
 
