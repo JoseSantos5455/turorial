@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Form, Input, InputNumber, Upload, Space, message } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import ReactQuill styles
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { useCreateCourseMutation } from '../../../services/coursesAPI';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,8 +14,10 @@ const CreateCourse = () => {
     const handleSubmit = async (values) => {
         // gắn tạm thời chờ API 
         values.image = 'https://service.keyframe.vn/uploads/filecloud/2018/April/25/72-559201524659628-1524659628.jpg';
-
+        values.rating = 0
+        console.log(values);
         try {
+
             await createCourse(values).unwrap();
             message.success('Khóa học đã được tạo thành công!');
             form.resetFields();
@@ -34,7 +36,7 @@ const CreateCourse = () => {
             [{ 'color': [] }, { 'background': [] }]
         ],
     };
-    
+
     const formats = [
         'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
     ];
@@ -76,7 +78,7 @@ const CreateCourse = () => {
                         modules={modules}
                         formats={formats}
                         style={{
-                            maxHeight: '180px',
+
                             backgroundColor: 'white',
                             border: '1px solid #d1d1d1',
                         }}
@@ -130,31 +132,31 @@ const CreateCourse = () => {
                 </Form.Item>
 
                 {/* Tổng Thời Gian */}
-                <Form.Item
+                {/* <Form.Item
                     label="Tổng Thời Gian (giờ)"
                     name="totalDuration"
                     rules={[{ required: true, message: 'Vui lòng nhập tổng thời gian!' }]}
                 >
                     <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
+                </Form.Item> */}
 
                 {/* Tổng Chương */}
-                <Form.Item
+                {/* <Form.Item
                     label="Tổng Chương"
                     name="totalChapter"
                     rules={[{ required: true, message: 'Vui lòng nhập tổng số chương!' }]}
                 >
                     <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
+                </Form.Item> */}
 
                 {/* Tổng Video */}
-                <Form.Item
+                {/* <Form.Item
                     label="Tổng Video"
                     name="totalVideos"
                     rules={[{ required: true, message: 'Vui lòng nhập tổng số video!' }]}
                 >
                     <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
+                </Form.Item> */}
 
                 {/* Giá */}
                 <Form.Item
@@ -166,13 +168,13 @@ const CreateCourse = () => {
                 </Form.Item>
 
                 {/* Đánh Giá */}
-                <Form.Item
+                {/* <Form.Item
                     label="Đánh Giá"
                     name="rating"
                     rules={[{ required: true, message: 'Vui lòng nhập đánh giá!' }]}
                 >
                     <InputNumber min={0} max={5} step={0.1} style={{ width: '100%' }} />
-                </Form.Item>
+                </Form.Item> */}
 
                 {/* Những gì bạn sẽ học */}
                 <Form.Item label="Những gì bạn sẽ học">
@@ -249,7 +251,9 @@ const CreateCourse = () => {
                                     </Space>
                                 ))}
                                 <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                    <Button type="dashed" onClick={() => {
+                                        add({ stt: fields.length + 1 });
+                                    }} block icon={<PlusOutlined />}>
                                         Thêm Chương
                                     </Button>
                                 </Form.Item>

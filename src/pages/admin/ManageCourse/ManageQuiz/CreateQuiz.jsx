@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Space, Select, InputNumber, Card, message, Empty } from 'antd';
+import { Form, Input, Button, Space, Select, InputNumber, Card, Empty, message } from 'antd';
 import { DeleteFilled, DeleteOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useCreateCourseQuizMutation } from '../../../../services/coursesAPI';
 
@@ -15,7 +15,7 @@ const CreateQuiz = ({ lessonId, refetch, handleCloseModal, stt }) => {
     const onFinish = async (values) => {
         const valuesToSubmit = { ...values, stt: stt, lesson_id: lessonId };
         try {
-            const rs = await createQuizs(valuesToSubmit);
+            const rs = createQuizs(valuesToSubmit);
             console.log(rs)
             message.success('Tạo quiz thành công!');
             handleCloseModal();
@@ -27,7 +27,7 @@ const CreateQuiz = ({ lessonId, refetch, handleCloseModal, stt }) => {
     };
 
     return (
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
             {/* Tên quiz */}
             <Form.Item
                 name="title"
@@ -45,7 +45,7 @@ const CreateQuiz = ({ lessonId, refetch, handleCloseModal, stt }) => {
             </Form.Item>
 
             {/* Danh sách câu hỏi */}
-            <Form.List name="questions">
+            <Form.List name="questions" initialValue={[{}]}>
                 {(fields, { add, remove }) => (
                     <>
                         {fields.length === 0 ? (
@@ -140,13 +140,18 @@ const CreateQuiz = ({ lessonId, refetch, handleCloseModal, stt }) => {
                 )}
             </Form.List>
 
-            <Form.Item>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" htmlType="submit" loading={isLoading}>
-                        Tạo Kiểm tra
-                    </Button>
-                </div>
-            </Form.Item>
+            <Form.Item
+        shouldUpdate={(prevValues, currentValues) => prevValues.questions !== currentValues.questions}
+        rules={[{ validator: (_, value) => (value && value.length > 0 ? Promise.resolve() : Promise.reject('Phải có ít nhất một câu hỏi!')) }]} // Validation rule
+    >
+        {() => (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button type="primary" htmlType="submit" loading={isLoading}>
+                    Tạo Kiểm tra
+                </Button>
+            </div>
+        )}
+    </Form.Item>
         </Form>
     );
 };

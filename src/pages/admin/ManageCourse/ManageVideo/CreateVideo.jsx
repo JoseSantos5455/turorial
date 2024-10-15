@@ -23,7 +23,7 @@ const CreateVideo = ({ stt, lessonId, refetch, handleCloseModal }) => {
             refetch();
         } catch (error) {
 
-            message.success('Tạo bài học thất bại vui lòng kiểm tra lại !')
+            message.error('Tạo bài học thất bại vui lòng kiểm tra lại !')
             
         }
 

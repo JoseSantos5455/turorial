@@ -1,4 +1,4 @@
-import { Row, Select, Spin } from "antd";
+import { Row, Select, Skeleton, Spin } from "antd";
 import "./Dashboard.scss"
 import { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
@@ -19,8 +19,7 @@ function Dashboard() {
   if (isLoadingCourses)
     return
   <div>
-    <Spin tip="Đợi một xíu nha" size="large">
-    </Spin>;
+    <Skeleton/>
   </div>;
   
 

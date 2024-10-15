@@ -79,6 +79,12 @@ export const courseAPI = createApi({
                 method: "GET",
             }),
         }),
+        getChapterDetails: builder.query({
+            query: (chapterId) => ({
+                url: `chapters/get-detail/${chapterId}`,
+                method: "GET",
+            }),
+        }),
 
         getLearningProgress: builder.query({
             query: ({ courseId, userId }) => ({
@@ -171,6 +177,14 @@ export const courseAPI = createApi({
             }),
             invalidatesTags: [{ type: "CourseList", id: "LIST" }],
         }),
+        editChapter: builder.mutation({
+            query: ({ body, chapterId }) => ({
+                method: "PUT",
+                url: `chapters/update/${chapterId}`,
+                body: body,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
 
         deleteVideoLesson: builder.mutation({
             query: ({ chapterId, lessonId }) => ({
@@ -229,5 +243,7 @@ export const {
     useEditVideoMutation,
     useGetInfoDetailsQuery,
     useEditInfoMutation,
-    useGetQuizDetailsQuery
+    useGetQuizDetailsQuery,
+    useGetChapterDetailsQuery,
+    useEditChapterMutation
 } = courseAPI;

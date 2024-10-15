@@ -32,7 +32,8 @@ const LearningPage = () => {
     const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery(courseId);
     const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId: "user_001" });
     const [saveLearningProgress] = useSavingNewProgressMutation();
-    const user =useSelector(selectCurrentUser)
+    const user = useSelector(selectCurrentUser)
+
 
     useEffect(() => {
         if (progressData?.progress) {
@@ -90,7 +91,7 @@ const LearningPage = () => {
 
 
 
-
+    // 20s luu tien do
 
     const handleProgress = useCallback(throttle((state) => {
         setPlayedSeconds(state.playedSeconds);
@@ -103,7 +104,7 @@ const LearningPage = () => {
 
 
 
-
+    // >80% tien do cua video thi bai hoc da dc hoc 
 
     useEffect(() => {
         if (currentVideo && playedSeconds / currentVideo.duration > 0.8) {
