@@ -210,6 +210,14 @@ const ManageUser = () => {
         },
     ];
 
+    const transformedData = users?.users?.map((item, index) => ({
+        ...item,
+        key: index + 1,
+    }));
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage - 1);
+    };
 
     return (
         <div className='flex flex-col justify-center items-center'>

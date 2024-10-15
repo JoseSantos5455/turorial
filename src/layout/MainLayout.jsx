@@ -3,15 +3,10 @@ import { ConfigProvider, Image, Layout, Menu, Tag, theme } from "antd";
 import {
   ApartmentOutlined,
   ContactsOutlined,
-  DashboardOutlined,
-  DollarOutlined,
   HomeFilled,
-  ReadOutlined,
-  UserOutlined,
-  VideoCameraAddOutlined,
 } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import Logo from "./../assets/image/logo1.png";
+import { useState } from "react";
+import Logo from "./../assets/image/logo.png";
 import LogoLetter from "./../assets/image/b.svg";
 import HeaderCustom from "../components/Header/Header";
 import { selectCurrentUser } from "../slices/auth.slice";
@@ -31,51 +26,7 @@ const MainLayout = () => {
     navigate('/');
   };
 
-  const menuItems = user?.id !== 1
-    ? [
-      {
-        key: "1",
-        icon: <DashboardOutlined />,
-        label: "Dashboard",
-      },
-      {
-        key: "2",
-        icon: <UserOutlined />,
-        label: "Người Dùng",
-      },
-      {
-        key: "3",
-        icon: <VideoCameraAddOutlined />,
-        label: "Khóa Học",
-      },
-      {
-        key: "4",
-        icon: <ReadOutlined />,
-        label: "Bài Tập",
-      },
-      {
-        key: "5",
-        icon: <DollarOutlined />,
-        label: "Doanh Thu",
-      },
-    ]
-    : [
-      {
-        key: "6",
-        icon: <HomeFilled />,
-        label: "Trang chủ",
-      },
-      {
-        key: "7",
-        icon: <ApartmentOutlined />,
-        label: "Lộ trình",
-      },
-      {
-        key: "8",
-        icon: <ContactsOutlined />,
-        label: "Liên hệ",
-      },
-    ];
+
 
   const routes =
   {

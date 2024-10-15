@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Input, Button, Space, Spin, Tooltip, Image, Tag, message, Modal, Collapse, ConfigProvider, Dropdown } from 'antd';
+import { Table, Input, Button, Space, Spin, Tooltip, Image, Tag, message, Modal, Collapse, ConfigProvider, Dropdown, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { CaretRightOutlined, CloseOutlined, DeleteFilled, EditFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CloseOutlined, DeleteFilled, EditFilled, MoreOutlined, OpenAIFilled, OrderedListOutlined, PlusOutlined, SearchOutlined, SettingFilled } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { useDeleteCourseMutation, useDeleteInfoLessonMutation, useDeleteQuizLessonMutation, useDeleteVideoLessonMutation, useGetAllCourseAdminQuery } from '../../../services/coursesAPI';
+import { useCreateChapterMutation, useDeleteChapterMutation, useDeleteCourseMutation, useDeleteInfoLessonMutation, useDeleteQuizLessonMutation, useDeleteVideoLessonMutation, useGetAllCourseAdminQuery } from '../../../services/coursesAPI';
 import clearFilter from '../../../assets/image/clear-filter.svg'
 import './ManageCourse.scss'
 import { handleDisplayTypeVideo } from '../../../utils/utils';
@@ -13,6 +13,7 @@ import QuizLesson from './ManageQuiz/CreateQuiz';
 import EditVideo from './ManageVideo/EditVideo';
 import EditInfo from './ManageInfo/EditInfo';
 import EditQuiz from './ManageQuiz/EditQuiz';
+import CreateChapter from './ManageChapter/CreateChapter';
 
 const ManageCourse = () => {
     const [searchText, setSearchText] = useState('');
@@ -28,6 +29,9 @@ const ManageCourse = () => {
     const [chapterId, setChapterId] = useState(null);
     const [lessonIdEdit, setLessonIdEdit] = useState(null);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [isAddChapterModalVisible, setIsAddChapterModalVisible] = useState(false);
+    const [courseId, setCourseId] = useState(null);
+    const [chapterIdEdit, setChapterIdEdit] = useState(null);
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
@@ -36,6 +40,8 @@ const ManageCourse = () => {
     const [deleteVideoLesson] = useDeleteVideoLessonMutation()
     const [deleteInfoLesson] = useDeleteInfoLessonMutation()
     const [deleteQuizLesson] = useDeleteQuizLessonMutation()
+    const [deleteChapter] = useDeleteChapterMutation()
+
 
 
     // console.log(CourseData)
@@ -343,153 +349,244 @@ const ManageCourse = () => {
     };
 
 
+
+
+    const handleAddChapter = (record) => {
+        setIsAddChapterModalVisible(true);
+        setCourseId(record.id)
+    }
+
+    const handleCloseAddChapter = () => {
+        setIsAddChapterModalVisible(false);
+    }
+
+    const createChapterProps = {
+        courseId: courseId,
+        refetch: refetch,
+        handleCloseModal: handleCloseAddChapter,
+    }
+    const EditChapterProps = {
+        courseId: chapterIdEdit,
+        refetch: refetch,
+        handleCloseModal: handleCloseAddChapter,
+    }
+
+    const handleDeleteChapter = (record) => {
+        Modal.confirm({
+            title: 'Xác nhận xóa chương',
+            content: 'Bạn có chắc chắn muốn xóa chương này?',
+            okText: 'Có',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk: async () => {
+                try {
+                    await deleteChapter(record.id).unwrap();
+                    message.success('Chương đã được xóa!');
+                    refetch();
+                } catch (error) {
+                    message.error("Xóa chương thất bại!");
+                }
+            },
+        });
+    }
+
+
     const expandable = {
         expandedRowRender: (record) => {
+            return (
+                <>
+                    <div>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={() => handleAddChapter(record)}
+                            className='mb-5'
+                        >
+                            Thêm chương mới
+                        </Button>
+                    </div>
+                    {record.chapters.map((chapter, index) => {
+                        const allLessons = [];
+                        chapter.lesson.forEach((lesson) => {
+                            // Thêm videos vào mảng
+                            lesson.videos.forEach((video) => {
+                                allLessons.push({
+                                    videoId: video.videoId,
+                                    stt: video.stt,
+                                    type: 'video',
+                                    content: video.videoName,
+                                });
+                            });
 
-            return record.chapters.map((chapter) => {
-                // Tạo mảng chung chứa tất cả bài học từ các loại khác nhau (videos, infos, quizs)
-                const allLessons = [];
+                            // Thêm infos vào mảng
+                            lesson.infos.forEach((info) => {
+                                allLessons.push({
+                                    infoId: info.infoId,
+                                    stt: info.stt,
+                                    type: 'info',
+                                    content: info.infoTitle,
+                                });
+                            });
 
-                chapter.lesson.forEach((lesson) => {
-                    // Thêm videos vào mảng
-                    lesson.videos.forEach((video) => {
-                        allLessons.push({
-                            videoId: video.videoId,
-                            stt: video.stt,
-                            type: 'video',
-                            content: video.videoName,
+                            // Thêm quizs vào mảng
+                            lesson.quizs.forEach((quiz) => {
+                                allLessons.push({
+                                    quizId: quiz.id,
+                                    stt: quiz.stt,
+                                    type: 'quiz',
+                                    content: quiz.title,
+                                });
+                            });
                         });
-                    });
 
-                    // Thêm infos vào mảng
-                    lesson.infos.forEach((info) => {
-                        allLessons.push({
-                            infoId: info.infoId,
-                            stt: info.stt,
-                            type: 'info',
-                            content: info.infoTitle,
-                        });
-                    });
-
-                    // Thêm quizs vào mảng
-                    lesson.quizs.forEach((quiz) => {
-                        allLessons.push({
-                            quizId: quiz.id,
-                            stt: quiz.stt,
-                            type: 'quiz',
-                            content: quiz.title,
-                        });
-                    });
-                });
-
-                // Sắp xếp mảng các bài học theo thuộc tính stt
-                const sortedLessons = allLessons.sort((a, b) => a.stt - b.stt);
-                const columnsLesson = [
-                    {
-                        title: 'Số thứ tự',
-                        dataIndex: 'stt',
-                        key: 'stt',
-                        render: (stt) => {
-                            return <span>Bài {stt}</span>
-                        },
-                    },
-                    {
-                        title: 'Tên bài giảng',
-                        dataIndex: 'content',
-                        key: 'content',
-                    },
-                    {
-                        title: 'Loại bài học',
-                        dataIndex: 'type',
-                        key: 'type',
-                        render: (type) => {
-                            return <p className='flex items-center gap-2'>{handleDisplayTypeVideo[type]}<p>{type}</p> </p>
-                        },
-                    },
-                    {
-                        title: 'Hành động',
-                        key: 'action',
-                        render: (_, record) => (
-                            <Space>
-                                <Tooltip title="Chỉnh sửa" color='blue'>
-                                    <Button
-                                        type='link'
-                                        icon={<EditFilled />}
-                                        style={{ backgroundColor: 'white', color: 'blue' }}
-                                        onClick={() => handleEditLesson(record, record.type)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title="Xóa" color='red'>
-                                    <Button
-                                        type='link'
-                                        danger
-                                        icon={<DeleteFilled />}
-                                        onClick={() => handleDeleteLesson(chapter.id, record)}
-                                    />
-                                </Tooltip>
-                            </Space>
-                        ),
-                    }
-
-
-                ];
-
-
-
-                return (
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Collapse: {
-                                    headerBg: '#e0eee0'
+                        // Sắp xếp mảng các bài học theo thuộc tính stt
+                        const sortedLessons = allLessons.sort((a, b) => a.stt - b.stt);
+                        const columnsLesson = [
+                            {
+                                title: 'Số thứ tự',
+                                dataIndex: 'stt',
+                                key: 'stt',
+                                render: (stt) => {
+                                    return <span>Bài {stt}</span>
                                 },
                             },
-                        }}
-                    >
-                        <Collapse
-                            className='mb-4'
-                            defaultActiveKey={[]}
-                            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                            <Collapse.Panel header={<p className='font-semibold flex justify-between'>{chapter.chapterName} </p>} key={chapter.id} >
-                                <Space>
-                                    <Dropdown
-                                        menu={{
-                                            items: [
-                                                {
-                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('video', chapter)}>{handleDisplayTypeVideo["video"]}<p>Video</p></p>,
-                                                    key: 'video',
-                                                },
-                                                {
-                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('info', chapter)}>{handleDisplayTypeVideo["info"]}<p>Thông tin</p></p>,
-                                                    key: 'info',
-                                                },
-                                                {
-                                                    label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('quiz', chapter)}>{handleDisplayTypeVideo["quiz"]}<p>Kiểm tra</p></p>,
-                                                    key: 'quiz',
-                                                },
-                                            ],
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button type="primary"
-                                            icon={<PlusOutlined />}
-                                            className='mb-4 w-full'
-                                        >
-                                            Thêm bài học mới
-                                        </Button>
-                                    </Dropdown>
-                                </Space>
-                                <Table
-                                    dataSource={sortedLessons}
-                                    columns={columnsLesson}
-                                    pagination={false}
-                                    rowKey="stt"
-                                />
-                            </Collapse.Panel>
-                        </Collapse>
-                    </ConfigProvider>
-                );
-            });
+                            {
+                                title: 'Tên bài giảng',
+                                dataIndex: 'content',
+                                key: 'content',
+                            },
+                            {
+                                title: 'Loại bài học',
+                                dataIndex: 'type',
+                                key: 'type',
+                                render: (type) => {
+                                    return <p className='flex items-center gap-2'>{handleDisplayTypeVideo[type]}<p>{type}</p> </p>
+                                },
+                            },
+                            {
+                                title: 'Hành động',
+                                key: 'action',
+                                render: (_, record) => (
+                                    <Space>
+                                        <Tooltip title="Chỉnh sửa" color='blue'>
+                                            <Button
+                                                type='link'
+                                                icon={<EditFilled />}
+                                                style={{ backgroundColor: 'white', color: 'blue' }}
+                                                onClick={() => handleEditLesson(record, record.type)}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title="Xóa" color='red'>
+                                            <Button
+                                                type='link'
+                                                danger
+                                                icon={<DeleteFilled />}
+                                                onClick={() => handleDeleteLesson(chapter.id, record)}
+                                            />
+                                        </Tooltip>
+                                    </Space>
+                                ),
+                            }
+
+
+                        ];
+
+                        // const menu = (
+
+                        // );
+
+
+                        return (
+                            <ConfigProvider
+                                theme={{
+                                    components: {
+                                        Collapse: {
+                                            headerBg: '#e0eee0'
+                                        },
+                                    },
+                                }}
+                            >
+                                <Collapse
+                                    className='mb-4'
+                                    defaultActiveKey={[]}
+                                    expandIcon={({ isActive }) => <CaretRightOutlined className='mt-[10px]' rotate={isActive ? 90 : 0} />}>
+                                    <Collapse.Panel header={
+                                        <div className='flex justify-between items-center'>
+                                            <p className='font-semibold flex justify-between'>
+                                                Chương {index + 1} - {chapter.chapterName}
+                                            </p>
+                                            <Space>
+                                                <Dropdown
+
+                                                    menu={{
+                                                        items: [
+                                                            {
+                                                                label: <p className='flex items-center gap-3' onClick={(e) => e.stopPropagation()}><EditFilled style={{ color: 'blue' }} /><p>  Chỉnh sửa tên chương</p></p>,
+                                                                key: 'video',
+                                                            },
+                                                            {
+                                                                label: <p className='flex items-center gap-3' onClick={(e) => e.stopPropagation()}><OrderedListOutlined style={{ color: '#ffb90f' }} /><p>  Thay đổi vị trí</p></p>,
+                                                                key: 'info',
+                                                            },
+                                                            {
+                                                                label: <p className='flex items-center w-full gap-3' onClick={(e) => e.stopPropagation()}><DeleteFilled style={{ color: '#ff3030' }} /><p className='w-full' onClick={() => handleDeleteChapter(chapter)}> Xóa chương</p></p>,
+                                                                key: 'quiz',
+                                                            },
+                                                        ],
+                                                    }}
+                                                    trigger={['click']}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    mouseEnterDelay={0.1}
+                                                    mouseLeaveDelay={0.1}
+
+                                                >
+                                                    <Button type='link' icon={<SettingFilled style={{ fontSize: '23px' }} />} onClick={(e) => e.stopPropagation()} />
+                                                </Dropdown>
+                                            </Space>
+                                        </div>
+                                    } key={chapter.id} >
+                                        <Space>
+
+                                            <Dropdown
+                                                menu={{
+                                                    items: [
+                                                        {
+                                                            label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('video', chapter)}>{handleDisplayTypeVideo["video"]}<p>Video</p></p>,
+                                                            key: 'video',
+                                                        },
+                                                        {
+                                                            label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('info', chapter)}>{handleDisplayTypeVideo["info"]}<p>Thông tin</p></p>,
+                                                            key: 'info',
+                                                        },
+                                                        {
+                                                            label: <p className='flex items-center gap-3' onClick={() => handleAddLesson('quiz', chapter)}>{handleDisplayTypeVideo["quiz"]}<p>Kiểm tra</p></p>,
+                                                            key: 'quiz',
+                                                        },
+                                                    ],
+                                                }}
+                                                trigger={['click']}
+                                            >
+                                                <Button type="primary"
+                                                    icon={<PlusOutlined />}
+                                                    className='mb-4 w-full'
+                                                >
+                                                    Thêm bài học mới
+                                                </Button>
+                                            </Dropdown>
+                                        </Space>
+                                        <Table
+                                            dataSource={sortedLessons}
+                                            columns={columnsLesson}
+                                            pagination={false}
+                                            rowKey="stt"
+                                        />
+                                    </Collapse.Panel>
+                                </Collapse>
+                            </ConfigProvider>
+                        );
+                    })}
+                </>
+            );
         },
     };
 
@@ -582,6 +679,20 @@ const ManageCourse = () => {
                 closeIcon={<CloseOutlined className='text-white bg-red-500 p-3 rounded-lg' />}
             >
                 {renderLessonComponent()}
+            </Modal>
+            <Modal
+                width={"70%"}
+                title={
+                    <div className='w-full flex justify-center'>
+                        <p className=' text-center rounded-lg  py-2'>Thêm chương mới</p>
+                    </div>
+                }
+                open={isAddChapterModalVisible}
+                onCancel={handleCloseAddChapter}
+                footer={null}
+                closeIcon={<CloseOutlined className='text-white bg-red-500 p-3 rounded-lg' />}
+            >
+                <CreateChapter {...createChapterProps} />
             </Modal>
 
         </div>

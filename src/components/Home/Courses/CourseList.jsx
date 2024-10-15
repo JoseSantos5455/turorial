@@ -50,7 +50,7 @@ const CourseList = ({ courses }) => {
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[250px]' />
                                 <div className='bg-[#f7f7f7] py-2 rounded-b-[16px]'>
-                                    <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.name}</p>
+                                    <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.courseName}</p>
                                     <p className='px-5 font-SemiBold text-[16px] text-[#f05123]'>
                                         {course.price.toLocaleString('vi-VN')}đ
                                     </p>
@@ -82,14 +82,14 @@ const CourseList = ({ courses }) => {
                 </h2>
                 <div className='flex gap-5 flex-wrap'>
                     {freeCourses?.length > 0 ? freeCourses.map(course => (
-                        <div key={course.id} className="hover:shadow-lg hover:-translate-y-1 transition duration-200 rounded-b-[16px]">
+                        <div key={course.id} className="hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-1 transition shadow-md duration-200 rounded-b-[16px]">
                             <Link
                                 to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
                                 className='text-black'
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[240px]' />
                                 <div className='bg-[#f7f7f7] py-2 rounded-b-[16px]'>
-                                    <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.name}</p>
+                                    <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.courseName}</p>
                                     <p className='px-5 font-SemiBold text-[16px] text-[#f05123]'>Miễn phí</p>
                                     <div className='flex mt-6 mb-2 justify-between flex-row text-black items-center px-5'>
                                         <p className='flex gap-2 '>

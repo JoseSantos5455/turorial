@@ -16,7 +16,7 @@ const { Content, Sider } = Layout;
 
 const CourseDetai = () => {
     const { tutorialId } = useParams();
-    const { data: courseDetail, error, isLoading } = useGetCourseDetailQuery(tutorialId);
+    const { data: courseDetail, error, isLoading } = useGetCourseDetailQuery({ courseId: tutorialId });
     const [isExpland, setIsExpland] = useState(false);
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -24,13 +24,24 @@ const CourseDetai = () => {
 
     useEffect(() => {
         if (courseDetail) {
-            setVideoSrc(courseDetail.introductionVideo);
+            setVideoSrc(getEmbedUrl(courseDetail.data.introductionVideo));
+        
         }
     }, [courseDetail]);
 
+    console.log(videoSrc)
+
+    const getEmbedUrl = (url) => {
+        const videoId = url.split('v=')[1];
+        return `https://www.youtube.com/embed/${videoId}`;
+       
+
+    };
+
+
     const handleDisplayTypeVideo = {
         "video": <Image preview={false} width={15} src={videoIcon} />,
-        "information": <Image preview={false} width={15} src={inFoIcon} />,
+        "info": <Image preview={false} width={15} src={inFoIcon} />,
         "quiz": <Image preview={false} width={15} src={quizIcon} />
     }
 
@@ -38,13 +49,13 @@ const CourseDetai = () => {
         if (isExpland) {
             setExpandedKeys([]);
         } else {
-            setExpandedKeys(treeData.map(item => item.key)); // Expand all
+            setExpandedKeys(treeData.map(item => item.key));
         }
-        setIsExpland(prev => !prev); // Toggle expand state
+        setIsExpland(prev => !prev);
     };
 
     const onExpand = (expandedKeysValue) => {
-        setExpandedKeys(expandedKeysValue); // Update expanded keys for individual chapter expansion
+        setExpandedKeys(expandedKeysValue);
     };
 
     const handleDisplayTime = (time) => {
@@ -63,48 +74,72 @@ const CourseDetai = () => {
         </div>
     );
 
-    if (error) return <div>Error loading course details.</div>;
+    // if (error) return <div>Error loading course details.</div>;
 
-    if (!courseDetail || !courseDetail.videoContent) return <div>No course details available.</div>;
+    if (!courseDetail) return <div>No course details available.</div>;
 
-    const totalCourseLessons = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.lessons.length, 0);
-    const totalCourseDuration = courseDetail.videoContent.reduce((acc, chapter) => acc + chapter.lessons.reduce((acc, lesson) => acc + (lesson.duration || 0), 0), 0);
-    const totalChapters = courseDetail.videoContent.length;
-    const treeData = courseDetail.videoContent.map((chapter, index) => {
+    const totalCourseLessons = courseDetail.data.totalLessons;
+    const totalCourseDuration = courseDetail.data.totalDuration;
+    const totalChapters = courseDetail.data.chapters.length;
+
+    const getSortedLessons = (data) => {
+        const sortedLessons = [];
+
+        data.chapters.forEach(chapter => {
+            chapter.lesson.forEach(lesson => {
+                const items = [
+                    ...lesson.videos.map(video => ({ type: 'video', ...video })),
+                    ...lesson.infos.map(info => ({ type: 'info', ...info })),
+                    ...lesson.quizs.map(quiz => ({ type: 'quiz', ...quiz }))
+                ];
+
+
+                items.sort((a, b) => (a.stt || Infinity) - (b.stt || Infinity));
+
+
+                sortedLessons.push({
+                    chapterName: chapter.chapterName,
+                    items
+                });
+            });
+        });
+
+        return sortedLessons;
+    };
+
+    const sortedLessons = getSortedLessons(courseDetail.data);
+
+    const treeData = courseDetail.data.chapters.map((chapter, index) => {
         const chapterIndex = index + 1;
-        const lessons = chapter.lessons;
-        const totalLessons = lessons.length;
-        const totalDuration = lessons.reduce((acc, lesson) => acc + (lesson.duration || 0), 0);
+        const lessons = chapter.lesson;
 
         return {
             title: (
-                <p className='text-[16px]  px-3 font-semibold' >
+                <p className='text-[16px]  mb-2 px-3 font-semibold' >
                     Chương {chapterIndex}: {chapter.chapterName}
                 </p>
             ),
             key: `chapter_${chapterIndex}`,
-            children: lessons.map((lesson, lessonIndex) => {
-                const lessonNumber = totalCourseLessons - (totalCourseLessons - (chapterIndex - 1) * totalLessons - lessonIndex) + 1;
+            children: sortedLessons.filter(item => item.chapterName === chapter.chapterName).flatMap(item => item.items.map((lesson, lessonIndex) => {
                 return {
                     title: (
-                        <span className='text-black flex items-center'>
+                        <div className='text-black mb-1 flex items-center w-full'>
                             <span className='px-2'>{handleDisplayTypeVideo[lesson.type]}</span>
-                            <span className='font-semibold'>Bài {lessonNumber}</span>:
-                            <p className='mr-4 ml-1 flex justify-between min-w-[300px]'>  {lesson.videoName || lesson.quizName || lesson.infoTitle}
+                            <span className='font-semibold'>Bài {lessonIndex + 1}</span>:
+                            <p className='mr-4 ml-1 flex justify-between min-w-[600px]'>  {lesson.videoName || lesson.infoTitle || lesson.title}
                                 <div className='text-left'>
                                     <p >
                                         {lesson.type === "video" ? <span>Video {handleDisplayTime(lesson.duration)}</span> :
                                             lesson.type === "quiz" ? 'Kiểm tra' :
-                                                lesson.type === "information" ? 'Bài học' : null}
+                                                lesson.type === "info" ? 'Bài học' : null}
                                     </p>
                                 </div>
                             </p>
-
-                        </span>
+                        </div>
                     ),
-                    key: `lesson_${chapterIndex}_${lessonNumber}`,
+                    key: `lesson_${chapterIndex}_${lessonIndex + 1}`,
                 };
-            }),
+            })),
         };
     });
 
@@ -121,11 +156,11 @@ const CourseDetai = () => {
     return (
         <Layout className='min-h-screen relative bg-white'>
             <div style={{ padding: '20px', width: '65%' }}>
-                <p className='font-bold text-4xl pb-5'>{courseDetail.name}</p>
+                <p className='font-bold text-[42px] pb-5 bg-custom-gradient bg-clip-text text-transparent' style={{ textShadow: '8px 8px 8px rgba(0, 0, 0, 0.2)' }}>{courseDetail.data.courseName}</p>
                 <p>{courseDetail.description}</p>
                 <p className='font-bold text-xl mt-4 py-2'>Bạn sẽ học được gì ?</p>
                 <div className='grid grid-cols-2 mt-3 gap-4'>
-                    {courseDetail.whatYouWillLearn.map((item, index) => (
+                    {courseDetail.data.whatYouWillLearn?.map((item, index) => (
                         <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item} </p>
                     ))}
                 </div>
@@ -156,13 +191,13 @@ const CourseDetai = () => {
                     }}
                 >
                     <Tree
-                        className='bg-[#f5f5f5] px-6 py-2 pt-3'
+                        className='bg-[#f5f5f5] px-6 py-2 pt-3 w-full'
                         showIcon
                         showLine
                         ex
                         treeData={treeData}
-                        expandedKeys={expandedKeys} // Use state for expanded keys
-                        onExpand={onExpand} // Handle individual expansion
+                        expandedKeys={expandedKeys}
+                        onExpand={onExpand}
                         switcherIcon={({ expanded }) => (
                             <span className={`text-[#6b96ff] transition duration-200`}>
                                 {expanded ? <CaretDownOutlined style={{ fontSize: '25px', marginRight: '8px' }} /> :
@@ -174,13 +209,13 @@ const CourseDetai = () => {
                 </ConfigProvider>
                 <p className='font-bold text-xl mt-4 py-2'>Yêu cầu</p>
                 <div className='grid grid-cols-1 mt-3 gap-4'>
-                    {courseDetail.requirements.map((item, index) => (
+                    {courseDetail.data.requireToPass?.map((item, index) => (
                         <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item}</p>
                     ))}
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Thông tin bổ sung </p>
                 <div>
-                    {courseDetail.moreInformation}
+                    {courseDetail.data.moreInformation}
                 </div>
             </div>
             <Sider
@@ -193,7 +228,7 @@ const CourseDetai = () => {
                     <Image
                         className='rounded-3xl'
                         preview={false}
-                        src={courseDetail.image}
+                        src={courseDetail.data.image}
                         controls
                         style={{ width: '100%', marginBottom: '20px', filter: 'brightness(0.8)' }}
                     >
@@ -208,7 +243,7 @@ const CourseDetai = () => {
                     onCancel={handleCancel}
                     footer={null}
                 >
-                    <p className='font-bold text-2xl pb-4'>{courseDetail.name}</p>
+                    <p className='font-bold text-2xl pb-4'>{courseDetail.data.courseName}</p>
                     <iframe id="video-iframe" width="100%" height="500px" src={videoSrc} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </Modal>
                 <div className='flex flex-col justify-center items-center'>

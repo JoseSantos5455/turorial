@@ -1,8 +1,5 @@
-import { Badge, Button, Card, Col, Form, Input, Row, Select, Spin } from "antd";
-import FormItem from "antd/es/form/FormItem";
-import Meta from "antd/es/card/Meta";
+import { Row, Select, Spin } from "antd";
 import "./Dashboard.scss"
-
 import { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomFooter from "../../components/Footer/CustomFooter";
