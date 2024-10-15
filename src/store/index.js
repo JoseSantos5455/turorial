@@ -9,6 +9,7 @@ import { courseAPI } from "../services/coursesAPI";
 import CourseReducer from "../slices/course.slice";
 import { userAPI } from "../services/userAPI";
 import UserReducer from "../slices/user.slice";
+import { paymentAPI } from "../services/paymentAPI";
 // import { postAPI } from "../services/postAPI";
 import modalReducer from "../slices/modal.slice";
 // import { exchangeAPI } from "../services/exchangeAPI";
@@ -55,6 +56,7 @@ export const store = configureStore({
     [courseAPI.reducerPath]: courseAPI.reducer,
     post: CousresPerisReducer,
     [userAPI.reducerPath]: userAPI.reducer,
+    [paymentAPI.reducerPath]: paymentAPI.reducer,
     post1: UserPerisReducer,
     modal: modalReducer,
     // [exchangeAPI.reducerPath]: exchangeAPI.reducer,
@@ -72,7 +74,8 @@ export const store = configureStore({
       authApi.middleware,
       doctorAPI.middleware,
       courseAPI.middleware,
-      userAPI.middleware
+      userAPI.middleware,
+      paymentAPI.middleware,
       // exchangeAPI.middleware,
       // appealApi.middleware,
     ),

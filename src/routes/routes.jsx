@@ -18,10 +18,13 @@ const Register = Loadable({ loader: () => import("../pages/register/Register") }
 const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
 const Contact = Loadable({ loader: () => import("../pages/contact/Contact") });
+const Package = Loadable({ loader: () => import("../pages/package/Package") });
 const CourseDetail = Loadable({ loader: () => import("../pages/courseDetail/CourseDetai") });
 const Law = Loadable({ loader: () => import("../pages/law/Law") });
 const ErrorPage = Loadable({ loader: () => import("../pages/error/ErroePage") });
 const learningPage = Loadable({ loader: () => import("../pages/leaningPage/LearningPage") });
+const Success = Loadable({ loader: () => import("../pages/success/SuccessPage") });
+const Fail = Loadable({ loader: () => import("../pages/fail/Fail") });
 const Profile = Loadable({
   loader: () => import("../pages/profile/profile"),
 });
@@ -48,6 +51,8 @@ export const router = createBrowserRouter([
     path: "/register",
     element: Register,
   },
+  { path: "/success", element: Success },
+  { path: "/fail", element: Fail },
   {
     path: "/",
     element: <MainLayout showFooter={false} />, // Unified layout
@@ -58,6 +63,8 @@ export const router = createBrowserRouter([
       { path: "/tutorial/:tutorialId", element: CourseDetail },
       { path: "/learning/:courseId", element: learningPage },
       { path: "/lienhe", element: Contact },
+      { path: "/combo", element: Package },
+
       { path: "/law", element: Law },
       {
         path: "/profile",
@@ -76,7 +83,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/admin",
-        element: <Navigate to="/" replace />, 
+        element: <Navigate to="/" replace />,
       },
       {
         element: <AdminGuard />,

@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BackwardOutlined, LeftOutlined, LoadingOutlined, UserOutlined } from "@ant-design/icons";
-import Logo from '../../assets/image/logo.png';
+import Logo from '../../assets/image/logo1.png';
 import LoginForm from "../../components/login/FormLogin.jsx";
 import { selectCurrentToken } from "../../slices/auth.slice.js";
 import { useResetPasswordMutation, useVerifyOtpMutation } from "../../services/authAPI.js";
@@ -225,7 +225,7 @@ function Login({ setIslogin, Islogin, handleCancel }) {
                   />
                 )
               ) : (
-                <ForgotPass   setIsForgotPass={setIsForgotPass} />
+                <ForgotPass setIsForgotPass={setIsForgotPass} />
               )}
             </div>
           )}

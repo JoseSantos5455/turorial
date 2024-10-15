@@ -1,46 +1,58 @@
 import React from 'react'
-import { Column } from '@ant-design/charts';
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Admin = () => {
-  const data = [
-    { type: 'Jan', money: 38 },
-    { type: 'Feb', money: 52 },
-    { type: 'Mar', money: 61 },
-    { type: 'Apr', money: 145 },
-    { type: 'May', money: 48 },
-    { type: 'Jun', money: 38 },
-    { type: 'Jul', money: 38 },
-    { type: 'Aug', money: 38 },
-    { type: 'Sep', money: 90 },
-    { type: 'Oct', money: 110 },
-    { type: 'Nov', money: 120 },
-    { type: 'Dec', money: 150 },
-  ];
 
-  const config = {
-    data,
-    xField: 'type',
-    yField: 'money',
-    label: {
-      position: 'middle',
-      style: {
-        fill: '#FFFFFF',
-        opacity: 0.6,
+  const data = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
+      {
+        label: 'Monthly Revenue (in $)',
+        data: [5000, 4000, 6000, 8000, 5500, 4500, 7000, 6000, 8500, 9000, 9500, 10000],
+        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Màu nền cột
+        borderColor: 'rgba(54, 162, 235, 1)', // Màu viền cột
+        borderWidth: 1,
       },
-    },
-    xAxis: {
-      label: {
-        autoHide: true,
-        autoRotate: false,
-      },
-    },
-    columnWidthRatio: 0.6,
-    meta: {
-      type: { alias: 'Month' },
-      money: { alias: 'money' },
-    },
-    responsive: true,
+    ],
   };
+
+  // Tùy chọn hiển thị của biểu đồ
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top', // Vị trí của chú thích (legend)
+      },
+      title: {
+        display: true,
+        text: 'Monthly Revenue for 2024', // Tiêu đề biểu đồ
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true, // Bắt đầu trục y từ giá trị 0
+      },
+    },
+  };
+
 
   return (
     <div>
@@ -84,7 +96,7 @@ const Admin = () => {
         Doanh thu theo tháng
       </div>
       <div className='mx-40 my-6' style={{ width: '1000px', height: '500px' }}>
-        <Column {...config} />
+        <Bar data={data} options={options} />
       </div>
     </div>
 

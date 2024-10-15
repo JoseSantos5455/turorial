@@ -22,7 +22,7 @@ function Dashboard() {
     <Spin tip="Đợi một xíu nha" size="large">
     </Spin>;
   </div>;
-  
+
 
   return (
     <div
@@ -34,7 +34,7 @@ function Dashboard() {
     >
       <Row >
         <CarouselCustom />
-        <CourseList courses={CourseData?.data.content} />
+        <CourseList courses={CourseData?.data?.content} />
       </Row>
       <CustomFooter />
     </div>

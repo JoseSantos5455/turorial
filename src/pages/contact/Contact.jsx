@@ -4,6 +4,7 @@ import CustomFooter from "../../components/Footer/CustomFooter";
 import { Image, Layout } from 'antd';
 import { PhoneFilled, MailOutlined } from '@ant-design/icons';
 import location from '../../assets/image/location.svg'
+import contact from '../../assets/image/contact.jpg'
 const ContactUs = () => {
   return (
     <div className="contact-us">
@@ -20,7 +21,7 @@ const ContactUs = () => {
             <p><PhoneFilled style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#2878eb', borderRadius: '50%' }} /></p>
 
             <div>
-              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gọi chúng tôi: +03601 885399</p>
+              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gọi chúng tôi: 0336504192</p>
               <p>Giờ làm việc của chúng tôi Thứ 2 – Thứ 6, 9 am–6 pm</p>
             </div>
           </div>
@@ -30,7 +31,7 @@ const ContactUs = () => {
 
             <div>
               <p style={{ fontSize: 18, fontWeight: "bold" }}>Gửi email trực tiếp:</p>
-              <p>info@courselog.com</p>
+              <p>blueedu.info2024@gmail.com</p>
             </div>
           </div>
 
@@ -80,7 +81,7 @@ const ContactUs = () => {
 
         <div className="message-content">
           <div className="message-image">
-            <img src="https://tienhieu.vn/image/catalog/sranee/services/bannerpc_1.jpg" alt="Description of image" />
+            <img src={contact} alt="Description of image" />
           </div>
           <div>
             <form className="message-form">
