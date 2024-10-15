@@ -11,7 +11,7 @@ import {
   VideoCameraAddOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
-import Logo from "./../assets/image/logo.png";
+import Logo from "./../assets/image/logo1.png";
 import LogoLetter from "./../assets/image/b.svg";
 import HeaderCustom from "../components/Header/Header";
 import { selectCurrentUser } from "../slices/auth.slice";
@@ -139,7 +139,7 @@ const MainLayout = () => {
                 className="cursor-pointer"
                 onClick={handleHome}
                 preview={false}
-                src={LogoLetter}
+                src={Logo}
                 alt="Logo Letter"
                 class="h-10 w-auto"
               />
@@ -147,7 +147,7 @@ const MainLayout = () => {
 
             ) : (
               <div className="flex flex-col relative" >
-                <Image className="cursor-pointer" onClick={handleHome} preview={false} src={Logo} alt="Logo" />
+                <Image className="cursor-pointer" style={{ width: "80px", height: "41px" }} onClick={handleHome} preview={false} src={Logo} alt="Logo" />
                 <Tag className="absolute bottom-[-32px]" color="#f50"><span className="text-yellow-300 font-semibold">Education</span> </Tag>
               </div>
             )}

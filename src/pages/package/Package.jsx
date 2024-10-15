@@ -9,7 +9,7 @@ const Package = () => {
     const userId = useSelector(state => state?.user?.user?.id);
     const body = {
         productName: "Blue Pro",
-        description: "Mở kháo tất cả các video",
+        description: "Mở khóa tất cả các video",
         price: 2000,
         packageId: 1,
         userId: userId,
@@ -21,6 +21,7 @@ const Package = () => {
             const payRes = await createPayment(body).unwrap();
             const payMess = payRes?.message;
             const payurl = payRes?.data?.checkoutUrl;
+            console.log(payurl);
             if (payurl) {
                 window.location.href = payurl;
             }

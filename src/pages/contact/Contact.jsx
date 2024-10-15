@@ -21,7 +21,7 @@ const ContactUs = () => {
             <p><PhoneFilled style={{ marginRight: '20px', fontSize: '25px', color: '#fff', padding: '12px', backgroundColor: '#2878eb', borderRadius: '50%' }} /></p>
 
             <div>
-              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gọi chúng tôi: +03601 885399</p>
+              <p style={{ fontSize: 18, fontWeight: "bold" }}>Gọi chúng tôi: 0336504192</p>
               <p>Giờ làm việc của chúng tôi Thứ 2 – Thứ 6, 9 am–6 pm</p>
             </div>
           </div>
@@ -31,7 +31,7 @@ const ContactUs = () => {
 
             <div>
               <p style={{ fontSize: 18, fontWeight: "bold" }}>Gửi email trực tiếp:</p>
-              <p>info@courselog.com</p>
+              <p>blueedu.info2024@gmail.com</p>
             </div>
           </div>
 

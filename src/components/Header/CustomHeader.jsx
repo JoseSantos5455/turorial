@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Layout, Menu, Drawer, Grid, Image, Dropdown, notification } from "antd";
 import "./CustomHeader.scss";
 import { DoubleRightOutlined, FacebookOutlined, FormOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
-import NameWeb from "../../../src/assets/image/logo.svg"
+import NameWeb from "../../../src/assets/image/logo1.jpg"
 import { logOut, selectCurrentToken } from "../../slices/auth.slice";
 import { useDispatch, useSelector } from "react-redux";
 const { Header } = Layout;
@@ -31,7 +31,7 @@ const CustomHeader = () => {
     }, [prevScrollPos]);
 
     const handleLogout = useCallback(() => {
-        dispatch(logOut());     
+        dispatch(logOut());
         notification.success({
             message: "Logout successfully",
             description: "See you again!",

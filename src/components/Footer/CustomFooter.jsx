@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Row, Col, Divider, Image, Input, Button } from "antd";
-import logo from "./../../assets/image/logo.png";
+import logo from "./../../assets/image/logo1.png";
 const { Footer } = Layout;
 import './Footer.scss'
 import { FacebookFilled, InstagramFilled, PhoneFilled, PhoneOutlined, SendOutlined } from "@ant-design/icons";

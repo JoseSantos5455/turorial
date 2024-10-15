@@ -9,7 +9,7 @@ import {
     LogoutOutlined
 } from "@ant-design/icons";
 import { useState, useEffect, useCallback } from "react";
-import Logo from "./../assets/image/logo.png";
+import Logo from "./../assets/image/logo1.png";
 import { logOut } from "../slices/auth.slice";
 import { useDispatch } from "react-redux";
 
@@ -105,6 +105,7 @@ const SecondLayout = ({ showFooter = true }) => {
                             preview={false}
                             src={Logo}
                             alt="Logo"
+                            style={{ width: "100%", height: "41px" }}
                             className="h-10 w-auto"
                         />
                         {!collapsed && <p className="text-white font-bold text-xl mt-2">FOR ADMIN</p>}

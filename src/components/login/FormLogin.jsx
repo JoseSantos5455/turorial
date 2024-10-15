@@ -7,7 +7,7 @@ import { EyeInvisibleOutlined, EyeTwoTone, LockFilled, LockOutlined, SmileFilled
 import { useLoginUserMutation } from "../../services/authAPI";
 import { setToken, setUser } from "../../slices/auth.slice";
 import Cookies from "js-cookie";
-import Logo from '../../assets/image/logo.png';
+import Logo from '../../assets/image/logo1.png';
 import Hi from '../../assets/image/hi.svg'
 import { selectLoacation, setLocation } from "../../slices/user.slice";
 
