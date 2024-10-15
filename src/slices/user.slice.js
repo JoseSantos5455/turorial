@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user: null,
+    location: null,
 };
 
 const userSlice = createSlice({
@@ -19,8 +20,12 @@ const userSlice = createSlice({
                 state.user.avatar = action.payload;
             }
         },
+        setLocation: (state, action) => {
+            state.location = action.payload;
+        }
     },
 });
 
-export const { setUser, clearUser, setAvatar } = userSlice.actions;
+export const { setUser, clearUser, setAvatar, setLocation } = userSlice.actions;
+export const selectLoacation = (state) => state.post1.location;
 export default userSlice.reducer;

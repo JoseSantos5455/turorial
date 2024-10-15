@@ -9,7 +9,7 @@ import {
     LogoutOutlined
 } from "@ant-design/icons";
 import { useState, useEffect, useCallback } from "react";
-import Logo from "./../assets/image/logo.png";
+import Logo from "./../assets/image/logo1.png";
 import { logOut } from "../slices/auth.slice";
 import { useDispatch } from "react-redux";
 
@@ -65,13 +65,13 @@ const SecondLayout = ({ showFooter = true }) => {
             '3': '/admin/courses',
             '4': '/admin/quizs',
             '5': '/admin/money',
-            '6': null 
+            '6': null
         };
 
         const path = routes[e.key];
         if (path) {
             navigate(path);
-        } else if (e.key === '6') { 
+        } else if (e.key === '6') {
             handleLogout();
         }
         setSelectedKey(e.key);
@@ -105,6 +105,7 @@ const SecondLayout = ({ showFooter = true }) => {
                             preview={false}
                             src={Logo}
                             alt="Logo"
+                            style={{ width: "100%", height: "41px" }}
                             className="h-10 w-auto"
                         />
                         {!collapsed && <p className="text-white font-bold text-xl mt-2">FOR ADMIN</p>}
@@ -162,6 +163,7 @@ const SecondLayout = ({ showFooter = true }) => {
             </Sider>
 
             <Layout style={{ marginLeft: collapsed ? "80px" : "200px" }}>
+
                 <Content
                     style={{
                         margin: "24px 16px",

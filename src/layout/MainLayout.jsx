@@ -32,7 +32,8 @@ const MainLayout = () => {
   {
     '1': '/',
     '2': '/lotrinh',
-    '3': '/lienhe'
+    '3': '/lienhe',
+    '4': '/combo',
   }
 
 
@@ -58,6 +59,11 @@ const MainLayout = () => {
       key: "3",
       icon: <ContactsOutlined />,
       label: "Liên hệ",
+    },
+    {
+      key: "4",
+      icon: <DollarOutlined />,
+      label: "Mua gói",
     }
   ]
 
@@ -84,7 +90,7 @@ const MainLayout = () => {
                 className="cursor-pointer"
                 onClick={handleHome}
                 preview={false}
-                src={LogoLetter}
+                src={Logo}
                 alt="Logo Letter"
                 class="h-10 w-auto"
               />
@@ -92,7 +98,7 @@ const MainLayout = () => {
 
             ) : (
               <div className="flex flex-col relative" >
-                <Image className="cursor-pointer" onClick={handleHome} preview={false} src={Logo} alt="Logo" />
+                <Image className="cursor-pointer" style={{ width: "80px", height: "41px" }} onClick={handleHome} preview={false} src={Logo} alt="Logo" />
                 <Tag className="absolute bottom-[-32px]" color="#f50"><span className="text-yellow-300 font-semibold">Education</span> </Tag>
               </div>
             )}
