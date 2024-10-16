@@ -4,7 +4,8 @@ import ReactPlayer from 'react-player';
 import checkIcon from './../../assets/image/check.svg'
 import activeIcon from './../../assets/image/active.svg'
 import takenote from './../../assets/image/note.svg'
-import { useGetCourseDetailQuery, useGetLearningProgressQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
+// import { useGetCourseDetailQuery, useGetLearningProgressQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
+import { useGetCourseDetailTestQuery, useGetLearningProgressTestQuery, useSavingNewProgressTestMutation } from '../../services/coursesAPI';
 import { Breadcrumb, Image, message, Skeleton, Collapse, ConfigProvider } from 'antd';
 import { CaretRightOutlined, LeftOutlined } from '@ant-design/icons';
 import './learning.scss'
@@ -29,18 +30,18 @@ const LearningPage = () => {
     const progressSavedRef = useRef(false);
     const [currentInfo, setCurrentInfo] = useState(null);
     const [takeNote, setTakeNote] = useState(false);
-    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery(courseId);
-    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId: "user_001" });
-    const [saveLearningProgress] = useSavingNewProgressMutation();
-    const user =useSelector(selectCurrentUser)
+    const user = useSelector(selectCurrentUser)
+    const userId = user?.id;
+    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailTestQuery({ courseId: courseId });
+    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressTestQuery({ courseId, userId });
+    const [saveLearningProgress] = useSavingNewProgressTestMutation();
+
 
     useEffect(() => {
         if (progressData?.progress) {
             setProgress(progressData.progress);
         }
     }, [progressData]);
-
-
 
     // update tiến độ
     const updateProgress = useCallback(async (newProgress) => {
@@ -174,7 +175,7 @@ const LearningPage = () => {
                 if (lastCompletedChapter) {
                     // Tìm video cuối cùng trong chương hoàn thành gần nhất
                     const lastCompletedVideo = lastCompletedChapter.videos[lastCompletedChapter.videos.length - 1];
-                    const flatVideos = courseDetail.videoContent.flatMap(chapter =>
+                    const flatVideos = courseDetail?.videoContent?.flatMap(chapter =>
                         chapter.lessons.filter(item => item.type === 'video') // Filter for videos only
                     );
                     const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideo.videoId);
@@ -218,7 +219,7 @@ const LearningPage = () => {
                 setPlaying(true);
             } else if (courseDetail) {
                 // Nếu không có tiến độ, chọn video đầu tiên của khóa học
-                const firstVideo = courseDetail.videoContent.flatMap(chapter => chapter.lessons).find(lesson => lesson.type === 'video');
+                const firstVideo = courseDetail?.videoContent?.flatMap(chapter => chapter.lessons).find(lesson => lesson.type === 'video');
                 setCurrentVideo(firstVideo);
                 setPlayedSeconds(0);
                 setPlaying(true);

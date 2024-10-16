@@ -12,6 +12,8 @@ import clockIcon from '../../assets/image/clock.svg';
 import levelIcon from '../../assets/image/level.svg';
 import location from '../../assets/image/location.svg';
 import all from '../../assets/image/all.svg';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../slices/auth.slice';
 const { Content, Sider } = Layout;
 
 const CourseDetai = () => {
@@ -21,11 +23,12 @@ const CourseDetai = () => {
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [videoSrc, setVideoSrc] = useState('');
-
+    const user = useSelector(selectCurrentUser);
+    const navigate = useNavigate();
     useEffect(() => {
         if (courseDetail) {
             setVideoSrc(getEmbedUrl(courseDetail.data.introductionVideo));
-        
+
         }
     }, [courseDetail]);
 
@@ -34,7 +37,7 @@ const CourseDetai = () => {
     const getEmbedUrl = (url) => {
         const videoId = url.split('v=')[1];
         return `https://www.youtube.com/embed/${videoId}`;
-       
+
 
     };
 
@@ -253,13 +256,14 @@ const CourseDetai = () => {
                     <Button
                         type="primary"
                         size='large'
+                        onClick={() => navigate(user?.packageStatus === 'CANCELLED' ? '/combo' : `/learning/${tutorialId}`)}
                         className='bg-gradient-to-r
                     w-[60%] mt-5
                     from-blue-500 to-cyan-400 text-white 
                     font-medium rounded-full py-3 px-6 transition-transform duration-800
                      hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg'
                     >
-                        {courseDetail.isPaidCourse ? "Mua ngay" : "Đăng ký học"}
+                        {user?.packageStatus == 'CANCELLED' ? "Mua ngay" : "Học ngay"}
                     </Button>
                     <div>
                         <p className='text-sm text-gray-700 mt-4 flex gap-3'><Image preview={false} width={20} src={levelIcon} />Trình độ cơ bản</p>

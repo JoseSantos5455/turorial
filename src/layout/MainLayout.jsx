@@ -3,10 +3,11 @@ import { ConfigProvider, Image, Layout, Menu, Tag, theme } from "antd";
 import {
   ApartmentOutlined,
   ContactsOutlined,
+  DollarOutlined,
   HomeFilled,
 } from "@ant-design/icons";
 import { useState } from "react";
-import Logo from "./../assets/image/logo.png";
+import Logo from "./../assets/image/logo1.png";
 import LogoLetter from "./../assets/image/b.svg";
 import HeaderCustom from "../components/Header/Header";
 import { selectCurrentUser } from "../slices/auth.slice";

@@ -26,10 +26,10 @@ const Package = () => {
                 window.location.href = payurl;
             }
         } catch (error) {
-            console.log(error?.data?.message);
+            console.log(error?.data?.error);
             notification.error({
                 message: "Thanh toán thất bại",
-                description: error?.data?.message,
+                description: error?.data?.error,
                 duration: 1.5
             });
         }

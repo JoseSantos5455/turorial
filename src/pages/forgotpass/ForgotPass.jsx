@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Logo from '../../assets/image/logo.png';
+import Logo from '../../assets/image/logo1.png';
 import { Form, Image, Input, Button, Alert, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { UserOutlined } from '@ant-design/icons';
