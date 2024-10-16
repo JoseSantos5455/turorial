@@ -5,6 +5,7 @@ import { useEditChapterMutation, useGetChapterDetailsQuery } from '../../../../s
 const EditChapter = ({ chapterId, refetch, handleCloseModal }) => {
   const [form] = Form.useForm();
   const { data: chapterData, isLoading: loadingChapter } = useGetChapterDetailsQuery(chapterId);
+
   const [editChapter, { isLoading }] = useEditChapterMutation();
 
   // Set initial values with existing chapter data for editing
@@ -17,8 +18,10 @@ const EditChapter = ({ chapterId, refetch, handleCloseModal }) => {
   }, [chapterData, form]);
 
   const onFinish = async (values) => {
+  
     try {
       // Editing the existing chapter
+      values.stt= chapterData.data.stt
       await editChapter({ chapterId: chapterId, body: values }).unwrap();
       message.success('Chỉnh sửa chương thành công!');
       form.resetFields();

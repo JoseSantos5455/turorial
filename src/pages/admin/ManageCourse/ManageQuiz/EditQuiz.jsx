@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Space, Select, InputNumber, Card, message, Empty } from 'antd';
 import { DeleteFilled, DeleteOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useGetQuizDetailsQuery } from '../../../../services/coursesAPI';
+import { useEditQuizMutation, useGetQuizDetailsQuery } from '../../../../services/coursesAPI';
 
 
 const { Option } = Select;
@@ -9,11 +9,12 @@ const { Option } = Select;
 const EditQuiz = ({ lessonId, refetch, handleCloseEditModal }) => {
     const [form] = Form.useForm();
     const { data: quizData, isLoading: loadingQuiz } = useGetQuizDetailsQuery(lessonId);
-    // const [editQuiz, { isLoading: updating }] = useEditCourseQuizMutation();
+    const [editQuiz, { isLoading: updating }] = useEditQuizMutation();
 
     useEffect(() => {
         if (quizData) {
             form.setFieldsValue({
+
                 title: quizData.title,
                 'expiration-time': quizData.expiration_time,
                 questions: quizData.questions.map((question) => ({
@@ -28,19 +29,21 @@ const EditQuiz = ({ lessonId, refetch, handleCloseEditModal }) => {
     const indexToAlpha = (index) => String.fromCharCode(97 + index);
 
     const onFinish = async (values) => {
+        values.stt = quizData.stt;
+        
         try {
             const formattedValues = {
                 ...values,
                 questions: values.questions.map((question) => ({
                     text: question.text,
-                    answers: question.answers.map((answerText) => ({ text: answerText })),
+                    answers: question.answers.map((answerText) => (answerText)),
                     correctAnswer: question.correctAnswer,
                 })),
             };
-            // await editQuiz({ quizId, body: formattedValues }).unwrap();
+            console.log(formattedValues)
+            await editQuiz({ quizId: lessonId, body: formattedValues }).unwrap();
             message.success('Chỉnh sửa quiz thành công!');
             handleCloseEditModal();
-            form.resetFields();
             refetch();
         } catch (error) {
             message.error('Chỉnh sửa quiz thất bại. Vui lòng thử lại.');
@@ -208,7 +211,7 @@ const EditQuiz = ({ lessonId, refetch, handleCloseEditModal }) => {
 
             <Form.Item>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" htmlType="submit" >
+                    <Button type="primary" htmlType="submit" loading={updating}>
                         Lưu chỉnh sửa
                     </Button>
                 </div>

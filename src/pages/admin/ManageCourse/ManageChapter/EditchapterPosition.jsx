@@ -110,7 +110,7 @@ const EditchapterPosition = ({ chapterId, refetch, handleCloseModal }) => {
             console.log(updatedLessons);
             await editChapter({
                 chapterId,
-                lessons: updatedLessons,
+                body: updatedLessons,
             });
 
             refetch();

@@ -8,12 +8,14 @@ export const courseAPI = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BE_API_LOCAL,
 
-        prepareHeaders: (headers, { getState }) => {
+        prepareHeaders: (headers, { getState, endpoint }) => {
             const token = selectTokens(getState());
             if (token) {
                 headers.append("Authorization", `Bearer ${token}`);
             }
-            headers.append("Content-Type", "application/json");
+            if (endpoint !== "CreateCourse") {
+                headers.set("Content-Type", "application/json");
+            }
             return headers;
         },
     }),
@@ -117,13 +119,19 @@ export const courseAPI = createApi({
         }),
 
         CreateCourse: builder.mutation({
-            query: (body) => ({
-                method: "POST",
-                url: `courses/create-full-course`,
-                body: body,
-            }),
+            query: (body) => {
+
+                return {
+                    method: "POST",
+                    url: `courses/create-full-course`,
+                    body: body,
+                };
+            },
             invalidatesTags: [{ type: "CourseList", id: "LIST" }],
         }),
+
+
+
 
         CreateChapter: builder.mutation({
             query: ({ body, courseId }) => ({
@@ -181,6 +189,22 @@ export const courseAPI = createApi({
             query: ({ body, chapterId }) => ({
                 method: "PUT",
                 url: `chapters/update/${chapterId}`,
+                body: body,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        editQuiz: builder.mutation({
+            query: ({ body, quizId }) => ({
+                method: "PUT",
+                url: `quizzes/update-quiz/${quizId}`,
+                body: body,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+        editCourse: builder.mutation({
+            query: ({ body, courseId }) => ({
+                method: "PUT",
+                url: `courses/update/${courseId}`,
                 body: body,
             }),
             invalidatesTags: [{ type: "CourseList", id: "LIST" }],
@@ -245,5 +269,7 @@ export const {
     useEditInfoMutation,
     useGetQuizDetailsQuery,
     useGetChapterDetailsQuery,
-    useEditChapterMutation
+    useEditChapterMutation,
+    useEditCourseMutation,
+    useEditQuizMutation
 } = courseAPI;

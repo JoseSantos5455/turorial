@@ -13,6 +13,7 @@ const CreateQuiz = ({ lessonId, refetch, handleCloseModal, stt }) => {
     const indexToAlpha = (index) => String.fromCharCode(97 + index);
 
     const onFinish = async (values) => {
+        console.log(values)
         const valuesToSubmit = { ...values, stt: stt, lesson_id: lessonId };
         try {
             const rs = createQuizs(valuesToSubmit);

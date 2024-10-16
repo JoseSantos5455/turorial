@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
   { path: "/fail", element: Fail },
   {
     path: "/",
-    element: <MainLayout showFooter={false} />, // Unified layout
+    element: <MainLayout showFooter={false} />,
     children: [
       { index: true, element: Home },
       { path: "/lotrinh", element: Lotrinh },

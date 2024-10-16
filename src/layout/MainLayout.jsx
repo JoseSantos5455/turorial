@@ -3,6 +3,7 @@ import { ConfigProvider, Image, Layout, Menu, Tag, theme } from "antd";
 import {
   ApartmentOutlined,
   ContactsOutlined,
+  DollarOutlined,
   HomeFilled,
 } from "@ant-design/icons";
 import { useState } from "react";
