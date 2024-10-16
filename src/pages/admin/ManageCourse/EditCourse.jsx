@@ -1,27 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, Input, InputNumber, Upload, Space, message } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import ReactQuill styles
-import { useCreateCourseMutation } from '../../../services/coursesAPI';
-import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useEditCourseMutation, useGetCourseDetailQuery } from '../../../services/coursesAPI';
 
-
-const CreateCourse = () => {
+const EditCourse = ({ courseId, refetch, handleCloseModal }) => {
     const [form] = Form.useForm();
-    const [createCourse, { isLoading, isSuccess }] = useCreateCourseMutation();
-    const navigate = useNavigate();
+
+    // Fetch the course details
+    const { data: course, isLoading: courseLoading, error: courseError } = useGetCourseDetailQuery({ courseId });
+    const [updateCourse, { isLoading: updateLoading }] = useEditCourseMutation();
+
+    useEffect(() => {
+        if (course) {
+            // Populate the form with existing course details
+            form.setFieldsValue({
+                courseName: course.data.courseName,
+                moreInformation: course.data.moreInformation,
+                description: course.data.description,
+                image: course.data.image,
+                introductionVideoUrl: course.data.introductionVideo,
+                whatYouWillLearn: course.data.whatYouWillLearn || [],
+                requireToPass: course.data.requireToPass || [],
+                chapters: course.data.chapters || []
+            });
+        }
+    }, [course, form]);
+
     const handleSubmit = async (values) => {
-        // gắn tạm thời chờ API 
-        values.image = 'https://service.keyframe.vn/uploads/filecloud/2018/April/25/72-559201524659628-1524659628.jpg';
-        
+        values.rating = course.data.rating
         try {
-            await createCourse(values).unwrap();
-            message.success('Khóa học đã được tạo thành công!');
-            form.resetFields();
-            navigate('/admin/courses', { state: { reload: true } });
+            await updateCourse({ courseId: courseId, body: values }).unwrap();
+            message.success('Khóa học đã được cập nhật thành công!');
+            handleCloseModal();
+            refetch();
         } catch (error) {
-            message.error('Đã xảy ra lỗi khi tạo khóa học!');
+            message.error('Đã xảy ra lỗi khi cập nhật khóa học!');
         }
     };
 
@@ -34,31 +49,21 @@ const CreateCourse = () => {
             [{ 'color': [] }, { 'background': [] }]
         ],
     };
-    
+
     const formats = [
         'header', 'bold', 'italic', 'underline', 'strike', 'list', 'link', 'image', 'video', 'color', 'background'
     ];
+
+    if (courseLoading) return <p>Loading...</p>;
+    if (courseError) return <p>Error loading course data</p>;
+
     return (
         <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }} >
-            {/* <h1>Tạo Khóa Học</h1> */}
             <Form
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
-                initialValues={{
-                    courseName: '',
-                    moreInformation: '',
-                    description: '',
-                    image: '',
-                    introductionVideoUrl: '',
-                    totalDuration: 0,
-                    totalChapter: 0,
-                    totalVideos: 0,
-                    price: 0,
-                    rating: 0,
-                }}
             >
-                {/* Tên Khóa Học */}
                 <Form.Item
                     label="Tên Khóa Học"
                     name="courseName"
@@ -67,7 +72,6 @@ const CreateCourse = () => {
                     <Input placeholder="Nhập tên khóa học" />
                 </Form.Item>
 
-                {/* Thông Tin Thêm */}
                 <Form.Item
                     label="Thông Tin Thêm"
                     name="moreInformation"
@@ -75,18 +79,17 @@ const CreateCourse = () => {
                     <ReactQuill
                         modules={modules}
                         formats={formats}
+                        theme="snow"
                         style={{
-                            maxHeight: '180px',
+
                             backgroundColor: 'white',
                             border: '1px solid #d1d1d1',
                         }}
-                        theme="snow"
                         placeholder="Thông tin thêm về khóa học"
                         onChange={(content) => form.setFieldsValue({ moreInformation: content })}
                     />
                 </Form.Item>
 
-                {/* Mô Tả */}
                 <Form.Item
                     label="Mô Tả"
                     name="description"
@@ -95,7 +98,6 @@ const CreateCourse = () => {
                     <Input.TextArea rows={4} placeholder="Mô tả khóa học" />
                 </Form.Item>
 
-                {/* Tải Ảnh Lên */}
                 <Form.Item
                     label="Ảnh Khóa Học"
                     name="image"
@@ -120,7 +122,6 @@ const CreateCourse = () => {
                     </Upload>
                 </Form.Item>
 
-                {/* URL Video Giới Thiệu */}
                 <Form.Item
                     label="URL Video Giới Thiệu"
                     name="introductionVideoUrl"
@@ -129,52 +130,7 @@ const CreateCourse = () => {
                     <Input placeholder="Nhập URL video" />
                 </Form.Item>
 
-                {/* Tổng Thời Gian */}
-                <Form.Item
-                    label="Tổng Thời Gian (giờ)"
-                    name="totalDuration"
-                    rules={[{ required: true, message: 'Vui lòng nhập tổng thời gian!' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
 
-                {/* Tổng Chương */}
-                <Form.Item
-                    label="Tổng Chương"
-                    name="totalChapter"
-                    rules={[{ required: true, message: 'Vui lòng nhập tổng số chương!' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-
-                {/* Tổng Video */}
-                <Form.Item
-                    label="Tổng Video"
-                    name="totalVideos"
-                    rules={[{ required: true, message: 'Vui lòng nhập tổng số video!' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-
-                {/* Giá */}
-                <Form.Item
-                    label="Giá (VND)"
-                    name="price"
-                    rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
-                </Form.Item>
-
-                {/* Đánh Giá */}
-                <Form.Item
-                    label="Đánh Giá"
-                    name="rating"
-                    rules={[{ required: true, message: 'Vui lòng nhập đánh giá!' }]}
-                >
-                    <InputNumber min={0} max={5} step={0.1} style={{ width: '100%' }} />
-                </Form.Item>
-
-                {/* Những gì bạn sẽ học */}
                 <Form.Item label="Những gì bạn sẽ học">
                     <Form.List name="whatYouWillLearn">
                         {(fields, { add, remove }) => (
@@ -202,7 +158,6 @@ const CreateCourse = () => {
                     </Form.List>
                 </Form.Item>
 
-                {/* Yêu cầu để vượt qua */}
                 <Form.Item label="Yêu cầu để vượt qua">
                     <Form.List name="requireToPass">
                         {(fields, { add, remove }) => (
@@ -230,7 +185,6 @@ const CreateCourse = () => {
                     </Form.List>
                 </Form.Item>
 
-                {/* Chương */}
                 <Form.Item label="Chương">
                     <Form.List name="chapters">
                         {(fields, { add, remove }) => (
@@ -257,7 +211,7 @@ const CreateCourse = () => {
                                     </Space>
                                 ))}
                                 <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                    <Button type="dashed" onClick={() => add({ stt: fields.length + 1 })} block icon={<PlusOutlined />}>
                                         Thêm Chương
                                     </Button>
                                 </Form.Item>
@@ -266,14 +220,13 @@ const CreateCourse = () => {
                     </Form.List>
                 </Form.Item>
 
-                {/* Nút Gửi */}
                 <Form.Item>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button type="primary"
                             htmlType='submit'
-                            loading={isLoading}
+                            loading={updateLoading}
                             className="bg-gradient-to-r w-[50%] from-blue-500 to-cyan-400 text-white font-medium rounded-full py-5 px-6 transition-transform duration-800 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg">
-                            Tạo khóa học
+                            Cập nhật khóa học
                         </Button>
                     </div>
                 </Form.Item>
@@ -282,4 +235,4 @@ const CreateCourse = () => {
     );
 };
 
-export default CreateCourse;
+export default EditCourse;

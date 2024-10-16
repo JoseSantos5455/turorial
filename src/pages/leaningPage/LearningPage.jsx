@@ -37,6 +37,7 @@ const LearningPage = () => {
     const [saveLearningProgress] = useSavingNewProgressTestMutation();
 
 
+
     useEffect(() => {
         if (progressData?.progress) {
             setProgress(progressData.progress);
@@ -91,7 +92,7 @@ const LearningPage = () => {
 
 
 
-
+    // 20s luu tien do
 
     const handleProgress = useCallback(throttle((state) => {
         setPlayedSeconds(state.playedSeconds);
@@ -104,7 +105,7 @@ const LearningPage = () => {
 
 
 
-
+    // >80% tien do cua video thi bai hoc da dc hoc 
 
     useEffect(() => {
         if (currentVideo && playedSeconds / currentVideo.duration > 0.8) {

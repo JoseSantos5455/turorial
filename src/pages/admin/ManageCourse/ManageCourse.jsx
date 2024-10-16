@@ -14,6 +14,9 @@ import EditVideo from './ManageVideo/EditVideo';
 import EditInfo from './ManageInfo/EditInfo';
 import EditQuiz from './ManageQuiz/EditQuiz';
 import CreateChapter from './ManageChapter/CreateChapter';
+import EditChapter from './ManageChapter/EditChapter';
+import EditchapterPosition from './ManageChapter/EditchapterPosition';
+import EditCourse from './EditCourse';
 
 const ManageCourse = () => {
     const [searchText, setSearchText] = useState('');
@@ -31,11 +34,16 @@ const ManageCourse = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isAddChapterModalVisible, setIsAddChapterModalVisible] = useState(false);
     const [courseId, setCourseId] = useState(null);
+    const [editCourseId, setEditCourseId] = useState(null);
     const [chapterIdEdit, setChapterIdEdit] = useState(null);
+    const [isChapterEdit, setisChapteredit] = useState(null);
+    const [chapterStt, setChapterStt] = useState(null);
+    const [isCourseEdit, setisCourseEdit] = useState(false);
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
     const { data: CourseData, isLoading: isLoadingCourses, refetch } = useGetAllCourseAdminQuery({ page, size });
+    console.log(CourseData)
     const [deleteCourse] = useDeleteCourseMutation()
     const [deleteVideoLesson] = useDeleteVideoLessonMutation()
     const [deleteInfoLesson] = useDeleteInfoLessonMutation()
@@ -162,8 +170,9 @@ const ManageCourse = () => {
 
     // Function to handle adding a lesson
     const handleAddLesson = (type, chapter) => {
+        console.log(chapter)
         setStt(getNextLessonStt(chapter))
-        setChapterId(chapter.id)
+        setChapterId(chapter.lesson[0].lessonId)
         setIsModalVisible(true);
         setLessonType(type)
     };
@@ -205,6 +214,21 @@ const ManageCourse = () => {
     }
 
 
+    const handleOpenEditCourseModal = (record) => {
+        setisCourseEdit(true)
+        setEditCourseId(record)
+    };
+
+    const handleCloseEditCourseModal = () => {
+        setisCourseEdit(false);
+        setEditCourseId(null)
+    };
+
+    const EditCourseProps = {
+        courseId: editCourseId,
+        refetch: refetch,
+        handleCloseModal: handleCloseEditCourseModal,
+    }
 
     const renderLessonComponent = () => {
         if (isEditModalVisible) {
@@ -262,12 +286,12 @@ const ManageCourse = () => {
             sortOrder: sortedInfo.columnKey === 'courseName' && sortedInfo.order,
         },
         {
-            title: 'Giá',
+            title: 'Loại khóa học',
             dataIndex: 'price',
             key: 'price',
             render: (price) => (
                 <Tag color={price > 0 ? "green" : 'red'} key={price}>
-                    {price > 0 ? `${price.toLocaleString()} VND` : "Miễn phí"}
+                    {price > 0 ? `Có phí` : "Miễn phí"}
                 </Tag>
             ),
             sorter: (a, b) => a.price - b.price,
@@ -281,11 +305,11 @@ const ManageCourse = () => {
             sortOrder: sortedInfo.columnKey === 'totalChapter' && sortedInfo.order,
         },
         {
-            title: 'Tổng số video',
-            dataIndex: 'totalVideos',
-            key: 'totalVideos',
-            sorter: (a, b) => a.totalVideos - b.totalVideos,
-            sortOrder: sortedInfo.columnKey === 'totalVideos' && sortedInfo.order,
+            title: 'Tổng số bài học',
+            dataIndex: 'totalLessons',
+            key: 'totalLessons',
+            sorter: (a, b) => a.totalLessons - b.totalLessons,
+            sortOrder: sortedInfo.columnKey === 'totalLessons' && sortedInfo.order,
         },
         {
             title: 'Đánh giá',
@@ -304,7 +328,7 @@ const ManageCourse = () => {
                             type='default'
                             icon={<EditFilled />}
                             style={{ backgroundColor: 'white', color: 'blue' }}
-                        // onClick={() => handleLockUser(record.id)}
+                            onClick={() => handleOpenEditCourseModal(record.id)}
                         />
                     </Tooltip>
 
@@ -352,6 +376,7 @@ const ManageCourse = () => {
 
 
     const handleAddChapter = (record) => {
+        setChapterStt(record.chapters.length)
         setIsAddChapterModalVisible(true);
         setCourseId(record.id)
     }
@@ -360,15 +385,27 @@ const ManageCourse = () => {
         setIsAddChapterModalVisible(false);
     }
 
+    const handleEditChapter = (record) => {
+        setIsAddChapterModalVisible(true);
+        setisChapteredit(true)
+        setChapterIdEdit(record.id)
+    }
+    const handleCloseModalChapter = (record) => {
+        setIsAddChapterModalVisible(false);
+        setisChapteredit(false)
+        setChapterIdEdit(null)
+    }
+
     const createChapterProps = {
+        stt: chapterStt,
         courseId: courseId,
         refetch: refetch,
         handleCloseModal: handleCloseAddChapter,
     }
     const EditChapterProps = {
-        courseId: chapterIdEdit,
+        chapterId: chapterIdEdit,
         refetch: refetch,
-        handleCloseModal: handleCloseAddChapter,
+        handleCloseModal: handleCloseModalChapter,
     }
 
     const handleDeleteChapter = (record) => {
@@ -521,11 +558,11 @@ const ManageCourse = () => {
                                                     menu={{
                                                         items: [
                                                             {
-                                                                label: <p className='flex items-center gap-3' onClick={(e) => e.stopPropagation()}><EditFilled style={{ color: 'blue' }} /><p>  Chỉnh sửa tên chương</p></p>,
+                                                                label: <p className='flex items-center gap-3' onClick={(e) => { e.stopPropagation(); handleEditChapter(chapter); }}><EditFilled style={{ color: 'blue' }} /><p>  Chỉnh sửa tên chương</p></p>,
                                                                 key: 'video',
                                                             },
                                                             {
-                                                                label: <p className='flex items-center gap-3' onClick={(e) => e.stopPropagation()}><OrderedListOutlined style={{ color: '#ffb90f' }} /><p>  Thay đổi vị trí</p></p>,
+                                                                label: <p className='flex items-center gap-3' onClick={(e) => { e.stopPropagation(); handleOpenEditModalPosition(chapter) }}><OrderedListOutlined style={{ color: '#ffb90f' }} /><p>  Thay đổi vị trí bài học</p></p>,
                                                                 key: 'info',
                                                             },
                                                             {
@@ -684,15 +721,29 @@ const ManageCourse = () => {
                 width={"70%"}
                 title={
                     <div className='w-full flex justify-center'>
-                        <p className=' text-center rounded-lg  py-2'>Thêm chương mới</p>
+                        <p className=' text-center rounded-lg  py-2'>{!isChapterEdit ? "Thêm chương mới" : "Chỉnh sửa tên chương"}</p>
                     </div>
                 }
                 open={isAddChapterModalVisible}
-                onCancel={handleCloseAddChapter}
+                onCancel={handleCloseModalChapter}
                 footer={null}
                 closeIcon={<CloseOutlined className='text-white bg-red-500 p-3 rounded-lg' />}
             >
-                <CreateChapter {...createChapterProps} />
+                {!isChapterEdit ? (<CreateChapter {...createChapterProps} />) : (<EditChapter {...EditChapterProps} />)}
+            </Modal>
+            <Modal
+                width={"70%"}
+                title={
+                    <div className='w-full flex justify-center'>
+                        <p className=' text-center rounded-lg  py-2'>Chỉnh sửa khóa học</p>
+                    </div>
+                }
+                open={isCourseEdit}
+                onCancel={handleCloseEditCourseModal}
+                footer={null}
+                closeIcon={<CloseOutlined className='text-white bg-red-500 p-3 rounded-lg' />}
+            >
+                <EditCourse {...EditCourseProps} />
             </Modal>
 
         </div>

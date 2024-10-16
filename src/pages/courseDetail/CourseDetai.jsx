@@ -14,6 +14,7 @@ import location from '../../assets/image/location.svg';
 import all from '../../assets/image/all.svg';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
+import './../leaningPage/takenote.scss'
 const { Content, Sider } = Layout;
 
 const CourseDetai = () => {
@@ -160,7 +161,7 @@ const CourseDetai = () => {
         <Layout className='min-h-screen relative bg-white'>
             <div style={{ padding: '20px', width: '65%' }}>
                 <p className='font-bold text-[42px] pb-5 bg-custom-gradient bg-clip-text text-transparent' style={{ textShadow: '8px 8px 8px rgba(0, 0, 0, 0.2)' }}>{courseDetail.data.courseName}</p>
-                <p>{courseDetail.description}</p>
+                <p className='text-[15px]'>{courseDetail.data.description}</p>
                 <p className='font-bold text-xl mt-4 py-2'>Bạn sẽ học được gì ?</p>
                 <div className='grid grid-cols-2 mt-3 gap-4'>
                     {courseDetail.data.whatYouWillLearn?.map((item, index) => (
@@ -217,8 +218,8 @@ const CourseDetai = () => {
                     ))}
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Thông tin bổ sung </p>
-                <div>
-                    {courseDetail.data.moreInformation}
+                <div dangerouslySetInnerHTML={{ __html: courseDetail.data.moreInformation }} className='olCustome ml-7 mt-2'>
+
                 </div>
             </div>
             <Sider
