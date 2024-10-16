@@ -27,7 +27,7 @@ const CourseList = ({ courses }) => {
 
     // Log isEnrolled for each course
     courses?.forEach(course => {
-        // console.log(course?.isEnrolled);
+        console.log(course?.isEnrolled);
     });
 
     return (
@@ -45,7 +45,7 @@ const CourseList = ({ courses }) => {
                                 <Image preview={false} width={23} src={crown} />
                             </div>
                             <Link
-                                to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
+                                to={`tutorial/${course.id}`}
                                 className='text-black'
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[250px]' />
@@ -84,7 +84,7 @@ const CourseList = ({ courses }) => {
                     {freeCourses?.length > 0 ? freeCourses.map(course => (
                         <div key={course.id} className="hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-1 transition shadow-md duration-200 rounded-b-[16px]">
                             <Link
-                                to={course.isEnrolled == true ? `/learning/${course.id}` : `tutorial/${course.id}`}
+                                to={`tutorial/${course.id}`}
                                 className='text-black'
                             >
                                 <img src={course.image} alt={course.name} className='rounded-t-[16px] max-w-[240px]' />

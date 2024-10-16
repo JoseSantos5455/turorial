@@ -44,6 +44,16 @@ export const courseAPI = createApi({
             }),
         }),
 
+        checkAnswer: builder.mutation({
+            query: (body) => ({
+                method: "POST",
+                url: `quizzes/check-answers`,
+                body: body,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+
+
         getMyCourse: builder.query({
             query: () => `4ace85d5-4d7e-4276-a31c-282ca3f8019a`,
             providesTags: (result) => [{ type: "CourseList", id: "LIST" }],
@@ -81,6 +91,39 @@ export const courseAPI = createApi({
                 method: "GET",
             }),
         }),
+
+        //test api
+
+        getCourseDetailTest: builder.query({
+            query: () => ({
+                // url: users/getuserprofile/${userId},
+                url: `https://mocki.io/v1/dc1b01f2-57ed-4cc3-8ae5-44d256828921`,
+                method: "GET",
+            }),
+        }),
+        getLearningProgressTest: builder.query({
+            query: ({ courseId, userId }) => ({
+                // query: (courseId) => learning-progress/${courseId},
+                url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress`,
+                providesTags: (result) =>
+                    result ? [{ type: "Progress", id: "LIST" }] : [],
+            }),
+        }),
+        savingNewProgressTest: builder.mutation({
+            query: (payload) => {
+                const newBody = {
+                    videoId: payload.videoId,
+                    progress: payload.progress,
+                }
+                return {
+                    method: "PUT",
+                    url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress/${payload.userId}`,
+                    body: newBody,
+                };
+            },
+            invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
+        }),
+
         getChapterDetails: builder.query({
             query: (chapterId) => ({
                 url: `chapters/get-detail/${chapterId}`,
@@ -88,9 +131,11 @@ export const courseAPI = createApi({
             }),
         }),
 
+
+        //end test apip
         getLearningProgress: builder.query({
             query: ({ courseId, userId }) => ({
-                url: `progress/${courseId}/${userId}`,
+                url: `progress/user/${userId}/course${courseId}`,
             }),
             providesTags: (result) => [{ type: "Progress", id: "LIST" }],
         }),
@@ -268,6 +313,11 @@ export const {
     useGetInfoDetailsQuery,
     useEditInfoMutation,
     useGetQuizDetailsQuery,
+    useCheckAnswerMutation,
+    //test
+    useGetCourseDetailTestQuery,
+    useGetLearningProgressTestQuery,
+    useSavingNewProgressTestMutation
     useGetChapterDetailsQuery,
     useEditChapterMutation,
     useEditCourseMutation,

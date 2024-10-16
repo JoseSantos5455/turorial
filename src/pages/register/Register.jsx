@@ -3,7 +3,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone, FormOutlined, LockOutlined } from '@ant-design/icons';
 import { validationPatterns } from '../../utils/utils';
-import Logo from '../../assets/image/logo.png'
+import Logo from '../../assets/image/logo1.png'
 import ImportIcon from '../../assets/Icon';
 import { useRegisterUserMutation } from '../../services/authAPI';
 

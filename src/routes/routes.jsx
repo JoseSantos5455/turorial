@@ -5,6 +5,7 @@ import SecondLayout from "../layout/SecondLayout";
 import AuthGuard from "./AuthGuard";
 import AdminGuard from "./AdminGuard";
 import ManagerGuard from "./ManagerGuard";
+import PaymentCheck from "./PaymentCheck";
 
 
 
@@ -14,6 +15,7 @@ const Detail = Loadable({ loader: () => import("../pages/admin/ManageUser/Detail
 const ManageCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/ManageCourse") });
 const Cost = Loadable({ loader: () => import("../pages/admin/Cost") });
 const Quiz = Loadable({ loader: () => import("../pages/admin/Quiz") });
+const Quizes = Loadable({ loader: () => import("../pages/leaningPage/Quizz") });
 const Register = Loadable({ loader: () => import("../pages/register/Register") });
 const Lotrinh = Loadable({ loader: () => import("../pages/lotrinh/Lotrinh") });
 const Post = Loadable({ loader: () => import("../pages/post/Post") });
@@ -60,18 +62,28 @@ export const router = createBrowserRouter([
       { index: true, element: Home },
       { path: "/lotrinh", element: Lotrinh },
       { path: "/baiviet", element: Post },
+      { path: "/quiz", element: Quizes },
       { path: "/tutorial/:tutorialId", element: CourseDetail },
-      { path: "/learning/:courseId", element: learningPage },
+
       { path: "/lienhe", element: Contact },
       { path: "/combo", element: Package },
 
       { path: "/law", element: Law },
       {
-        path: "/profile",
+        path: "/",
         element: <AuthGuard />,
         children: [
+
           {
             path: "/profile", element: Profile,
+          },
+
+          {
+            path: "/learning/:courseId",
+            element: <PaymentCheck />,
+            children: [
+              { path: "/learning/:courseId", element: learningPage },
+            ]
           },
         ]
       },
