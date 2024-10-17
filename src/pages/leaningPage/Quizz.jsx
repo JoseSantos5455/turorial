@@ -3,8 +3,9 @@ import { useGetQuizDetailsQuery, useCheckAnswerMutation } from '../../services/c
 import { Card, Radio, Alert, Row, Col, Form, Button, Skeleton, message, Modal, Tag, ConfigProvider } from 'antd';
 import { DeleteFilled, FlagFilled, FlagOutlined, SnippetsOutlined } from '@ant-design/icons';
 
-const QuestionDisplay = ({ quizz }) => {
-    const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizDetailsQuery(1);
+const QuestionDisplay = ({ quizz,setIsQuizStart }) => {
+
+    const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizDetailsQuery(quizz?.id);
     const [checkAnswer, { data: scoreData, isLoading: isCheckLoading }] = useCheckAnswerMutation();
     const [form] = Form.useForm();
     const [score, setScore] = useState(null);
@@ -12,12 +13,13 @@ const QuestionDisplay = ({ quizz }) => {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [quizStarted, setQuizStarted] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [markedQuestions, setMarkedQuestions] = useState([]); // Danh sách câu hỏi được đánh dấu
-    const [flagQuestions, setFlagQuestions] = useState([]); // Danh sách câu hỏi được đánh dấu
-    const [selectedQuestions, setSelectedQuestions] = useState({}); // Trạng thái câu hỏi đã chọn
+    const [markedQuestions, setMarkedQuestions] = useState([]); 
+    const [flagQuestions, setFlagQuestions] = useState([]);
+    const [selectedQuestions, setSelectedQuestions] = useState({});
     const optionMap = ["a", "b", "c", "d"];
     let timer;
     const timerRef = useRef(null);
+    const questionRefs = useRef({});
 
     useEffect(() => {
         if (quizStarted && QuizzDetail?.expiration_time) {
@@ -43,6 +45,11 @@ const QuestionDisplay = ({ quizz }) => {
         return () => clearInterval(timerRef.current);
     }, [quizStarted, QuizzDetail, form]);
 
+    const handleStartQuiz = () => {
+        setQuizStarted(true)
+        setIsQuizStart(true)
+    }
+
     const handleRetryQuiz = () => {
         setScore(null);
         setIsSubmitted(false);
@@ -56,45 +63,57 @@ const QuestionDisplay = ({ quizz }) => {
         clearInterval(timerRef.current);
     };
 
+    const handleSubmit = async (values) => {
+        setIsQuizStart(false)
+        setIsSubmitted(true);
+        clearInterval(timerRef.current);
+
+        const formattedAnswers = Object.keys(values).reduce((acc, key) => {
+            const questionId = key.split('_')[1];
+            const selectedOptionIndex = values[key];
+            acc[questionId] = optionMap[selectedOptionIndex];
+            return acc;
+        }, {});
+
+        const body = {
+            "answers": formattedAnswers,
+            "quiz-id": 2
+        };
+
+        try {
+            const result = await checkAnswer(body).unwrap();
+            setScore(result.score);
+            if (!result.pass) {
+                message.error(`Bạn đã đạt được ${result.score} điểm! Bạn không vượt qua!`);
+            } else {
+                message.success(`Bạn đã đạt được ${result.score} điểm! Bạn đã vượt qua!`);
+            }
+        } catch (error) {
+            message.error('Đã xảy ra lỗi khi kiểm tra câu trả lời!');
+        }
+
+        const totalTimeUsed = (QuizzDetail?.expiration_time * 60) - timeLeft;
+        setElapsedTime(totalTimeUsed);
+    }
+
     const onFinish = async (values) => {
         if (isSubmitted) return;
 
         Modal.confirm({
             title: 'Xác nhận nộp bài',
-            content: 'Bạn có chắc chắn muốn nộp bài?',
+            content: (
+                <>
+                    {QuizzDetail?.questions?.length - Object.keys(selectedQuestions).length > 0 && (
+                        <p>Vẫn còn <span className='font-bold text-red-600'>{QuizzDetail?.questions?.length - Object.keys(selectedQuestions).length}</span> câu hỏi chưa trả lời</p>
+                    )}
+                    Bạn có chắc chắn muốn nộp bài?
+                </>
+            ),
             okText: 'Có',
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
-                setIsSubmitted(true);
-                clearInterval(timerRef.current);
-
-                const formattedAnswers = Object.keys(values).reduce((acc, key) => {
-                    const questionId = key.split('_')[1];
-                    const selectedOptionIndex = values[key];
-                    acc[questionId] = optionMap[selectedOptionIndex];
-                    return acc;
-                }, {});
-
-                const body = {
-                    "answers": formattedAnswers,
-                    "quiz-id": 1
-                };
-
-                try {
-                    const result = await checkAnswer(body).unwrap();
-                    setScore(result.score);
-                    if (!result.pass) {
-                        message.error(`Bạn đã đạt được ${result.score} điểm! Bạn không vượt qua!`);
-                    } else {
-                        message.success(`Bạn đã đạt được ${result.score} điểm! Bạn đã vượt qua!`);
-                    }
-                } catch (error) {
-                    message.error('Đã xảy ra lỗi khi kiểm tra câu trả lời!');
-                }
-
-                const totalTimeUsed = (QuizzDetail?.expiration_time * 60) - timeLeft;
-                setElapsedTime(totalTimeUsed);
+                handleSubmit(values)
             },
         });
     };
@@ -120,6 +139,10 @@ const QuestionDisplay = ({ quizz }) => {
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
+    const scrollToQuestion = (questionId) => {
+        questionRefs.current[questionId]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
     if (isQuizzLoading) return <Skeleton />;
     if (quizzError) return <Alert message="Error" description="Error loading quiz details" type="error" showIcon />;
 
@@ -128,11 +151,11 @@ const QuestionDisplay = ({ quizz }) => {
             <div className="flex justify-between items-center sticky top-20 bg-white z-10 shadow-md py-2">
                 <div className="ml-5">
                     <p>Số lượng câu hỏi:<span className='font-bold'> {QuizzDetail?.questions?.length}</span></p>
-                    <p>Điều kiện vượt qua:<span className='font-bold'> trên 80% điểm</span></p>
-                    {score && <p>Điểm của bạn: <span className='text-red-500 font-bold text-lg'>{score}</span></p>}
+                    <p>Điều kiện vượt qua:<span className='font-bold'> ít nhất 80 điểm</span></p>
+                    {score ? <p className='mt-2'>Điểm của bạn: <span className={`${score >= 80 ? "text-green-500" : "text-red-500"}  font-bold text-lg`}>{score} / 100</span></p> : ""}
                 </div>
                 {!isSubmitted && (
-                    <p className={`px-4 py-2 rounded-lg font-bold ${quizStarted ? 'text-red-500' : 'text-black'}`}>
+                    <p className={`px-4 py-2 rounded-lg text-[16px] font-bold ${quizStarted ? timeLeft <= 10 ? 'text-red-500' : 'text-green-600' : 'text-black'}`}>
                         Thời gian: {timeLeft !== null ? formatTime(timeLeft) : formatTime(QuizzDetail?.expiration_time * 60)}
                     </p>
                 )}
@@ -144,7 +167,13 @@ const QuestionDisplay = ({ quizz }) => {
                 quizStarted && (
                     <Form form={form} onFinish={onFinish}>
                         {QuizzDetail.questions.map((question, index) => (
-                            <Card type="inner" title={<p>Câu {index + 1}: {question.text}</p>} key={question.id} className="mt-4 w-full">
+                            <Card
+                                type="inner"
+                                title={<p>Câu {index + 1}: {question.text}</p>}
+                                key={question.id}
+                                className="mt-4 w-full"
+                                ref={el => questionRefs.current[question.id] = el}
+                            >
                                 <Form.Item className="w-full" name={`question_${question.id}`}>
                                     <Radio.Group onChange={() => setSelectedQuestions(prev => ({ ...prev, [question.id]: true }))}>
                                         <Row className="gap-6" justify={'space-between'} gutter={[16, 16]}>
@@ -194,21 +223,20 @@ const QuestionDisplay = ({ quizz }) => {
                                             <div className='flex gap-5 w-full flex-wrap'>
                                                 {QuizzDetail.questions.map((question, index) => (
                                                     <div
-                                                        className={`w-fit  ${selectedQuestions[question.id] ? 'bg-cyan-400' : 'bg-gray-200'} shadow-md rounded-md flex flex-col items-center`}
+                                                        key={question.id}
+                                                        className={`w-fit ${selectedQuestions[question.id] ? 'bg-green-300' : 'bg-gray-100'} shadow-md rounded-md flex flex-col items-center cursor-pointer`}
+                                                        onClick={() => scrollToQuestion(question.id)}
                                                     >
-                                                        <p className={`${selectedQuestions[question.id] ? "text-white" : ""} text-white bg-cyan-700 px-2 text-[13px]`}>Câu {index + 1}</p>
+                                                        <p className={`${selectedQuestions[question.id] ? "text-white" : ""} text-white rounded-t-md  bg-green-700 px-2 text-[13px]`}>Câu {index + 1}</p>
                                                         <hr />
-                                                        <div className={`  flex flex-col text-sm py-1`}>
+                                                        <div className={`flex flex-col text-sm py-1`}>
                                                             {!flagQuestions[question.id] ? <FlagFilled style={{ color: 'white', opacity: '0' }} /> : <FlagFilled style={{ color: 'red' }} />}
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
-
                                         </Card>
                                     </ConfigProvider>
-
-
                                 </div>
                                 <Form.Item className='w-full flex justify-center'>
                                     <button
@@ -229,7 +257,7 @@ const QuestionDisplay = ({ quizz }) => {
                 !quizStarted && (
                     <Button
                         type="primary"
-                        onClick={() => setQuizStarted(true)}
+                        onClick={handleStartQuiz}
                         className="mb-4 mt-9"
                         icon={<SnippetsOutlined />}
                     >
@@ -242,7 +270,7 @@ const QuestionDisplay = ({ quizz }) => {
                 score !== null && (
                     <>
                         <Alert
-                            message={`Điểm của bạn: ${score}`}
+                            message={<span>Điểm của bạn: {score}</span>}
                             description={`Thời gian bạn đã làm: ${formatTime(elapsedTime)}`}
                             type={scoreData?.pass ? 'success' : 'warning'}
                             showIcon

@@ -4,8 +4,8 @@ import ReactPlayer from 'react-player';
 import checkIcon from './../../assets/image/check.svg'
 import activeIcon from './../../assets/image/active.svg'
 import takenote from './../../assets/image/note.svg'
-// import { useGetCourseDetailQuery, useGetLearningProgressQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
-import { useGetCourseDetailTestQuery, useGetLearningProgressTestQuery, useSavingNewProgressTestMutation } from '../../services/coursesAPI';
+import { useGetCourseDetailQuery, useGetLearningProgressQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
+// import { useGetCourseDetailTestQuery, useGetLearningProgressTestQuery, useSavingNewProgressTestMutation } from '../../services/coursesAPI';
 import { Breadcrumb, Image, message, Skeleton, Collapse, ConfigProvider } from 'antd';
 import { CaretRightOutlined, LeftOutlined } from '@ant-design/icons';
 import './learning.scss'
@@ -16,6 +16,8 @@ import TakeNote from './TakeNote';
 import InforLesson from './InforLesson';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
+
+
 
 
 
@@ -30,94 +32,95 @@ const LearningPage = () => {
     const progressSavedRef = useRef(false);
     const [currentInfo, setCurrentInfo] = useState(null);
     const [takeNote, setTakeNote] = useState(false);
+    const [isQuizStart, setIsQuizStart] = useState(false);
     const user = useSelector(selectCurrentUser)
     const userId = user?.id;
-    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailTestQuery({ courseId: courseId });
-    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressTestQuery({ courseId, userId });
-    const [saveLearningProgress] = useSavingNewProgressTestMutation();
+    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery({ courseId: courseId });
+    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId });
+    const [saveLearningProgress] = useSavingNewProgressMutation();
 
-
-
+    console.log(courseDetail)
+    console.log(progressData)
     useEffect(() => {
-        if (progressData?.progress) {
-            setProgress(progressData.progress);
+        if (progressData) {
+            setProgress(progressData);
         }
     }, [progressData]);
 
     // update tiến độ
-    const updateProgress = useCallback(async (newProgress) => {
-        try {
-            await saveLearningProgress({
-                userId: progressData.userId,
-                courseId: progressData.courseId,
-                progress: newProgress,
-                dateUpdated: new Date().toISOString(),
-            });
-            setProgress(newProgress);
-        } catch (error) {
-            console.error('Error saving progress', error);
-        }
-    }, [progressData, saveLearningProgress]);
+    // const updateProgress = useCallback(async (newProgress) => {
+    //     try {
+    //         await saveLearningProgress({
+    //             userId: progressData.userId,
+    //             courseId: progressData.courseId,
+    //             progress: newProgress,
+    //             dateUpdated: new Date().toISOString(),
+    //         });
+    //         setProgress(newProgress);
+    //     } catch (error) {
+    //         console.error('Error saving progress', error);
+    //     }
+    // }, [progressData, saveLearningProgress]);
 
 
 
 
 
-    const updateChapterProgress = useCallback((currentVideoId, newPlayedSeconds, isCompleted) => {
-        const chapterProgress = progress.find(chapter =>
-            chapter.videos && chapter.videos.some(video => video.videoId === currentVideoId)
-        );
+    // const updateChapterProgress = useCallback((currentVideoId, newPlayedSeconds, isCompleted) => {
+    //     const chapterProgress = progress.find(chapter =>
+    //         chapter.videos && chapter.videos.some(video => video.videoId === currentVideoId)
+    //     );
 
-        if (chapterProgress) {
-            const newProgress = progress.map(chapter =>
-                chapter.chapterId === chapterProgress.chapterId
-                    ? {
-                        ...chapter,
-                        videos: chapter.videos.map(video => {
-                            const isVideoCompleted = video.isCompleted;
-                            return video.videoId === currentVideoId
-                                ? { ...video, watchedDuration: newPlayedSeconds, isCompleted: isCompleted || video.duration <= newPlayedSeconds && !isVideoCompleted }
-                                : video;
-                        }),
-                        isChapterCompleted: chapter.videos.every(video => video.isCompleted) &&
-                            chapter.quizz.every(quiz => quiz.isCompleted) &&
-                            chapter.information.every(info => info.isViewed)
-                    }
-                    : chapter
-            );
+    //     if (chapterProgress) {
+    //         const newProgress = progress.map(chapter =>
+    //             chapter.chapterId === chapterProgress.chapterId
+    //                 ? {
+    //                     ...chapter,
+    //                     videos: chapter.videos.map(video => {
+    //                         const isVideoCompleted = video.isCompleted;
+    //                         return video.videoId === currentVideoId
+    //                             ? { ...video, watchedDuration: newPlayedSeconds, isCompleted: isCompleted || video.duration <= newPlayedSeconds && !isVideoCompleted }
+    //                             : video;
+    //                     }),
+    //                     isChapterCompleted: chapter.videos.every(video => video.isCompleted) &&
+    //                         chapter.quizz.every(quiz => quiz.isCompleted) &&
+    //                         chapter.information.every(info => info.isViewed)
+    //                 }
+    //                 : chapter
+    //         );
 
-            updateProgress(newProgress);
-        }
-    }, [progress, updateProgress]);
+    //         updateProgress(newProgress);
+    //     }
+    // }, [progress, updateProgress]);
 
 
 
     // 20s luu tien do
 
-    const handleProgress = useCallback(throttle((state) => {
-        setPlayedSeconds(state.playedSeconds);
+    // const handleProgress = useCallback(throttle((state) => {
+    //     setPlayedSeconds(state.playedSeconds);
 
-        if (Math.floor(state.playedSeconds) % 20 === 0 && currentVideo) {
-            updateChapterProgress(currentVideo.videoId, state.playedSeconds, false);
-        }
-    }, 20000), [currentVideo, updateChapterProgress]);
+    //     if (Math.floor(state.playedSeconds) % 20 === 0 && currentVideo) {
+    //         updateChapterProgress(currentVideo.videoId, state.playedSeconds, false);
+    //     }
+    // }, 20000), [currentVideo, updateChapterProgress]);
 
 
 
 
     // >80% tien do cua video thi bai hoc da dc hoc 
 
-    useEffect(() => {
-        if (currentVideo && playedSeconds / currentVideo.duration > 0.8) {
-            updateChapterProgress(currentVideo.videoId, playedSeconds, true);
-            progressSavedRef.current = true;
-        }
+    // useEffect(() => {
+    //     if (currentVideo && playedSeconds / currentVideo.duration > 0.8) {
+    //         updateChapterProgress(currentVideo.videoId, playedSeconds, true);
+    //         progressSavedRef.current = true;
+    //     }
 
-        // Reset lại ref khi video thay đổi
-        return () => {
-            progressSavedRef.current = false;
-        };
-    }, [playedSeconds, currentVideo, updateChapterProgress]);
+    //     // Reset lại ref khi video thay đổi
+    //     return () => {
+    //         progressSavedRef.current = false;
+    //     };
+    // }, [playedSeconds, currentVideo, updateChapterProgress]);
 
 
 
@@ -126,10 +129,11 @@ const LearningPage = () => {
     // Đặt video hiện tại
 
     const handleSetVideo = useCallback((lesson, index) => {
+        console.log(lesson)
         const chapterProgress = progress.find(chapter =>
-            chapter.videos.some(v => v.videoId === lesson.videoId)
+            chapter.videoProgresses.some(v => v.videoId === lesson.videoId)
         );
-        const watchedDuration = chapterProgress?.videos.find(v => v.videoId === lesson.videoId)?.watchedDuration || 0;
+        const watchedDuration = chapterProgress?.videoProgresses.find(v => v.videoId === lesson.videoId)?.watchedDuration || 0;
 
         if (lesson.type === 'video') {
             setCurrentVideo(lesson);
@@ -141,7 +145,7 @@ const LearningPage = () => {
             setCurrentQuiz(lesson);
             setCurrentVideo(null); // Reset video hiện tại
             setPlaying(false);
-        } else if (lesson.type === 'information') {
+        } else if (lesson.type === 'info') {
             setCurrentInfo(lesson);
             setCurrentVideo(null); // Reset video hiện tại
             setCurrentQuiz(null); // Reset bài kiểm tra hiện tại
@@ -155,8 +159,8 @@ const LearningPage = () => {
 
     const handlePlayerReady = () => {
         if (playerRef.current) {
-            const chapterProgress = progress.find(chapter => chapter.videos.some(v => v.videoId === currentVideo.videoId));
-            const watchedDuration = chapterProgress?.videos.find(v => v.videoId === currentVideo.videoId)?.watchedDuration || 0;
+            const chapterProgress = progress.find(chapter => chapter.videoProgresses.some(v => v.videoId === currentVideo.videoId));
+            const watchedDuration = chapterProgress?.videoProgresses.find(v => v.videoId === currentVideo.videoId)?.watchedDuration || 0;
             playerRef.current.seekTo(watchedDuration, 'seconds');
         }
     };
@@ -164,72 +168,72 @@ const LearningPage = () => {
 
 
 
-    useEffect(() => {
-        const findNextVideo = () => {
-            if (progress.length > 0 && courseDetail) {
-                // Tìm chương đã hoàn thành cuối cùng
-                const completedChapters = progress.filter(chapter => chapter.isChapterCompleted);
-                const lastCompletedChapter = completedChapters[completedChapters.length - 1]; // Chương hoàn thành cuối cùng
+    // useEffect(() => {
+    //     const findNextVideo = () => {
+    //         if (progress.length > 0 && courseDetail) {
+    //             // Tìm chương đã hoàn thành cuối cùng
+    //             const completedChapters = progress.filter(chapter => chapter.isChapterCompleted);
+    //             const lastCompletedChapter = completedChapters[completedChapters.length - 1]; // Chương hoàn thành cuối cùng
 
-                let nextVideo = null;
+    //             let nextVideo = null;
 
-                if (lastCompletedChapter) {
-                    // Tìm video cuối cùng trong chương hoàn thành gần nhất
-                    const lastCompletedVideo = lastCompletedChapter.videos[lastCompletedChapter.videos.length - 1];
-                    const flatVideos = courseDetail?.videoContent?.flatMap(chapter =>
-                        chapter.lessons.filter(item => item.type === 'video') // Filter for videos only
-                    );
-                    const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideo.videoId);
+    //             if (lastCompletedChapter) {
+    //                 // Tìm video cuối cùng trong chương hoàn thành gần nhất
+    //                 const lastCompletedVideo = lastCompletedChapter.videos[lastCompletedChapter.videos.length - 1];
+    //                 const flatVideos = courseDetail?.data?.chapters?.flatMap(chapter =>
+    //                     chapter.lesson.filter(item => item.type === 'video') // Filter for videos only
+    //                 );
+    //                 const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideo.videoId);
 
-                    // Tìm video tiếp theo
-                    const nextVideoIndex = lastVideoIndex + 1;
-                    if (nextVideoIndex < flatVideos.length) {
-                        nextVideo = flatVideos[nextVideoIndex];
-                    }
-                }
+    //                 // Tìm video tiếp theo
+    //                 const nextVideoIndex = lastVideoIndex + 1;
+    //                 if (nextVideoIndex < flatVideos.length) {
+    //                     nextVideo = flatVideos[nextVideoIndex];
+    //                 }
+    //             }
 
-                // Nếu không có video tiếp theo, chọn video đầu tiên
-                if (!nextVideo) {
-                    const firstChapter = courseDetail.videoContent[0];
-                    const completedVideosInFirstChapter = firstChapter.lessons.filter(lesson =>
-                        lesson.type === 'video' &&
-                        progress.some(chapter => chapter.chapterId === firstChapter.chapterId && chapter.videos.some(v => v.videoId === lesson.videoId && v.isCompleted))
-                    );
+    //             // Nếu không có video tiếp theo, chọn video đầu tiên
+    //             if (!nextVideo) {
+    //                 const firstChapter = courseDetail?.data?.chapters[0];
+    //                 const completedVideosInFirstChapter = firstChapter.lesson?.filter(lesson =>
+    //                     lesson.type === 'video' &&
+    //                     progress.some(chapter => chapter.chapterId === firstChapter.chapterId && chapter.videos.some(v => v.videoId === lesson.videoId && v.isCompleted))
+    //                 );
 
-                    if (completedVideosInFirstChapter.length > 0) {
-                        const lastCompletedVideoInFirstChapter = completedVideosInFirstChapter[completedVideosInFirstChapter.length - 1];
-                        const flatVideos = firstChapter.lessons.filter(lesson => lesson.type === 'video');
-                        const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideoInFirstChapter.videoId) + 1;
+    //                 if (completedVideosInFirstChapter.length > 0) {
+    //                     const lastCompletedVideoInFirstChapter = completedVideosInFirstChapter[completedVideosInFirstChapter.length - 1];
+    //                     const flatVideos = firstChapter.lesson.filter(lesson => lesson.type === 'video');
+    //                     const lastVideoIndex = flatVideos.findIndex(video => video.videoId === lastCompletedVideoInFirstChapter.videoId) + 1;
 
-                        // Set video tiếp theo là video hoàn thành cuối cùng + 1
-                        if (lastVideoIndex < flatVideos.length) {
-                            nextVideo = flatVideos[lastVideoIndex];
-                        }
-                    }
-                }
+    //                     // Set video tiếp theo là video hoàn thành cuối cùng + 1
+    //                     if (lastVideoIndex < flatVideos.length) {
+    //                         nextVideo = flatVideos[lastVideoIndex];
+    //                     }
+    //                 }
+    //             }
 
-                // Nếu không có video tiếp theo, chọn video đầu tiên của chương đầu tiên
-                if (!nextVideo) {
-                    const firstVideo = courseDetail.videoContent[0].lessons.find(lesson => lesson.type === 'video');
-                    nextVideo = firstVideo;
-                }
+    //             // Nếu không có video tiếp theo, chọn video đầu tiên của chương đầu tiên
+    //             if (!nextVideo) {
+    //                 const firstVideo = courseDetail.data?.chapters?.lesson.find(lesson => lesson.type === 'video');
+    //                 nextVideo = firstVideo;
+    //             }
 
-                // Cập nhật video hiện tại và trạng thái trình phát
-                setCurrentVideo(nextVideo);
-                setPlayedSeconds(0);
-                setPlaying(true);
-            } else if (courseDetail) {
-                // Nếu không có tiến độ, chọn video đầu tiên của khóa học
-                const firstVideo = courseDetail?.videoContent?.flatMap(chapter => chapter.lessons).find(lesson => lesson.type === 'video');
-                setCurrentVideo(firstVideo);
-                setPlayedSeconds(0);
-                setPlaying(true);
-            }
-        }
-        if (progress && courseDetail) {
-            findNextVideo();
-        }
-    }, [courseDetail]);
+    //             // Cập nhật video hiện tại và trạng thái trình phát
+    //             setCurrentVideo(nextVideo);
+    //             setPlayedSeconds(0);
+    //             setPlaying(true);
+    //         } else if (courseDetail) {
+    //             // Nếu không có tiến độ, chọn video đầu tiên của khóa học
+    //             const firstVideo = courseDetail?.data.chapters?.flatMap(chapter => chapter.lesson).find(lesson => lesson.type === 'video');
+    //             setCurrentVideo(firstVideo);
+    //             setPlayedSeconds(0);
+    //             setPlaying(true);
+    //         }
+    //     }
+    //     if (progress && courseDetail) {
+    //         findNextVideo();
+    //     }
+    // }, [courseDetail]);
 
 
     const handleSettakeNote = () => {
@@ -283,7 +287,7 @@ const LearningPage = () => {
                         </button>
                     </>
                 ) : currentQuiz ? (
-                    <QuestionDisplay quizz={currentQuiz} />
+                    <QuestionDisplay quizz={currentQuiz} setIsQuizStart={setIsQuizStart} />
                 ) : currentInfo ? (
                     <InforLesson currentInfo={currentInfo} />
                 ) : (
@@ -317,45 +321,51 @@ const LearningPage = () => {
                     />
                 </div>
             ) : (
-                <div className={`mt-16 ${takeNote ? "col-span-3" : "col-span-1"}`}>
-                    <p className='font-bold text-xl mb-6'>Nội dung khóa học</p>
-                    {courseDetail?.videoContent.map((chapter, chapterIndex) => {
-                        const chapterId = chapter.chapterId;
-                        const currentChapterProgress = progress.find((ch) => ch.chapterId === chapterId);
+                !isQuizStart ? (
+                    <div className={`mt-16 ${takeNote ? "col-span-3" : "col-span-1"}`}>
+                        <p className='font-bold text-xl mb-6'>Nội dung khóa học</p>
+                        {courseDetail?.data.chapters.map((chapter, chapterIndex) => {
+                            const chapterId = chapter.id;
+                            const currentChapterProgress = progress.find((ch) => ch.chapterId === chapterId);
 
-                        // Kiểm tra trạng thái hoàn thành của chương hiện tại
-                        const isCurrentChapterCompleted = currentChapterProgress?.isChapterCompleted;
+                            // Flatten and sort lessons by 'stt'
+                            const sortedLessons = [
+                                ...chapter.lesson.flatMap(lesson => lesson.videos.map(video => ({ ...video, type: 'video', lessonId: lesson.lessonId }))),
+                                ...chapter.lesson.flatMap(lesson => lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz', lessonId: lesson.lessonId }))),
+                                ...chapter.lesson.flatMap(lesson => lesson.infos.map(info => ({ ...info, type: 'info', lessonId: lesson.lessonId })))
+                            ].sort((a, b) => a.stt - b.stt);
 
-                        // Kiểm tra xem có phải là chương hiện tại
-                        const isCurrentChapter = chapterIndex === progress.findIndex(ch => ch.chapterId === chapterId);
+                            // Kiểm tra trạng thái hoàn thành của chương hiện tại
+                            const isCurrentChapterCompleted = currentChapterProgress?.chapterCompleted;
 
-                        // Kiểm tra chương trước đã hoàn thành
-                        const isPreviousChapterCompleted = chapterIndex === 0 || progress[chapterIndex - 1]?.isChapterCompleted;
+                            // Kiểm tra xem có phải là chương hiện tại
+                            const isCurrentChapter = chapterIndex === progress.findIndex(ch => ch.chapterId === chapterId);
 
-                        // Điều kiện cho phép mở chương
-                        const isLessonEnabled = (chapterIndex === 0) || (isPreviousChapterCompleted && !isCurrentChapterCompleted);
+                            // Kiểm tra chương trước đã hoàn thành
+                            const isPreviousChapterCompleted = chapterIndex === 0 || progress[chapterIndex - 1]?.chapterCompleted;
 
-                        return (
-                            <div key={chapterIndex} className="mb-2">
-                                <ConfigProvider
-                                    theme={{
-                                        components: {
-                                            Collapse: {},
-                                        },
-                                    }}
-                                >
-                                    <Collapse
-                                        expandIcon={({ isActive }) => <CaretRightOutlined style={{ color: 'white' }} rotate={isActive ? 90 : 0} />}
+                            // Điều kiện cho phép mở chương
+                            const isLessonEnabled = (chapterIndex === 0) || (isPreviousChapterCompleted && !isCurrentChapterCompleted);
+
+                            return (
+                                <div key={chapterIndex} className="mb-2">
+                                    <ConfigProvider
+                                        theme={{
+                                            components: {
+                                                Collapse: {},
+                                            },
+                                        }}
                                     >
-                                        <Collapse.Panel
-                                            header={
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Collapse
+                                            expandIcon={({ isActive }) => <CaretRightOutlined style={{ color: 'white' }} rotate={isActive ? 90 : 0} />}
+                                        >
+                                            <Collapse.Panel
+                                                header={
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <p style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
+                                                            {`Chương ${chapterIndex + 1}: ${chapter.chapterName}`}
 
-                                                    <p style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
-
-                                                        {`Chương ${chapterIndex + 1}: ${chapter.chapterName}`}
-
-                                                        {chapter.lessons.some(lesson =>
+                                                            {/* {chapter.lesson.some(lesson =>
 
                                                             (lesson.videoId === currentVideo?.videoId && currentVideo?.type === 'video') ||
                                                             (lesson.quizId === currentQuiz?.quizId && currentQuiz?.type === 'quiz') ||
@@ -365,71 +375,78 @@ const LearningPage = () => {
 
                                                                 <Image preview={false} width={15} src={activeIcon} alt="Current" className="inline ml-5 mb-1 animated-icon" />
 
-                                                            )}
+                                                            )} */}
 
-                                                    </p>
+                                                        </p>
+                                                    </div>
+                                                }
+                                                key={chapterIndex}
+                                            >
+                                                <ul>
+                                                    {sortedLessons.map((lesson, index) => {
+                                                        const isLessonCompleted =
+                                                            lesson.type === 'video'
+                                                                ? currentChapterProgress?.videoProgresses.find(video => video.videoId === lesson.videoId)?.completed
+                                                                : lesson.type === 'quiz'
+                                                                    ? currentChapterProgress?.quizProgresses.find(quiz => quiz.quizId === lesson.id)?.completed
+                                                                    : lesson.type === 'info'
+                                                                        ? currentChapterProgress?.infoProgresses.find(info => info.infoId === lesson.infoId)?.viewed
+                                                                        : false;
 
-                                                </div>
-                                            }
-                                            key={chapterIndex}
-                                        >
-                                            <ul>
-                                                {chapter.lessons.map((lesson, index) => {
-                                                    const isLessonCompleted =
-                                                        lesson.type === 'video'
-                                                            ? currentChapterProgress?.videos.find(video => video.videoId === lesson.videoId)?.isCompleted
-                                                            : lesson.type === 'quiz'
-                                                                ? currentChapterProgress?.quizz.find(quiz => quiz.quizId === lesson.quizId)?.isCompleted
-                                                                : lesson.type === 'information'
-                                                                    ? currentChapterProgress?.information.find(info => info.infoId === lesson.infoId)?.isViewed
-                                                                    : false;
+                                                        const isCurrentLesson =
+                                                            (lesson.type === 'video' && lesson.videoId === currentVideo?.videoId) ||
+                                                            (lesson.type === 'quiz' && lesson.id === currentQuiz?.quizId) ||
+                                                            (lesson.type === 'info' && lesson.infoId === currentInfo?.infoId);
 
+                                                        const lessonClass = isLessonEnabled ? 'text-black' : 'text-gray-400';
+                                                        const fontWeightClass = isCurrentLesson ? 'font-bold' : '';
 
-                                                    const isCurrentLesson =
-
-                                                        (lesson.videoId === currentVideo?.videoId && currentVideo?.type === 'video') ||
-                                                        (lesson.quizId === currentQuiz?.quizId && currentQuiz?.type === 'quiz') ||
-                                                        (lesson.infoId === currentInfo?.infoId && currentInfo?.type === 'information');
-
-                                                    const lessonClass = isLessonEnabled ? 'text-black' : 'text-gray-400'; // Màu đen cho bài học hiện tại, xám cho bài học không được mở
-                                                    const fontWeightClass = isCurrentLesson ? 'font-bold' : '';
-                                                    return (
-                                                        <li key={lesson.videoId || lesson.quizId || lesson.infoId} className="mt-2 ml-3">
-                                                            <button
-                                                                disabled={!isLessonEnabled}
-                                                                onClick={() => handleSetVideo(lesson, index)}
-                                                                className={`text-left w-full ${lessonClass} ${fontWeightClass}`}
-                                                            >
-                                                                <div className="text-[15px] justify-between flex">
-                                                                    <div className='flex  items-center  gap-2'>
-                                                                        <p className='mt-[3px]'>{handleDisplayTypeVideo[lesson.type]} </p>
-                                                                        <p>{`Bài ${chapterIndex * chapter.lessons.length + index + 1} ${lesson.videoName || lesson.quizName || lesson.infoTitle}`}</p>
-                                                                        {isLessonCompleted && (
-                                                                            <Image
-                                                                                preview={false}
-                                                                                width={15}
-                                                                                src={checkIcon}
-                                                                                alt="Completed"
-                                                                                className="block ml-2 "
-                                                                            />
-                                                                        )}
+                                                        return (
+                                                            <li key={`${lesson.type}-${lesson.lessonId}`} className="mt-2 ml-3">
+                                                                <button
+                                                                    disabled={!isLessonEnabled}
+                                                                    onClick={() => handleSetVideo(lesson, index)}
+                                                                    className={`text-left w-full ${lessonClass} ${fontWeightClass}`}
+                                                                >
+                                                                    <div className="text-[15px] justify-between flex">
+                                                                        <div className='flex items-center gap-2'>
+                                                                            <p className='mt-[3px]'>
+                                                                                {handleDisplayTypeVideo[lesson.type]}
+                                                                            </p>
+                                                                            <p>
+                                                                                {`Bài ${chapterIndex * chapter.lesson.length + index + 1} ${lesson.type === 'video' ? lesson.videoName :
+                                                                                        lesson.type === 'quiz' ? lesson.title :
+                                                                                            lesson.type === 'info' ? lesson.infoTitle : ''
+                                                                                    }`}
+                                                                            </p>
+                                                                            {isLessonCompleted && (
+                                                                                <Image
+                                                                                    preview={false}
+                                                                                    width={15}
+                                                                                    src={checkIcon}
+                                                                                    alt="Completed"
+                                                                                    className="block ml-2"
+                                                                                />
+                                                                            )}
+                                                                        </div>
+                                                                        <p>
+                                                                            {lesson.type === 'video' ? handleDisplayTime(lesson.duration) : ''}
+                                                                        </p>
                                                                     </div>
-                                                                    <p>{lesson.duration ? handleDisplayTime(lesson.duration) : ''}</p>
-                                                                </div>
+                                                                </button>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </Collapse.Panel>
+                                        </Collapse>
+                                    </ConfigProvider>
+                                </div>
+                            );
+                        })}
 
-                                                            </button>
-                                                        </li>
-                                                    );
-                                                })}
-                                            </ul>
-                                        </Collapse.Panel>
-                                    </Collapse>
-                                </ConfigProvider>
-                            </div>
-                        );
-                    })}
-
-                </div>
+                    </div>
+                ) : null
             )}
         </div>
 

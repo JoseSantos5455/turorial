@@ -135,7 +135,7 @@ export const courseAPI = createApi({
         //end test apip
         getLearningProgress: builder.query({
             query: ({ courseId, userId }) => ({
-                url: `progress/user/${userId}/course${courseId}`,
+                url: `progress/user/${userId}/course/${courseId}`,
             }),
             providesTags: (result) => [{ type: "Progress", id: "LIST" }],
         }),
@@ -317,7 +317,7 @@ export const {
     //test
     useGetCourseDetailTestQuery,
     useGetLearningProgressTestQuery,
-    useSavingNewProgressTestMutation
+    useSavingNewProgressTestMutation,
     useGetChapterDetailsQuery,
     useEditChapterMutation,
     useEditCourseMutation,
