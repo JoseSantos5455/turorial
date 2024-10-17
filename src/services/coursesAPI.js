@@ -124,7 +124,15 @@ export const courseAPI = createApi({
         //end test apip
         getLearningProgress: builder.query({
             query: ({ courseId, userId }) => ({
-                url: `progress/user/${userId}/course${courseId}`,
+                url: `progress/user/${userId}/course/${courseId}`,
+            }),
+            providesTags: (result) => [{ type: "Progress", id: "LIST" }],
+        }),
+
+        enrollCourse: builder.mutation({
+            query: ({ courseId, userId }) => ({
+                url: `courses/enroll/${courseId}/user/${userId}`,
+                method: "POST",
             }),
             providesTags: (result) => [{ type: "Progress", id: "LIST" }],
         }),
@@ -273,6 +281,7 @@ export const {
     useEditInfoMutation,
     useGetQuizDetailsQuery,
     useCheckAnswerMutation,
+    useEnrollCourseMutation,
     //test
     useGetCourseDetailTestQuery,
     useGetLearningProgressTestQuery,

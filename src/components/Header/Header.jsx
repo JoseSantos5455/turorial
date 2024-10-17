@@ -150,11 +150,11 @@ const HeaderCustom = ({ collapsed }) => {
                                     )}
                                 </div>
                             )}
-                            title={<span className='ml-2 my-10'>Khóa học của tôi</span>}
+                            title={<span className='ml-2 my-10 mx-10'>Khóa học của tôi</span>}
                             trigger="click"
                             open={open}
                             onOpenChange={handleOpenChange}
-                            overlayStyle={{ width: '400px' }}
+                            overlayStyle={{ width: '300px' }}
                             onClickOutside={hide}
                         >
                             <Button className='text-white' type='link'>Khóa học của tôi</Button>

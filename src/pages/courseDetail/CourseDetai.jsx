@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetCourseDetailQuery } from '../../services/coursesAPI';
+import { useGetCourseDetailQuery, useEnrollCourseMutation } from '../../services/coursesAPI';
 import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton } from 'antd';
 import CheckMark from './../../assets/image/check.svg'
 import { CaretDownFilled, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined, PlusOutlined } from '@ant-design/icons';
@@ -24,6 +24,8 @@ const CourseDetai = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [videoSrc, setVideoSrc] = useState('');
     const user = useSelector(selectCurrentUser);
+    console.log(user?.id);
+    const [enrollCourse, { isLoading: enrollLoading, error: enrollError }] = useEnrollCourseMutation();
     const navigate = useNavigate();
     useEffect(() => {
         if (courseDetail) {
@@ -32,7 +34,7 @@ const CourseDetai = () => {
         }
     }, [courseDetail]);
 
-    console.log(videoSrc)
+    // console.log(videoSrc)
 
     const getEmbedUrl = (url) => {
         const videoId = url.split('v=')[1];
@@ -70,6 +72,18 @@ const CourseDetai = () => {
             return <span>({hours}:{minutes > 10 ? `${minutes}` : '0' + minutes})</span>;
         }
     }
+
+    const handleEnrollAndNavigate = async () => {
+        try {
+            const enrollResponse = await enrollCourse({ courseId: tutorialId, userId: user?.id });
+
+            if (enrollResponse) {
+                navigate(user?.packageStatus === 'CANCELLED' ? '/combo' : `/learning/${tutorialId}`);
+            }
+        } catch (error) {
+            console.error('Error enrolling course:', error);
+        }
+    };
 
     if (isLoading) return (
         <div>
@@ -256,7 +270,7 @@ const CourseDetai = () => {
                     <Button
                         type="primary"
                         size='large'
-                        onClick={() => navigate(user?.packageStatus === 'CANCELLED' ? '/combo' : `/learning/${tutorialId}`)}
+                        onClick={handleEnrollAndNavigate}
                         className='bg-gradient-to-r
                     w-[60%] mt-5
                     from-blue-500 to-cyan-400 text-white 

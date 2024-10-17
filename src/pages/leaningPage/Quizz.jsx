@@ -15,7 +15,7 @@ const QuestionDisplay = ({ quizz }) => {
     const [markedQuestions, setMarkedQuestions] = useState([]); // Danh sách câu hỏi được đánh dấu
     const [flagQuestions, setFlagQuestions] = useState([]); // Danh sách câu hỏi được đánh dấu
     const [selectedQuestions, setSelectedQuestions] = useState({}); // Trạng thái câu hỏi đã chọn
-    const optionMap = ["a", "b", "c", "d"];
+    const optionMap = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
     let timer;
     const timerRef = useRef(null);
 

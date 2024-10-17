@@ -29,6 +29,7 @@ const LearningPage = () => {
     const [progress, setProgress] = useState([]);
     const progressSavedRef = useRef(false);
     const [currentInfo, setCurrentInfo] = useState(null);
+    const [chapterId, setChapterId] = useState(null);
     const [takeNote, setTakeNote] = useState(false);
     const user = useSelector(selectCurrentUser)
     const userId = user?.id;
@@ -36,6 +37,17 @@ const LearningPage = () => {
     const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressTestQuery({ courseId, userId });
     const [saveLearningProgress] = useSavingNewProgressTestMutation();
 
+    console.log(progressData)
+
+    const neww = progressData.map((item) => {
+        if (item[0].progress.chapterId === chapterId) {
+            return {
+                ...item,
+                viewed: true,
+            };
+        }
+        return item;
+    })
 
     useEffect(() => {
         if (progressData?.progress) {
@@ -124,7 +136,8 @@ const LearningPage = () => {
 
     // Đặt video hiện tại
 
-    const handleSetVideo = useCallback((lesson, index) => {
+    const handleSetVideo = useCallback((lesson, index, chapter) => {
+        console.log(chapter.chapterId)
         const chapterProgress = progress.find(chapter =>
             chapter.videos.some(v => v.videoId === lesson.videoId)
         );
@@ -149,8 +162,10 @@ const LearningPage = () => {
     }, [progress]);
 
 
-
-
+    const handlePanelClick = (chapterIndex) => {
+        setChapterId(chapterIndex);
+    };
+    console.log('handlePanelClick', chapterId);
 
     const handlePlayerReady = () => {
         if (playerRef.current) {
@@ -284,7 +299,7 @@ const LearningPage = () => {
                 ) : currentQuiz ? (
                     <QuestionDisplay quizz={currentQuiz} />
                 ) : currentInfo ? (
-                    <InforLesson currentInfo={currentInfo} />
+                    <InforLesson chapterId={chapterId} currentInfo={currentInfo} />
                 ) : (
                     <div>Chọn một video hoặc bài kiểm tra để xem</div>
                 )}
@@ -321,6 +336,7 @@ const LearningPage = () => {
                     {courseDetail?.videoContent.map((chapter, chapterIndex) => {
                         const chapterId = chapter.chapterId;
                         const currentChapterProgress = progress.find((ch) => ch.chapterId === chapterId);
+
 
                         // Kiểm tra trạng thái hoàn thành của chương hiện tại
                         const isCurrentChapterCompleted = currentChapterProgress?.isChapterCompleted;
@@ -371,6 +387,7 @@ const LearningPage = () => {
                                                 </div>
                                             }
                                             key={chapterIndex}
+                                            onClick={() => handlePanelClick(chapter.chapterId)}
                                         >
                                             <ul>
                                                 {chapter.lessons.map((lesson, index) => {
@@ -396,7 +413,7 @@ const LearningPage = () => {
                                                         <li key={lesson.videoId || lesson.quizId || lesson.infoId} className="mt-2 ml-3">
                                                             <button
                                                                 disabled={!isLessonEnabled}
-                                                                onClick={() => handleSetVideo(lesson, index)}
+                                                                onClick={() => handleSetVideo(lesson, index, chapter)}
                                                                 className={`text-left w-full ${lessonClass} ${fontWeightClass}`}
                                                             >
                                                                 <div className="text-[15px] justify-between flex">
@@ -427,7 +444,6 @@ const LearningPage = () => {
                             </div>
                         );
                     })}
-
                 </div>
             )}
         </div>

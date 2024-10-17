@@ -3,7 +3,7 @@ import { Layout, Row, Col, Divider, Image, Input, Button } from "antd";
 import logo from "./../../assets/image/logo1.png";
 const { Footer } = Layout;
 import './Footer.scss'
-import { FacebookFilled, InstagramFilled, PhoneFilled, PhoneOutlined, SendOutlined } from "@ant-design/icons";
+import { FacebookFilled, InstagramFilled, PhoneFilled, PhoneOutlined, SendOutlined, TikTokOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 function CustomFooter() {
@@ -15,14 +15,14 @@ function CustomFooter() {
       <Row justify={"space-between"} style={{ margin: '0 100px' }}>
         <Col span={5}>
           <div className="containerF">
-            <p className="title">Contact us</p>
+            <p className="title">Liên hệ chúng tôi</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div >
                 <p><PhoneFilled style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#727375', borderRadius: '50%' }} /></p>
               </div>
               <div>
-                <p className="subtitle">Call us</p>
-                <p>091196818</p>
+                <p className="subtitle">Gọi chúng tôi</p>
+                <p>0336504192</p>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '20px' }}>
@@ -30,64 +30,62 @@ function CustomFooter() {
                 <p><SendOutlined style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#1c4c93 ', borderRadius: '50%' }} /></p>
               </div>
               <div>
-                <p className="subtitle">Send us an Email</p>
-                <p>wellmeet@gmail.com</p>
+                <p className="subtitle">Gửi mail cho chúng tôi</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=blueedu.info2024@gmail.com" target="_blank" rel="noopener noreferrer">
+                  Gửi mail
+                </a>
               </div>
             </div>
           </div>
         </Col>
         <Col span={5}>
           <div className="containerF">
-            <p className="title">About us</p>
+            <p className="title">Về chúng tôi</p>
             <Row>
               <Col span={12} style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '600' }}>
-                <Link>About us</Link>
-                <Link>Our Services</Link>
-                <Link>Location</Link>
-                <Link>Apointments</Link>
-                <Link>Blog</Link>
-                <Link>Shop</Link>
+                <Link>Giới thiệu về chúng tôi</Link>
+                <Link>Các khóa học</Link>
+                <Link>Vị trí</Link>
+                <Link>Mua gói học</Link>
               </Col>
               <Col span={12} style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '600' }}>
-                <Link>Eye exams</Link>
-                <Link>Contact Lenses</Link>
-                <Link>Eye Treatment</Link>
-                <Link>Lasik</Link>
-                <Link>Coordination</Link>
-                <Link>Glasses</Link>
+                <Link>Khóa học lịch sử lớp 9</Link>
+                <Link>Tài liệu tham khảo</Link>
+                <Link>Hỗ trợ học viên</Link>
               </Col>
+
             </Row>
           </div>
         </Col>
         <Col span={5}>
           <div className="containerF">
-            <h4 className="title">Subscribe</h4>
+            <h4 className="title">Đăng ký</h4>
             <p style={{ width: '200px' }} className="content">
-              Sign up for Wellmeet newsletter to receive all the news offers and discounts from Medicare eye clinic.
+              Đăng ký nhận bản tin Blue để nhận tất cả các tin tức ưu đãi và giảm giá từ trang web Blue.
             </p>
             <Input style={{ height: '45px', marginTop: '10px' }} placeholder="Type in your email address" />
-            <Button type="primary" style={{ backgroundColor: '#1c4c93', height: '45px', width: '120px', marginTop: '20px' }}><p style={{ fontWeight: '600' }}>Subcribe</p></Button>
+            <Button type="primary" style={{ backgroundColor: '#1c4c93', height: '45px', width: '120px', marginTop: '20px' }}><p style={{ fontWeight: '600' }}>Đăng ký</p></Button>
           </div>
         </Col>
         <Col span={5}>
           <div className="containerF">
-            <p className="title">Social networks</p>
+            <p className="title">Mạng xã hội</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div >
                 <p><FacebookFilled style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#0866ff', borderRadius: '50%' }} /></p>
               </div>
               <div>
                 <p className="subtitle">Facebook</p>
-                <p>https://www.facebook.com/wellmeet</p>
+                <a href="https://www.facebook.com/profile.php?id=61566399880813" target="_blank" rel="noopener noreferrer">Blue Edu</a>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '20px' }}>
               <div >
-                <p><InstagramFilled style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: '#ff0268 ', borderRadius: '50%' }} /></p>
+                <p><TikTokOutlined style={{ fontSize: '22px', color: '#fff', padding: '12px', backgroundColor: 'black ', borderRadius: '50%' }} /></p>
               </div>
               <div>
-                <p className="subtitle">Instagram</p>
-                <p>wellmeet@gmail.com</p>
+                <p className="subtitle">Tiktok</p>
+                <a href="https://www.tiktok.com/@blue.edu2024" target="_blank" rel="noopener noreferrer">Blue Edu</a>
               </div>
             </div>
           </div>

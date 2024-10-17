@@ -1,61 +1,47 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  VerticalTimeline,
+  VerticalTimelineElement
+} from "react-vertical-timeline-component";
+import "react-vertical-timeline-component/style.min.css";
+import { FaBook } from "react-icons/fa"; // Sử dụng icon phù hợp từ react-icons
+import Tank from "../../assets/image/war.png"
+import { Image } from "antd";
+const WorkIcon = () => <FaBook />; // Icon cuốn sách cho các chương
 
-const Lotrinh = () => {
-  const playerRef = useRef(null);
-  const [totalDuration, setTotalDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-
-  // Load YouTube API
-  useEffect(() => {
-    const loadYouTubeAPI = () => {
-      const script = document.createElement('script');
-      script.src = 'https://www.youtube.com/iframe_api';
-      script.async = true;
-      document.body.appendChild(script);
-
-      window.onYouTubeIframeAPIReady = () => {
-        playerRef.current = new window.YT.Player('player', {
-          height: '390',
-          width: '640',
-          videoId: 'GMYUq0PIwho', // ID của video từ YouTube
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-      };
-    };
-    loadYouTubeAPI();
-  }, []);
-
-  // Khi video đã sẵn sàng
-  const onPlayerReady = (event) => {
-    const duration = playerRef.current.getDuration(); // Lấy tổng thời lượng (giây)
-    setTotalDuration(duration); // Cập nhật tổng thời gian
-  };
-
-  // Theo dõi tiến trình phát
-  const onPlayerStateChange = (event) => {
-    if (event.data === window.YT.PlayerState.PLAYING) {
-      const interval = setInterval(() => {
-        const time = playerRef.current.getCurrentTime(); // Lấy thời gian đã xem
-        setCurrentTime(time); // Cập nhật thời gian đã xem
-      }, 1000);
-
-      return () => clearInterval(interval); // Xóa interval khi dừng phát
-    }
-  };
+export default function App() {
+  const historyChapters = [
+    { id: 1, title: "Lịch Sử 9 Chương 1", description: "Thế giới từ năm 1918 đến năm 1945", time: "1918-1945", icon: <Image preview={false} src={Tank} /> },
+    { id: 2, title: "Lịch Sử 9 Chương 2", description: "Việt Nam từ năm 1918 đến năm 1945" },
+    { id: 3, title: "Lịch Sử 9 Chương 3", description: "Thế giới từ năm 1945 đến năm 1991" },
+    { id: 4, title: "Lịch Sử 9 Chương 4", description: "Việt Nam từ năm 1945 đến năm 1991" },
+    { id: 5, title: "Lịch Sử 9 Chương 5", description: "Thế giới từ năm 1991 đến nay" },
+    { id: 6, title: "Lịch Sử 9 Chương 6", description: "Việt Nam từ năm 1991 đến nay" },
+    { id: 7, title: "Lịch Sử 9 Chương 7", description: "Cách mạng khoa học - kĩ thuật và xu thế toàn cầu hoá" },
+  ];
 
   return (
-    <div>
-      <h2>Video Progress Tracking</h2>
-      <div id="player"></div> {/* YouTube player */}
-      <div>
-        <p>Total Duration: {(totalDuration / 60).toFixed(2)} minutes</p>
-        <p>Current Time Watched: {(currentTime / 60).toFixed(2)} minutes</p>
-      </div>
+    <div className="App p-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Lịch Sử 9</h1>
+      <VerticalTimeline
+        layout="1-column-left"
+        lineColor="gray"
+      >
+        {historyChapters.map((chapter) => (
+          <VerticalTimelineElement
+
+            key={chapter.id}
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+            contentArrowStyle={{ borderRight: "7px solid  rgb(33, 150, 243)" }}
+            date={chapter?.time}
+            iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff", width: "50px", height: "50px" }}
+            icon={chapter?.icon}
+          >
+            <h3 className="text-lg font-semibold text-white">{chapter.title}</h3>
+            <p className="text-white mt-2">{chapter.description}</p>
+          </VerticalTimelineElement>
+        ))}
+      </VerticalTimeline>
     </div>
   );
-};
-
-export default Lotrinh;
+}
