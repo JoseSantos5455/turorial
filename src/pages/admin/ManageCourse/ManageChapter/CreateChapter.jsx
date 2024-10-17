@@ -2,12 +2,12 @@ import { Button, Form, Input, message } from 'antd';
 import React from 'react'
 import { useCreateChapterMutation } from '../../../../services/coursesAPI';
 
-const CreateChapter = ({ courseId, refetch, handleCloseModal }) => {
+const CreateChapter = ({ stt, courseId, refetch, handleCloseModal }) => {
     const [form] = Form.useForm();
     const [createChapter, { isLoading }] = useCreateChapterMutation();
 
     const onFinish = async (values) => {
-
+        values.stt = stt + 1
         try {
             await createChapter({ courseId, body: values }).unwrap();
             message.success('Tạo chương thành công!');
