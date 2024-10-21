@@ -9,6 +9,10 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useGetRevenueByMonthQuery, useGetStatisticsQuery } from '../../services/revenueAPI';
+import { Statistic } from 'antd';
+import CountUp from 'react-countup';
+
 
 ChartJS.register(
   CategoryScale,
@@ -20,15 +24,32 @@ ChartJS.register(
 );
 
 const Admin = () => {
+  const { data: Statitic, isLoading: isStatiticLoading, error: StatiticError } = useGetStatisticsQuery();
+  const { data: RevenueYear, isLoading: isRevenueLoading, error: revenueError } = useGetRevenueByMonthQuery();
 
+  const formatter = (value) => <CountUp end={value} separator="," />;
   const data = {
+
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [
       {
         label: 'Monthly Revenue (in $)',
-        data: [5000, 4000, 6000, 8000, 5500, 4500, 7000, 6000, 8500, 9000, 9500, 10000],
-        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Màu nền cột
-        borderColor: 'rgba(54, 162, 235, 1)', // Màu viền cột
+        data: RevenueYear ? [
+          RevenueYear['Month 1'] || 0,
+          RevenueYear['Month 2'] || 0,
+          RevenueYear['Month 3'] || 0,
+          RevenueYear['Month 4'] || 0,
+          RevenueYear['Month 5'] || 0,
+          RevenueYear['Month 6'] || 0,
+          RevenueYear['Month 7'] || 0,
+          RevenueYear['Month 8'] || 0,
+          RevenueYear['Month 9'] || 0,
+          RevenueYear['Month 10'] || 0,
+          RevenueYear['Month 11'] || 0,
+          RevenueYear['Month 12'] || 0
+        ] : Array(12).fill(0),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
       },
     ],
@@ -56,18 +77,9 @@ const Admin = () => {
 
   return (
     <div>
-      <div className='flex flex-row justify-center'>
-        <div className='bg-[#3d4d76] w-[400px] h-[100px] m-5 rounded-xl'>
-          <div className='flex flex-row justify-between'>
-            <div className='text-white mx-6 my-4 text-base'>
-              <div className='font-bold opacity-90'>Tổng Số Tiền</div>
-              <div className='opacity-50'>vinh</div>
-            </div>
-            <div className='text-white mt-8 mr-4 text-3xl font-bold'>
-              1234
-            </div>
-          </div>
-
+      <div className='flex justify-center'>
+        <div className='bg-[#3d4d76] w-[400px] h-[100px] mt-5 rounded-xl flex justify-center items-center'>
+          <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số doanh thu</span>} style={{ color: 'white' }} value={Statitic?.totalRevenue == null ? "Chưa có doanh thu" : Statitic?.totalRevenue} formatter={formatter} />
         </div>
         <div className='bg-[#1bd6e5] w-[400px] h-[100px] m-5 rounded-xl'>
           <div className='flex flex-row justify-between'>
@@ -76,7 +88,7 @@ const Admin = () => {
               <div className='opacity-50'>vinh</div>
             </div>
             <div className='text-white mt-8 mr-4 text-3xl font-bold'>
-              1234
+            <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số khóa học</span>} style={{ color: 'white' }} value={Statitic?.totalCourses == null ? "Chưa có khóa học" : Statitic?.totalCourses} formatter={formatter} />
             </div>
           </div>
         </div>
@@ -87,7 +99,7 @@ const Admin = () => {
               <div className='opacity-50'>vinh</div>
             </div>
             <div className='text-white mt-8 mr-4 text-3xl font-bold'>
-              1234
+            <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số người sử dụng</span>} style={{ color: 'white' }} value={Statitic?.totalCustomers == null ? "Chưa có khóa học" : Statitic?.totalCustomers} formatter={formatter} />
             </div>
           </div>
         </div>

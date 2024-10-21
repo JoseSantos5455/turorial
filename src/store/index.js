@@ -12,8 +12,8 @@ import UserReducer from "../slices/user.slice";
 import { paymentAPI } from "../services/paymentAPI";
 // import { postAPI } from "../services/postAPI";
 import modalReducer from "../slices/modal.slice";
-// import { exchangeAPI } from "../services/exchangeAPI";
-// import exchangeReducer from "../slices/exchange.slice";
+import { revenueAPI } from "../services/revenueAPI";
+import revenueReducer from "../slices/revenue.slice";
 // import { chatAPI } from "../services/chatAPI";
 // import chatReducer from "../slices/chat.slice";
 // import { appealApi } from "../services/appealAPI";
@@ -37,6 +37,7 @@ const DoctorPerisReducer = persistReducer(persistConfig, doctorReducer);
 const AuthPerisReducer = persistReducer(persistConfig, AuthReducer);
 const CousresPerisReducer = persistReducer(persistConfig, CourseReducer);
 const UserPerisReducer = persistReducer(persistConfig, UserReducer);
+const RevenuePerisReducer = persistReducer(persistConfig, revenueReducer);
 // const PostPerisReducer = persistReducer(persistConfig, postReducer);
 // const ExchangePerisReducer = persistReducer(persistConfig, exchangeReducer);
 // const ChatPerisReducer = persistReducer(persistConfig, chatReducer);
@@ -59,8 +60,8 @@ export const store = configureStore({
     [paymentAPI.reducerPath]: paymentAPI.reducer,
     post1: UserPerisReducer,
     modal: modalReducer,
-    // [exchangeAPI.reducerPath]: exchangeAPI.reducer,
-    // exchange: ExchangePerisReducer,
+    [revenueAPI.reducerPath]: revenueAPI.reducer,
+    revenue: revenueReducer,
     // chat: ChatPerisReducer,
     // [appealApi.reducerPath]: appealApi.reducer,
     // appeal: AppealPerisReducer,
@@ -76,6 +77,7 @@ export const store = configureStore({
       courseAPI.middleware,
       userAPI.middleware,
       paymentAPI.middleware,
+      revenueAPI.middleware
       // exchangeAPI.middleware,
       // appealApi.middleware,
     ),

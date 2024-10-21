@@ -4,7 +4,7 @@ import { Card, Radio, Alert, Row, Col, Form, Button, Skeleton, message, Modal, T
 import { DeleteFilled, FlagFilled, FlagOutlined, SnippetsOutlined } from '@ant-design/icons';
 
 const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
-
+    console.log(quizz)
     const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizDetailsQuery(quizz?.id);
     const [checkAnswer, { data: scoreData, isLoading: isCheckLoading }] = useCheckAnswerMutation();
     const [form] = Form.useForm();
@@ -77,7 +77,7 @@ const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
 
         const body = {
             "answers": formattedAnswers,
-            "quiz-id": 2
+            "quiz-id": quizz.id
         };
 
         try {
@@ -147,7 +147,7 @@ const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
     if (quizzError) return <Alert message="Error" description="Error loading quiz details" type="error" showIcon />;
 
     return (
-        <Card title={`Quiz: ${quizz.quizName}`} className="question-display">
+        <Card title={`Quiz: ${quizz.title}`} className="question-display">
             <div className="flex justify-between items-center sticky top-20 bg-white z-10 shadow-md py-2">
                 <div className="ml-5">
                     <p>Số lượng câu hỏi:<span className='font-bold'> {QuizzDetail?.questions?.length}</span></p>

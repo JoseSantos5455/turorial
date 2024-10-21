@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEnrollCourseMutation, useGetCourseDetailQuery } from '../../services/coursesAPI';
-import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton } from 'antd';
+import { useEnrollCourseMutation, useGetCourseDetailForGuestQuery, useGetCourseDetailQuery } from '../../services/coursesAPI';
+import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton, message } from 'antd';
 import CheckMark from './../../assets/image/check.svg'
 import { CaretDownFilled, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined, PlusOutlined } from '@ant-design/icons';
 import videoIcon from '../../assets/image/video-duration.svg';
@@ -15,27 +15,30 @@ import all from '../../assets/image/all.svg';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
 import './../leaningPage/takenote.scss'
+import { useDispatch } from 'react-redux';
+import { showLoginModal } from '../../slices/modal.slice';
 const { Content, Sider } = Layout;
 
 const CourseDetai = () => {
+    const user = useSelector(selectCurrentUser);
     const { tutorialId } = useParams();
-    const { data: courseDetail, error, isLoading } = useGetCourseDetailQuery({ courseId: tutorialId });
+    const { data: courseDetail, error, isLoading, refetch } = useGetCourseDetailQuery({ courseId: tutorialId });
+    const { data: courseDetailForGuest, error: dataGuestError, isLoading: loadingGuest, refetch: refectGuest } = useGetCourseDetailForGuestQuery({ courseId: tutorialId });
+    const [enrollCourse, { isLoading: isLoadingEnroll }] = useEnrollCourseMutation();
     const [isExpland, setIsExpland] = useState(false);
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [videoSrc, setVideoSrc] = useState('');
-    const user = useSelector(selectCurrentUser);
-    console.log(user?.id);
-    const [enrollCourse, { isLoading: enrollLoading, error: enrollError }] = useEnrollCourseMutation();
     const navigate = useNavigate();
+    const dispatch = useDispatch()
+
+    const courseData = user ? courseDetail : courseDetailForGuest;
+
     useEffect(() => {
-        if (courseDetail) {
-            setVideoSrc(getEmbedUrl(courseDetail.data.introductionVideo));
-
+        if (courseData) {
+            setVideoSrc(getEmbedUrl(courseData.data.introductionVideo));
         }
-    }, [courseDetail]);
-
-    // console.log(videoSrc)
+    }, [courseData]);
 
     const getEmbedUrl = (url) => {
         const videoId = url.split('v=')[1];
@@ -74,31 +77,42 @@ const CourseDetai = () => {
         }
     }
 
-    const handleEnrollAndNavigate = async () => {
+    const handleEnroll = async () => {
+        if (!user) {
+            dispatch(showLoginModal());
+            message.error("Bạn cần đăng nhập để tham gia khóa học!");
+            return;
+        }
         try {
-            const enrollResponse = await enrollCourse({ courseId: tutorialId, userId: user?.id });
+            const rs = await enrollCourse({ courseId: tutorialId, userId: user?.id });
+            console.log(rs);
 
-            if (enrollResponse) {
-                navigate(user?.packageStatus === 'CANCELLED' ? '/combo' : `/learning/${tutorialId}`);
+            if (rs?.error?.data?.status === "UNPAID") {
+                message.error("Bạn cần nâng cấp thành viên để tham gia khóa học!");
+                navigate("/combo");
+            } else if (rs?.data?.status === "SUCCESS") {
+                message.success("Tham gia khóa học thành công!");
+                refetch();
+            } else if (rs?.error?.data?.status === "ALREADY_ENROLLED") {
+                message.success("Bạn đã tham gia khóa học này rồi!");
+                refetch();
             }
         } catch (error) {
-            console.error('Error enrolling course:', error);
+            message.error("Tham gia khóa học thất bại!");
         }
-    };
+    }
 
-    if (isLoading) return (
+    if (isLoading || loadingGuest) return (
         <div>
             <Skeleton active />
         </div>
     );
 
-    // if (error) return <div>Error loading course details.</div>;
+    if (!courseData) return <div>No course details available.</div>;
 
-    if (!courseDetail) return <div>No course details available.</div>;
-
-    const totalCourseLessons = courseDetail.data.totalLessons;
-    const totalCourseDuration = courseDetail.data.totalDuration;
-    const totalChapters = courseDetail.data.chapters.length;
+    const totalCourseLessons = courseData.data.totalLessons;
+    const totalCourseDuration = courseData.data.totalDuration;
+    const totalChapters = courseData.data.chapters.length;
 
     const getSortedLessons = (data) => {
         const sortedLessons = [];
@@ -125,9 +139,9 @@ const CourseDetai = () => {
         return sortedLessons;
     };
 
-    const sortedLessons = getSortedLessons(courseDetail.data);
+    const sortedLessons = getSortedLessons(courseData.data);
 
-    const treeData = courseDetail.data.chapters.map((chapter, index) => {
+    const treeData = courseData.data.chapters.map((chapter, index) => {
         const chapterIndex = index + 1;
         const lessons = chapter.lesson;
 
@@ -174,11 +188,11 @@ const CourseDetai = () => {
     return (
         <Layout className='min-h-screen relative bg-white'>
             <div style={{ padding: '20px', width: '65%' }}>
-                <p className='font-bold text-[42px] pb-5 bg-custom-gradient bg-clip-text text-transparent' style={{ textShadow: '8px 8px 8px rgba(0, 0, 0, 0.2)' }}>{courseDetail.data.courseName}</p>
-                <p className='text-[15px]'>{courseDetail.data.description}</p>
+                <p className='font-bold text-[42px] pb-5 bg-custom-gradient bg-clip-text text-transparent' style={{ textShadow: '8px 8px 8px rgba(0, 0, 0, 0.2)' }}>{courseData.data.courseName}</p>
+                <p className='text-[15px]'>{courseData.data.description}</p>
                 <p className='font-bold text-xl mt-4 py-2'>Bạn sẽ học được gì ?</p>
                 <div className='grid grid-cols-2 mt-3 gap-4'>
-                    {courseDetail.data.whatYouWillLearn?.map((item, index) => (
+                    {courseData.data.whatYouWillLearn?.map((item, index) => (
                         <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item} </p>
                     ))}
                 </div>
@@ -227,12 +241,12 @@ const CourseDetai = () => {
                 </ConfigProvider>
                 <p className='font-bold text-xl mt-4 py-2'>Yêu cầu</p>
                 <div className='grid grid-cols-1 mt-3 gap-4'>
-                    {courseDetail.data.requireToPass?.map((item, index) => (
+                    {courseData.data.requireToPass?.map((item, index) => (
                         <p key={index} className='col-span-1 flex items-center gap-2'><Image preview={false} width={15} src={CheckMark} /> {item}</p>
                     ))}
                 </div>
                 <p className='font-bold text-xl mt-4 py-2'>Thông tin bổ sung </p>
-                <div dangerouslySetInnerHTML={{ __html: courseDetail.data.moreInformation }} className='olCustome ml-7 mt-2'>
+                <div dangerouslySetInnerHTML={{ __html: courseData.data.moreInformation }} className='olCustome ml-7 mt-2'>
 
                 </div>
             </div>
@@ -246,7 +260,7 @@ const CourseDetai = () => {
                     <Image
                         className='rounded-3xl'
                         preview={false}
-                        src={courseDetail.data.image}
+                        src={courseData.data.image}
                         controls
                         style={{ width: '100%', marginBottom: '20px', filter: 'brightness(0.8)' }}
                     >
@@ -255,30 +269,30 @@ const CourseDetai = () => {
                     <p className='absolute bottom-10 text-white font-medium right-0 left-0 flex justify-center'> Ấn để xem giới thiệu</p>
                 </div>
                 <Modal
-                    title="Video giới thiệu khóa học"
+                    title="Video giới thiệu kh��a học"
                     width={'60%'}
                     open={isModalVisible}
                     onCancel={handleCancel}
                     footer={null}
                 >
-                    <p className='font-bold text-2xl pb-4'>{courseDetail.data.courseName}</p>
+                    <p className='font-bold text-2xl pb-4'>{courseData.data.courseName}</p>
                     <iframe id="video-iframe" width="100%" height="500px" src={videoSrc} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </Modal>
                 <div className='flex flex-col justify-center items-center'>
-                    <p className={`text-center font-bold text-xl ${courseDetail.isPaidCourse ? "text-orange-600" : "text-green-700"}`}>
-                        {courseDetail.isPaidCourse ? courseDetail.price.toLocaleString('vi-VN') + "đ" : "Miễn Phí"}
+                    <p className={`text-center font-bold text-xl ${courseData.isPaidCourse ? "text-orange-600" : "text-green-700"}`}>
+                        {courseData.isPaidCourse ? courseData.price.toLocaleString('vi-VN') + "đ" : "Miễn Phí"}
                     </p>
                     <Button
                         type="primary"
                         size='large'
-                        onClick={handleEnrollAndNavigate}
+                        onClick={courseData?.data.enroll == false ? handleEnroll : () => navigate(`/learning/${tutorialId}`)}
                         className='bg-gradient-to-r
                     w-[60%] mt-5
                     from-blue-500 to-cyan-400 text-white 
                     font-medium rounded-full py-3 px-6 transition-transform duration-800
                      hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg'
                     >
-                        {user?.packageStatus == 'CANCELLED' ? "Mua ngay" : "Học ngay"}
+                        {user?.packageStatus != 'ACTIVE' ? "Mua ngay" : courseData?.data.enroll == false ? "Tham gia khóa học" : "Học ngay"}
                     </Button>
                     <div>
                         <p className='text-sm text-gray-700 mt-4 flex gap-3'><Image preview={false} width={20} src={levelIcon} />Trình độ cơ bản</p>
