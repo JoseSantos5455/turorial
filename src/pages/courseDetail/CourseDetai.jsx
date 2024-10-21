@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetCourseDetailQuery, useEnrollCourseMutation } from '../../services/coursesAPI';
+import { useEnrollCourseMutation, useGetCourseDetailQuery } from '../../services/coursesAPI';
 import { Tree, Layout, Button, ConfigProvider, Image, Modal, Spin, Skeleton } from 'antd';
 import CheckMark from './../../assets/image/check.svg'
 import { CaretDownFilled, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined, PlusOutlined } from '@ant-design/icons';

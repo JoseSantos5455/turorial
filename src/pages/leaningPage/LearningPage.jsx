@@ -40,8 +40,7 @@ const LearningPage = () => {
     const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId });
     const [saveLearningProgress] = useSavingNewProgressMutation();
 
-    console.log(courseDetail)
-    console.log(progressData)
+    console.log(currentInfo)
     useEffect(() => {
         if (progressData) {
             setProgress(progressData);
@@ -64,7 +63,9 @@ const LearningPage = () => {
     // }, [progressData, saveLearningProgress]);
 
 
+    const takeProgressChapter = () => {
 
+    }
 
 
     // const updateChapterProgress = useCallback((currentVideoId, newPlayedSeconds, isCompleted) => {
@@ -129,8 +130,8 @@ const LearningPage = () => {
 
     // Đặt video hiện tại
 
-    const handleSetVideo = useCallback((lesson, index) => {
-        console.log(lesson)
+    const handleSetVideo = useCallback((lesson, index, chapter) => {
+        console.log(chapter)
         const chapterProgress = progress.find(chapter =>
             chapter.videoProgresses.some(v => v.videoId === lesson.videoId)
         );
@@ -147,6 +148,7 @@ const LearningPage = () => {
             setCurrentVideo(null); // Reset video hiện tại
             setPlaying(false);
         } else if (lesson.type === 'info') {
+            handlePanelClick(chapter?.id)
             setCurrentInfo(lesson);
             setCurrentVideo(null); // Reset video hiện tại
             setCurrentQuiz(null); // Reset bài kiểm tra hiện tại
@@ -155,10 +157,19 @@ const LearningPage = () => {
     }, [progress]);
 
 
+
     const handlePanelClick = (chapterIndex) => {
         setChapterId(chapterIndex);
     };
-    console.log('handlePanelClick', chapterId);
+
+    console.log(progressData, "progressData")
+
+    const filterProgressDataByChapterId = (progressData, chapterId) => {
+        return progressData?.filter(progress => progress.chapterId === chapterId);
+    };
+    const dataChapter = filterProgressDataByChapterId(progressData, chapterId);
+
+    console.log(dataChapter, "data nè")
 
     const handlePlayerReady = () => {
         if (playerRef.current) {
@@ -292,7 +303,7 @@ const LearningPage = () => {
                 ) : currentQuiz ? (
                     <QuestionDisplay quizz={currentQuiz} setIsQuizStart={setIsQuizStart} />
                 ) : currentInfo ? (
-                    <InforLesson chapterId={chapterId} currentInfo={currentInfo} />
+                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} />
                 ) : (
                     <div>Chọn một video hoặc bài kiểm tra để xem</div>
                 )}
@@ -408,7 +419,7 @@ const LearningPage = () => {
                                                             <li key={`${lesson.type}-${lesson.lessonId}`} className="mt-2 ml-3">
                                                                 <button
                                                                     disabled={!isLessonEnabled}
-                                                                    onClick={() => handleSetVideo(lesson, index)}
+                                                                    onClick={() => handleSetVideo(lesson, index, chapter)}
                                                                     className={`text-left w-full ${lessonClass} ${fontWeightClass}`}
                                                                 >
                                                                     <div className="text-[15px] justify-between flex">

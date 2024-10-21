@@ -8,6 +8,7 @@ const Package = () => {
 
     const [createPayment, { data: pay, error, isLoading }] = useCreatePaymentMutation();
     const userId = useSelector(state => state?.user?.user?.id);
+    console.log(userId);
     const body = {
         productName: "Blue Pro",
         description: "Mở khóa tất cả các video",

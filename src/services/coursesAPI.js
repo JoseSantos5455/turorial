@@ -140,15 +140,18 @@ export const courseAPI = createApi({
             providesTags: (result) => [{ type: "Progress", id: "LIST" }],
         }),
 
+        enrollCourse: builder.mutation({
+            query: ({ courseId, userId }) => ({
+                url: `courses/enroll/${courseId}/user/${userId}`,
+            }),
+            providesTags: (result) => [{ type: "Progress", id: "LIST" }],
+        }),
+
         savingNewProgress: builder.mutation({
-            query: (payload) => {
-                const newBody = {
-                    videoId: payload.videoId,
-                    progress: payload.progress,
-                };
+            query: ({ userId, chapterId, newBody }) => {
                 return {
                     method: "PUT",
-                    url: `https://66ea96c355ad32cda4798cbe.mockapi.io/progress/${payload.userId}`,
+                    url: `progress/user/${userId}/chapter/${chapterId}`,
                     body: newBody,
                 };
             },

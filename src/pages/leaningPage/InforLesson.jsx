@@ -1,45 +1,64 @@
 import React from 'react';
-import { useGetInfoDetailQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
+import { useGetInfoDetailsQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
 import { Layout, Skeleton, Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
 
-const InforLesson = ({ currentInfo, chapterId }) => {
-    const user = useSelector(selectCurrentUser)
-    const { data: infoDetail, isLoading: isInfoLoading, error: infoError } = useGetInfoDetailQuery(currentInfo.infoId);
-    const [saveLearningProgress] = useSavingNewProgressMutation({ userId: user?.id, chapterId });
+const InforLesson = ({ currentInfo, chapterId, data }) => {
+    const user = useSelector(selectCurrentUser);
 
-    // const handleView = async () => {
-    //     const newProgress = progress.map((item) => {
-    //         if (item.infoId === currentInfo.infoId) {
-    //             return {
-    //                 ...item,
-    //                 viewed: true,
-    //             };
-    //         }
-    //         return item;
-    //     });
+    // Fetch info details using the provided query
+    const { data: infoDetail, isLoading: isInfoLoading, error: infoError } = useGetInfoDetailsQuery(currentInfo.infoId);
+    console.log(infoDetail)
+    // Initialize the mutation hook for saving progress
+    const [saveLearningProgress] = useSavingNewProgressMutation();
+    console.log(data)
+    const handleView = async () => {
+        const chapter = data[0];
 
-    //     try {
+        const updatedInfoProgresses = chapter.infoProgresses.map((info) => {
+            if (info.infoId === currentInfo.infoId) {
+                return {
+                    ...info,
+                    viewed: true,
+                };
+            }
+            return info;
+        });
 
+        const newProgress = {
+            ...chapter,
+            infoProgresses: updatedInfoProgresses,
+            videoProgresses: chapter.videoProgresses,
+            quizProgresses: chapter.quizProgresses,
+        };
 
-    //         await saveLearningProgress(newProgress);
-    //         console.log("Progress saved successfully!");
-    //     } catch (error) {
-    //         console.error("Error saving progress:", error);
-    //     }
-    // };
+        try {
+            await saveLearningProgress({
+                userId: user?.id,
+                chapterId: chapterId,
+                newBody: newProgress,
+            });
+
+            console.log("Progress saved successfully!");
+        } catch (error) {
+            console.error("Error saving progress:", error);
+        }
+    };
+
 
     if (isInfoLoading) {
         return <Skeleton />;
     }
+
     return (
         <Layout className='rounded-lg drop-shadow-xl'>
             <h1 className='text-center font-bold text-3xl my-10'>{currentInfo.infoTitle}</h1>
             <div
                 className='p-6 '
-                dangerouslySetInnerHTML={{ __html: infoDetail.content }}
+                dangerouslySetInnerHTML={{ __html: infoDetail?.data?.content }}
             />
+            {/* Add a button to trigger the handleView function */}
             <Button onClick={handleView}>Đã đọc hết</Button>
         </Layout>
     );
