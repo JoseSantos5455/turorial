@@ -13,7 +13,7 @@ export const courseAPI = createApi({
             if (token) {
                 headers.append("Authorization", `Bearer ${token}`);
             }
-            if (endpoint !== "CreateCourse") {
+            if (endpoint !== "CreateCourse" && endpoint !== "updateCourseImage") {
                 headers.set("Content-Type", "application/json");
             }
             return headers;
@@ -73,6 +73,13 @@ export const courseAPI = createApi({
             }),
         }),
 
+        getCourseDetailForGuest: builder.query({
+            query: ({ courseId }) => ({
+                url: `courses/get-detail-guest/${courseId}`,
+                method: "GET",
+            }),
+        }),
+
         getVideoDetails: builder.query({
             query: (videoId) => ({
                 url: `videos/get-detail/${videoId}`,
@@ -92,37 +99,6 @@ export const courseAPI = createApi({
             }),
         }),
 
-        //test api
-
-        getCourseDetailTest: builder.query({
-            query: () => ({
-                // url: users/getuserprofile/${userId},
-                url: `https://mocki.io/v1/dc1b01f2-57ed-4cc3-8ae5-44d256828921`,
-                method: "GET",
-            }),
-        }),
-        getLearningProgressTest: builder.query({
-            query: ({ courseId, userId }) => ({
-                // query: (courseId) => learning-progress/${courseId},
-                url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress`,
-                providesTags: (result) =>
-                    result ? [{ type: "Progress", id: "LIST" }] : [],
-            }),
-        }),
-        savingNewProgressTest: builder.mutation({
-            query: (payload) => {
-                const newBody = {
-                    videoId: payload.videoId,
-                    progress: payload.progress,
-                }
-                return {
-                    method: "PUT",
-                    url: `https://66ea96c355ad32cda4798cbe.mockapi.io/proress/${payload.userId}`,
-                    body: newBody,
-                };
-            },
-            invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
-        }),
 
         getChapterDetails: builder.query({
             query: (chapterId) => ({
@@ -141,15 +117,12 @@ export const courseAPI = createApi({
         }),
 
         savingNewProgress: builder.mutation({
-            query: (payload) => {
-                const newBody = {
-                    videoId: payload.videoId,
-                    progress: payload.progress,
-                };
+            query: ({ userId, chapterId, body }) => {
+
                 return {
                     method: "PUT",
-                    url: `https://66ea96c355ad32cda4798cbe.mockapi.io/progress/${payload.userId}`,
-                    body: newBody,
+                    url: `progress/user/${userId}/chapter/${chapterId}`,
+                    body: body,
                 };
             },
             invalidatesTags: [{ type: "Progress", id: "LIST" }],
@@ -213,6 +186,13 @@ export const courseAPI = createApi({
             }),
             invalidatesTags: [{ type: "CourseList", id: "LIST" }],
         }),
+        EnrollCourse: builder.mutation({
+            query: ({ userId, courseId }) => ({
+                method: "POST",
+                url: `courses/enroll/${courseId}/user/${userId}`,
+            }),
+            invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
 
         editVideo: builder.mutation({
             query: ({ body, videoId }) => ({
@@ -253,6 +233,19 @@ export const courseAPI = createApi({
                 body: body,
             }),
             invalidatesTags: [{ type: "CourseList", id: "LIST" }],
+        }),
+
+        updateCourseImage: builder.mutation({
+            query: (file) => {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                return {
+                    method: "POST",
+                    url: `courses/update-image`,
+                    body: formData,
+                };
+            },
         }),
 
         deleteVideoLesson: builder.mutation({
@@ -314,12 +307,11 @@ export const {
     useEditInfoMutation,
     useGetQuizDetailsQuery,
     useCheckAnswerMutation,
-    //test
-    useGetCourseDetailTestQuery,
-    useGetLearningProgressTestQuery,
-    useSavingNewProgressTestMutation,
     useGetChapterDetailsQuery,
     useEditChapterMutation,
     useEditCourseMutation,
-    useEditQuizMutation
+    useEditQuizMutation,
+    useUpdateCourseImageMutation,
+    useEnrollCourseMutation,
+    useGetCourseDetailForGuestQuery
 } = courseAPI;
