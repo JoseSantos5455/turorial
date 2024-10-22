@@ -38,12 +38,23 @@ function Dashboard() {
   const [randomQuoteIndex, setRandomQuoteIndex] = useState(Math.floor(Math.random() * quotes.length));
 
   useEffect(() => {
+    const displayDuration = 20000; // 20 seconds
+    const intervalDuration = 1800000; // 30 minutes
+
     const interval = setInterval(() => {
       setRandomGifIndex(Math.floor(Math.random() * gifs.length));
       setRandomQuoteIndex(Math.floor(Math.random() * quotes.length));
-    }, 10000); // 10000 milliseconds = 10 seconds
+    }, intervalDuration);
 
-    return () => clearInterval(interval); 
+    const timeout = setTimeout(() => {
+      setRandomGifIndex(null);
+      setRandomQuoteIndex(null);
+    }, displayDuration);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [gifs.length, quotes.length]);
 
   if (isLoadingCourses)
@@ -63,19 +74,21 @@ function Dashboard() {
       <Row>
         <CarouselCustom />
         <div className="relative w-full h-[100px] mt-5 ml-10 py-3 overflow-hidden">
-          <div className={`absolute flex items-center space-x-2 w-auto h-full ${gifs[randomGifIndex].animation}`}>
-            <img
-              src={gifs[randomGifIndex].url}
-              alt="Random GIF"
-              className="w-[110px] h-auto mb-3"
-            />
-            <div className="relative max-w-xs mb-14">
-              <div className="text-md text-black rounded-md py-2 bg-white border-r-2 px-2 shadow-lg font-bold">
-                {quotes[randomQuoteIndex]}
+          {randomGifIndex !== null && randomQuoteIndex !== null && (
+            <div className={`absolute flex items-center space-x-2 w-auto h-full ${gifs[randomGifIndex].animation}`}>
+              <img
+                src={gifs[randomGifIndex].url}
+                alt="Random GIF"
+                className="w-[110px] h-auto mb-3"
+              />
+              <div className="relative max-w-xs mb-14">
+                <div className="text-md text-black rounded-md py-2 bg-white border-r-2 px-2 shadow-lg font-bold">
+                  {quotes[randomQuoteIndex]}
+                </div>
+                <div className="absolute top-2 -left-4 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white"></div>
               </div>
-              <div className="absolute top-2 -left-4 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white"></div>
             </div>
-          </div>
+          )}
         </div>
 
         <CourseList courses={CourseData?.data?.content} />
