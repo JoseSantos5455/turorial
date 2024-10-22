@@ -48,7 +48,7 @@ const CourseList = ({ courses }) => {
                                 to={`tutorial/${course.id}`}
                                 className='text-black'
                             >
-                                <img src={course.image} alt={course.name} className='rounded-t-[16px] w-full h-[180px] object-cover' />
+                                <img src={course.image} alt={course.name} className='rounded-t-[16px] w-[270px] h-[180px] object-cover' />
                                 <div className='bg-[#f7f7f7] py-2 rounded-b-[16px]'>
                                     <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.courseName}</p>
                                     <p className='px-5 font-SemiBold text-[16px] text-[#f05123]'>
