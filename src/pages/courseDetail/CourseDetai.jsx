@@ -148,7 +148,7 @@ const CourseDetai = () => {
         return {
             title: (
                 <p className='text-[16px]  mb-2 px-3 font-semibold' >
-                    Chương {chapterIndex}: {chapter.chapterName} 
+                    Chương {chapterIndex}: {chapter.chapterName}
                 </p>
             ),
             key: `chapter_${chapterIndex}`,

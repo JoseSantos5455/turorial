@@ -1,7 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { logOut } from "../../slices/auth.slice";
+import { useDispatch } from 'react-redux';
+import { notification } from 'antd';
 
 const Success = () => {
+    const dispatch = useDispatch();
+    const successNotification = () => {
+        notification.success({
+            message: 'Logout successfully',
+            description: 'See you again!',
+            duration: 1.5
+        });
+        dispatch(logOut());
+    }
     return (
         <div className="min-h-screen bg-blue-50 flex items-center justify-center">
             <div className="bg-white p-10 rounded-lg shadow-lg text-center">
@@ -36,6 +48,8 @@ const Success = () => {
                 {/* Button - Back to Homepage */}
                 <Link
                     to="/"
+                    onClick={() => successNotification()}
+
                     className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
                 >
                     Quay lại trang chủ

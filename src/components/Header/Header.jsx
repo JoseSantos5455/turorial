@@ -4,7 +4,7 @@ import Search from 'antd/es/input/Search'
 import React, { useCallback, useMemo, useState } from 'react'
 import './Header.scss';
 import Login from '../../pages/login/Login';
-import { useGetMyCourseQuery } from '../../services/coursesAPI';
+// import { useGetMyCourseQuery } from '../../services/coursesAPI';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut, selectCurrentToken, selectCurrentUser } from '../../slices/auth.slice';
@@ -16,7 +16,7 @@ import { hideLoginModal, hideRegisterModal, selectIsLoginModalVisible, selectIsR
 import { useGetUserDetailQuery } from '../../services/userAPI';
 const HeaderCustom = ({ collapsed }) => {
 
-    const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
+    // const { data: Mycourses, error, isLoading } = useGetMyCourseQuery();
     const { Header } = Layout;
     const isModalVisible = useSelector(selectIsLoginModalVisible);
     const isRegisterModalVisible = useSelector(selectIsRegisterModalVisible);
@@ -120,45 +120,7 @@ const HeaderCustom = ({ collapsed }) => {
             <div style={{ display: "flex", gap: "10px", paddingRight: "16px", alignItems: 'center' }}>
                 {user ? (
                     <div className='mr-10 flex items-center justify-center'>
-                        <Popover
-                            content={isLoading ? <Spin /> : (
-                                <div style={{ maxHeight: '400px', overflowY: 'auto', marginRight: 0 }}>
-                                    {Mycourses?.length > 0 ? (
-                                        Mycourses
-                                            .filter(course => course.isSub)
-                                            .map(course => (
-                                                <Link to={'learning/course_002'} key={course.id}>
-                                                    {/* <Link to={`learning/${Mycourses.courseId}`} */}
-                                                    <div className="flex items-center mb-2 hover:shadow-lg hover:bg-slate-100 hover:bg-opacity-85 rounded-lg p-2 mr-2">
-                                                        <div className="w-[120px] h-[70px] flex-shrink-0 rounded-md ">
-                                                            <img
-                                                                src={course.img}
-                                                                alt={course.name}
-                                                                className="w-full h-full object-cover rounded-[7px]"
-                                                            />
-                                                        </div>
 
-                                                        <div className="flex-1 ml-2 mb-8">
-                                                            <span className="ml-2">{course.name}</span>
-                                                            <Progress className="ml-2" percent={parseInt(course.duration)} strokeColor={twoColors} />
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                    ) : (
-                                        <Empty />
-                                    )}
-                                </div>
-                            )}
-                            title={<span className='ml-2 my-10'>Khóa học của tôi</span>}
-                            trigger="click"
-                            open={open}
-                            onOpenChange={handleOpenChange}
-                            overlayStyle={{ width: '400px' }}
-                            onClickOutside={hide}
-                        >
-                            <Button className='text-white' type='link'>Khóa học của tôi</Button>
-                        </Popover>
 
                         <Dropdown
                             trigger="click"

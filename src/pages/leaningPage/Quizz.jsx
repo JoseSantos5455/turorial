@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useGetQuizDetailsQuery, useCheckAnswerMutation } from '../../services/coursesAPI';
+import { useGetQuizDetailsQuery, useCheckAnswerMutation, useSavingNewProgressMutation } from '../../services/coursesAPI';
 import { Card, Radio, Alert, Row, Col, Form, Button, Skeleton, message, Modal, Tag, ConfigProvider } from 'antd';
 import { DeleteFilled, FlagFilled, FlagOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../slices/auth.slice';
 
-const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
-    console.log(quizz)
+const QuestionDisplay = ({ quizz, setIsQuizStart, data, chapterId }) => {
+    const user = useSelector(selectCurrentUser);
+
     const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizDetailsQuery(quizz?.id);
     const [checkAnswer, { data: scoreData, isLoading: isCheckLoading }] = useCheckAnswerMutation();
     const [form] = Form.useForm();
@@ -16,10 +19,45 @@ const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
     const [markedQuestions, setMarkedQuestions] = useState([]);
     const [flagQuestions, setFlagQuestions] = useState([]);
     const [selectedQuestions, setSelectedQuestions] = useState({});
+    const [saveLearningProgress] = useSavingNewProgressMutation();
+
     const optionMap = ["a", "b", "c", "d"];
     let timer;
     const timerRef = useRef(null);
     const questionRefs = useRef({});
+
+    const handleQuiz = async () => {
+        const chapter = data[0];
+        const updatedQizzProgresses = chapter.quizProgresses.map((quizzes) => {
+            if (quizzes.quizId === quizz.id) {
+                return {
+                    ...quizzes,
+                    completed: true,
+                };
+            }
+            return quizzes;
+        });
+        const newProgress = {
+            ...chapter,
+            infoProgresses: chapter.infoProgresses,
+            videoProgresses: chapter.videoProgresses,
+            quizProgresses: updatedQizzProgresses,
+        };
+
+        try {
+            await saveLearningProgress({
+                userId: user?.id,
+                chapterId: chapterId,
+                body: newProgress,
+            });
+            console.log("aaaaaaaa")
+
+            console.log("Progress saved successfully!");
+        } catch (error) {
+            console.error("Error saving progress:", error);
+        }
+    };
+
 
     useEffect(() => {
         if (quizStarted && QuizzDetail?.expiration_time) {
@@ -83,9 +121,12 @@ const QuestionDisplay = ({ quizz, setIsQuizStart }) => {
         try {
             const result = await checkAnswer(body).unwrap();
             setScore(result.score);
+
             if (!result.pass) {
                 message.error(`Bạn đã đạt được ${result.score} điểm! Bạn không vượt qua!`);
+
             } else {
+                handleQuiz();
                 message.success(`Bạn đã đạt được ${result.score} điểm! Bạn đã vượt qua!`);
             }
         } catch (error) {

@@ -88,7 +88,7 @@ const Admin = () => {
               <div className='opacity-50'>vinh</div>
             </div>
             <div className='text-white mt-8 mr-4 text-3xl font-bold'>
-            <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số khóa học</span>} style={{ color: 'white' }} value={Statitic?.totalCourses == null ? "Chưa có khóa học" : Statitic?.totalCourses} formatter={formatter} />
+              <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số khóa học</span>} style={{ color: 'white' }} value={Statitic?.totalCourses == null ? "Chưa có khóa học" : Statitic?.totalCourses} formatter={formatter} />
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@ const Admin = () => {
               <div className='opacity-50'>vinh</div>
             </div>
             <div className='text-white mt-8 mr-4 text-3xl font-bold'>
-            <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số người sử dụng</span>} style={{ color: 'white' }} value={Statitic?.totalCustomers == null ? "Chưa có khóa học" : Statitic?.totalCustomers} formatter={formatter} />
+              <Statistic valueStyle={{ color: 'white' }} title={<span className='text-white text-lg'>Tổng số người sử dụng</span>} style={{ color: 'white' }} value={Statitic?.totalCustomers == null ? "Chưa có khóa học" : Statitic?.totalCustomers} formatter={formatter} />
             </div>
           </div>
         </div>

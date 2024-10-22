@@ -10,7 +10,7 @@ const ContactUs = () => {
     <div className="contact-us">
       <section className="header-section">
         <h1>Liên Hệ Với Chúng Tôi</h1>
-        <p>Home / Contact Us</p>
+        <p>Trang chủ / Liên hệ</p>
       </section>
 
       <section className="contact-details">
@@ -41,6 +41,7 @@ const ContactUs = () => {
               <Image
                 src={location}
                 alt="Location Icon"
+                preview={false}
                 style={{
                   width: '50px',
                   marginRight: '20px',

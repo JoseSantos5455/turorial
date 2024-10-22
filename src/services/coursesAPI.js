@@ -116,6 +116,13 @@ export const courseAPI = createApi({
             providesTags: (result) => [{ type: "Progress", id: "LIST" }],
         }),
 
+        enrollCourse: builder.mutation({
+            query: ({ courseId, userId }) => ({
+                url: `courses/enroll/${courseId}/user/${userId}`,
+            }),
+            providesTags: (result) => [{ type: "Progress", id: "LIST" }],
+        }),
+
         savingNewProgress: builder.mutation({
             query: ({ userId, chapterId, body }) => {
 

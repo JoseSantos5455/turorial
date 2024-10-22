@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReactPlayer from 'react-player';
@@ -32,6 +33,7 @@ const LearningPage = () => {
     const progressSavedRef = useRef(false);
     const [currentInfo, setCurrentInfo] = useState(null);
     const [takeNote, setTakeNote] = useState(false);
+    const [chapterId, setChapterId] = useState(null);
     const [isQuizStart, setIsQuizStart] = useState(false);
     const [chapterId, setChapterId] = useState(null);
     const user = useSelector(selectCurrentUser)
@@ -80,7 +82,7 @@ const LearningPage = () => {
     const updateChapterProgress = useCallback(async (currentVideoId, newPlayedSeconds, isCompleted) => {
         const chapterProgress = progress.find(chapter =>
             chapter.videoProgresses && chapter.videoProgresses.some(video => video.videoId === currentVideoId)
-        )
+        );
 
         if (chapterProgress) {
             const updatedChapter = {
@@ -162,7 +164,7 @@ const LearningPage = () => {
 
         let watchedDuration = 0;
 
-        // Tìm kiếm trong progress dựa trên loại bài học
+
         if (lesson.type === 'video') {
             const chapterProgress = progress.find(chapter =>
                 chapter.videoProgresses.some(v => v.videoId === lesson.videoId)
@@ -177,6 +179,7 @@ const LearningPage = () => {
         } else if (lesson.type === 'quiz') {
             handlePanelClick(chapter?.id)
             setCurrentQuiz(lesson);
+            setCurrentInfo(null);
             setCurrentVideo(null);
             setCurrentInfo(null);
 
@@ -189,6 +192,20 @@ const LearningPage = () => {
 
     }, [progress]);
 
+
+
+    const handlePanelClick = (chapterIndex) => {
+        setChapterId(chapterIndex);
+    };
+
+    console.log(progressData, "progressData")
+
+    const filterProgressDataByChapterId = (progressData, chapterId) => {
+        return progressData?.filter(progress => progress.chapterId === chapterId);
+    };
+    const dataChapter = filterProgressDataByChapterId(progressData, chapterId);
+
+    console.log(dataChapter, "data nè")
 
 
 
@@ -370,9 +387,10 @@ const LearningPage = () => {
                         </button>
                     </>
                 ) : currentQuiz ? (
-                    <QuestionDisplay quizz={currentQuiz} chapterId={chapterId} data={dataChapter} setIsQuizStart={setIsQuizStart} />
+                    <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} />
                 ) : currentInfo ? (
-                    <InforLesson currentInfo={currentInfo} chapterId={chapterId} data={dataChapter} />
+                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} />
+                    <QuestionDisplay quizz={currentQuiz} chapterId={chapterId} data={dataChapter} setIsQuizStart={setIsQuizStart} />
                 ) : (
                     <div>Chọn một video hoặc bài kiểm tra để xem</div>
                 )}
@@ -537,3 +555,4 @@ const LearningPage = () => {
 };
 
 export default LearningPage;
+

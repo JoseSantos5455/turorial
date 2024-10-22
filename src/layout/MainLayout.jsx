@@ -83,17 +83,17 @@ const MainLayout = () => {
         }}
       >
         <div style={{ paddingTop: '20px', height: "60px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             {collapsed ? (
 
               <Image
-                width={35}
+                width={45}
+                height={45}
                 className="cursor-pointer"
                 onClick={handleHome}
                 preview={false}
                 src={Logo}
                 alt="Logo Letter"
-                class="h-10 w-auto"
               />
 
 
