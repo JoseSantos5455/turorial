@@ -37,7 +37,7 @@ const InforLesson = ({ currentInfo, chapterId, data }) => {
             await saveLearningProgress({
                 userId: user?.id,
                 chapterId: chapterId,
-                newBody: newProgress,
+                body: newProgress,
             });
 
             console.log("Progress saved successfully!");
@@ -58,8 +58,15 @@ const InforLesson = ({ currentInfo, chapterId, data }) => {
                 className='p-6 '
                 dangerouslySetInnerHTML={{ __html: infoDetail?.data?.content }}
             />
-            {/* Add a button to trigger the handleView function */}
-            <Button onClick={handleView}>Đã đọc hết</Button>
+            {/* <Button onClick={handleView}>Đã đọc hết</Button> */}
+            <div className="text-center pb-5">
+                <button
+                    onClick={handleView}
+                    className=" w-60 justify-center mt-6 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-medium rounded-full py-3 px-14 transition-transform duration-800 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 hover:shadow-cyan-200 hover:shadow-lg"
+                >
+                    {'Đã đọc hết'}
+                </button>
+            </div>
         </Layout>
     );
 };
