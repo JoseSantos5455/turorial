@@ -35,11 +35,10 @@ const LearningPage = () => {
     const [takeNote, setTakeNote] = useState(false);
     const [chapterId, setChapterId] = useState(null);
     const [isQuizStart, setIsQuizStart] = useState(false);
-    const [chapterId, setChapterId] = useState(null);
     const user = useSelector(selectCurrentUser)
     const userId = user?.id;
-    const { data: courseDetail, isLoading: isCourseLoading, error: courseError } = useGetCourseDetailQuery({ courseId: courseId });
-    const { data: progressData, isLoading: isProgressLoading, error: progressError } = useGetLearningProgressQuery({ courseId, userId });
+    const { data: courseDetail, isLoading: isCourseLoading, error: courseError, refetch: refetchDetail } = useGetCourseDetailQuery({ courseId: courseId });
+    const { data: progressData, isLoading: isProgressLoading, error: progressError, refetch: refetchProgress } = useGetLearningProgressQuery({ courseId, userId });
     const [saveLearningProgress] = useSavingNewProgressMutation();
 
     // console.log(courseDetail)
@@ -142,6 +141,7 @@ const LearningPage = () => {
         };
     }, [playedSeconds, currentVideo, updateChapterProgress]);
 
+
     const handlePanelClick = (chapterIndex) => {
         setChapterId(chapterIndex);
     };
@@ -191,24 +191,6 @@ const LearningPage = () => {
         }
 
     }, [progress]);
-
-
-
-    const handlePanelClick = (chapterIndex) => {
-        setChapterId(chapterIndex);
-    };
-
-    console.log(progressData, "progressData")
-
-    const filterProgressDataByChapterId = (progressData, chapterId) => {
-        return progressData?.filter(progress => progress.chapterId === chapterId);
-    };
-    const dataChapter = filterProgressDataByChapterId(progressData, chapterId);
-
-    console.log(dataChapter, "data nè")
-
-
-
 
 
     const handlePlayerReady = () => {
@@ -387,10 +369,9 @@ const LearningPage = () => {
                         </button>
                     </>
                 ) : currentQuiz ? (
-                    <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} />
+                    <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} refetchProgress={refetchProgress}/>
                 ) : currentInfo ? (
-                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} />
-                    <QuestionDisplay quizz={currentQuiz} chapterId={chapterId} data={dataChapter} setIsQuizStart={setIsQuizStart} />
+                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} refetchProgress={refetchProgress}/>
                 ) : (
                     <div>Chọn một video hoặc bài kiểm tra để xem</div>
                 )}
@@ -443,10 +424,10 @@ const LearningPage = () => {
                             // const isCurrentChapter = chapterIndex === progress.findIndex(ch => ch.chapterId === chapterId);
 
                             // Kiểm tra chương trước đã hoàn thành
-                            const isPreviousChapterCompleted = chapterIndex === 0 || progress[chapterIndex - 1]?.chapterCompleted;
+                            const isPreviousChapterCompleted = chapterIndex === 0 || progress[chapterIndex - 1]?.chapterCompleted;   // loi o day 
 
                             // Điều kiện cho phép m chương
-                            const isLessonEnabled = (chapterIndex === 0) || (isPreviousChapterCompleted && !isCurrentChapterCompleted);
+                            const isLessonEnabled = (chapterIndex === 0) || (isPreviousChapterCompleted && !isCurrentChapterCompleted); // loi o day 
 
                             return (
                                 <div key={chapterIndex} className="mb-2">
