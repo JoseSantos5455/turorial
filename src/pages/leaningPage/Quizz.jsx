@@ -5,7 +5,7 @@ import { DeleteFilled, FlagFilled, FlagOutlined, SnippetsOutlined } from '@ant-d
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
 
-const QuestionDisplay = ({ quizz, setIsQuizStart, data, chapterId }) => {
+const QuestionDisplay = ({ quizz, setIsQuizStart, data, chapterId,refetchProgress }) => {
     const user = useSelector(selectCurrentUser);
 
     const { data: QuizzDetail, isLoading: isQuizzLoading, error: quizzError } = useGetQuizDetailsQuery(quizz?.id);
@@ -49,10 +49,10 @@ const QuestionDisplay = ({ quizz, setIsQuizStart, data, chapterId }) => {
                 userId: user?.id,
                 chapterId: chapterId,
                 body: newProgress,
-            });
-            console.log("aaaaaaaa")
+            }).unwrap();
+            
+            refetchProgress();
 
-            console.log("Progress saved successfully!");
         } catch (error) {
             console.error("Error saving progress:", error);
         }
