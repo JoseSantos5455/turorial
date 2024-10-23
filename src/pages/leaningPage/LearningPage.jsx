@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReactPlayer from 'react-player';
@@ -36,29 +35,28 @@ const LearningPage = () => {
     const [chapterId, setChapterId] = useState(null);
     const [isQuizStart, setIsQuizStart] = useState(false);
     const user = useSelector(selectCurrentUser)
+    const [ dataChapter,setDataChapter]=useState(null);
     const userId = user?.id;
     const { data: courseDetail, isLoading: isCourseLoading, error: courseError, refetch: refetchDetail } = useGetCourseDetailQuery({ courseId: courseId });
     const { data: progressData, isLoading: isProgressLoading, error: progressError, refetch: refetchProgress } = useGetLearningProgressQuery({ courseId, userId });
     const [saveLearningProgress] = useSavingNewProgressMutation();
 
-    // console.log(courseDetail)
-    // console.log(progressData)
+
 
 
     useEffect(() => {
         if (progressData) {
             setProgress(progressData);
-            console.log(progress)
         }
     }, [progressData]);
 
     // update tiến độ
-    const updateProgress = useCallback(async (newProgress) => {
-        console.log(newProgress)
+    const updateProgress = useCallback(async (newProgress,chapterId) => {
+
         try {
             await saveLearningProgress({
                 userId: userId,
-                chapterId: courseId,
+                chapterId: chapterId,
                 body: newProgress,
                 dateUpdated: new Date().toISOString(),
             }).unwrap();
@@ -93,7 +91,7 @@ const LearningPage = () => {
                     chapterProgress.infoProgresses.every(info => info.viewed)
             };
 
-            await updateProgress(updatedChapter);
+            await updateProgress(updatedChapter,chapterProgress.chapterId);
         }
     }, [progress, updateProgress]);
 
@@ -111,7 +109,6 @@ const LearningPage = () => {
             setPlayedSeconds(currentTime);
 
             if (currentVideo) {
-                console.log("da goi lai ")
                 updateChapterProgress(currentVideo.videoId, currentTime, false);
             }
 
@@ -145,9 +142,13 @@ const LearningPage = () => {
     const filterProgressDataByChapterId = (progressData, chapterId) => {
         return progressData?.filter(progress => progress.chapterId === chapterId);
     };
-    const dataChapter = filterProgressDataByChapterId(progressData, chapterId);
 
 
+    useEffect(() => {
+        if (chapterId) {
+            setDataChapter(filterProgressDataByChapterId(progressData, chapterId));
+        }
+    }, [chapterId, progressData]);
 
     // Đặt video hiện tại
 
@@ -173,6 +174,7 @@ const LearningPage = () => {
             playerRef.current.seekTo(watchedDuration, 'seconds');
 
         } else if (lesson.type === 'quiz') {
+  
             handlePanelClick(chapter?.id)
             setCurrentQuiz(lesson);
             setCurrentInfo(null);
@@ -180,6 +182,7 @@ const LearningPage = () => {
             setCurrentInfo(null);
 
         } else if (lesson.type === 'info') {
+
             handlePanelClick(chapter?.id)
             setCurrentInfo(lesson);
             setCurrentVideo(null);
@@ -212,10 +215,8 @@ const LearningPage = () => {
                 // Find the last completed chapter
                 const completedChapters = progress.filter(chapter => chapter.chapterCompleted);
                 const lastCompletedChapter = completedChapters[completedChapters.length - 1];
-
                 let nextLesson = null;
 
-                console.log(lastCompletedChapter)
                 if (lastCompletedChapter) {
                     // Flatten and sort all lessons by 'stt'
                     const flatLessons = courseDetail?.data?.chapters?.flatMap(chapter =>
@@ -405,7 +406,7 @@ const LearningPage = () => {
                         {courseDetail?.data?.chapters.map((chapter, chapterIndex) => {
                             const chapterId = chapter?.id;
                             const currentChapterProgress = Array.isArray(progress) ? progress.find((ch) => ch.chapterId === chapterId) : null;
-
+                            const previousChapterProgress = Array.isArray(progress) ? progress.find((ch) => ch.chapterStt === chapter.stt - 1) : null;
                             // Flatten and sort lessons by 'stt'
                             const sortedLessons = [
                                 ...chapter.lesson?.flatMap(lesson => lesson.videos.map(video => ({ ...video, type: 'video', lessonId: lesson.lessonId }))),
@@ -420,10 +421,11 @@ const LearningPage = () => {
                             // const isCurrentChapter = chapterIndex === progress.findIndex(ch => ch.chapterId === chapterId);
 
                             // Kiểm tra chương trước đã hoàn thành
-                            const isPreviousChapterCompleted = chapterIndex === 0 || progress[chapterIndex - 1]?.chapterCompleted;   // loi o day 
+                            const isPreviousChapterCompleted = chapter.stt === 1 || progress[chapterIndex - 1]?.chapterCompleted;   // loi o day 
+                            console.log(isPreviousChapterCompleted)
 
                             // Điều kiện cho phép m chương
-                            const isLessonEnabled = (chapterIndex === 0) || (isPreviousChapterCompleted && !isCurrentChapterCompleted); // loi o day 
+                            const isLessonEnabled = (chapterIndex === 0) || previousChapterProgress?.chapterCompleted;
 
                             return (
                                 <div key={chapterIndex} className="mb-2">
