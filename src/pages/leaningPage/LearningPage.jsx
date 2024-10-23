@@ -55,7 +55,6 @@ const LearningPage = () => {
     // update tiến độ
     const updateProgress = useCallback(async (newProgress) => {
         console.log(newProgress)
-        // if (!progress) return;
         try {
             await saveLearningProgress({
                 userId: userId,
@@ -64,15 +63,12 @@ const LearningPage = () => {
                 dateUpdated: new Date().toISOString(),
             }).unwrap();
 
-
-            // setProgress(newProgress);
-
-
+            refetchProgress();
 
         } catch (error) {
             console.error('Error saving progress', error);
         }
-    }, [progressData, saveLearningProgress]);
+    }, [ saveLearningProgress]);
 
 
 
@@ -445,7 +441,7 @@ const LearningPage = () => {
                                                 header={
                                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                                         <p style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
-                                                            {`Chương ${chapterIndex + 1}: ${chapter.chapterName}`}
+                                                            {`Chương ${chapter.stt}: ${chapter.chapterName}`}
 
                                                             {chapter.lesson.some(lesson =>
 
@@ -502,6 +498,7 @@ const LearningPage = () => {
                                                                                     }`}
                                                                             </p>
                                                                             {isLessonCompleted && (
+                                                                                
                                                                                 <Image
                                                                                     preview={false}
                                                                                     width={15}
