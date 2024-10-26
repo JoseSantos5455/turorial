@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
 
 const InforLesson = ({ currentInfo, chapterId, data, refetchProgress }) => {
+    console.log(data)
     const user = useSelector(selectCurrentUser);
     const { data: infoDetail, isLoading: isInfoLoading, error: infoError } = useGetInfoDetailsQuery(currentInfo.infoId);
     const [saveLearningProgress] = useSavingNewProgressMutation();

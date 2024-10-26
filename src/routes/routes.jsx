@@ -59,15 +59,14 @@ export const router = createBrowserRouter([
     path: "/",
     element: <MainLayout showFooter={false} />,
     children: [
+
       { index: true, element: Home },
       { path: "/lotrinh", element: Lotrinh },
       { path: "/baiviet", element: Post },
       { path: "/quiz", element: Quizes },
       { path: "/tutorial/:tutorialId", element: CourseDetail },
-
       { path: "/lienhe", element: Contact },
       { path: "/combo", element: Package },
-
       { path: "/law", element: Law },
       {
         path: "/",
