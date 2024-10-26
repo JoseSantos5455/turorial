@@ -63,8 +63,6 @@ const SecondLayout = ({ showFooter = true }) => {
             '1': '/admin/dashboard',
             '2': '/admin/users',
             '3': '/admin/courses',
-            '4': '/admin/quizs',
-            '5': '/admin/money',
             '6': null
         };
 
@@ -141,16 +139,6 @@ const SecondLayout = ({ showFooter = true }) => {
                                 key: "3",
                                 icon: <VideoCameraAddOutlined />,
                                 label: "Khóa Học",
-                            },
-                            {
-                                key: "4",
-                                icon: <ReadOutlined />,
-                                label: "Bài Tập",
-                            },
-                            {
-                                key: "5",
-                                icon: <DollarOutlined />,
-                                label: "Doanh Thu",
                             },
                             {
                                 key: "6",
