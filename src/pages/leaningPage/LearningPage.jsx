@@ -43,7 +43,6 @@ const LearningPage = () => {
 
 
 
-
     useEffect(() => {
         if (progressData) {
             setProgress(progressData);
@@ -66,7 +65,7 @@ const LearningPage = () => {
         } catch (error) {
             console.error('Error saving progress', error);
         }
-    }, [ saveLearningProgress]);
+    }, [saveLearningProgress]);
 
 
 
@@ -366,9 +365,9 @@ const LearningPage = () => {
                         </button>
                     </>
                 ) : currentQuiz ? (
-                    <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} refetchProgress={refetchProgress}/>
+                    <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} refetchProgress={refetchProgress} />
                 ) : currentInfo ? (
-                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} refetchProgress={refetchProgress}/>
+                    <InforLesson data={dataChapter} chapterId={chapterId} currentInfo={currentInfo} refetchProgress={refetchProgress} />
                 ) : (
                     <div>Chọn một video hoặc bài kiểm tra để xem</div>
                 )}
@@ -500,7 +499,7 @@ const LearningPage = () => {
                                                                                     }`}
                                                                             </p>
                                                                             {isLessonCompleted && (
-                                                                                
+
                                                                                 <Image
                                                                                     preview={false}
                                                                                     width={15}

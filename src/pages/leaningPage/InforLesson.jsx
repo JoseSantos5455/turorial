@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGetInfoDetailsQuery, useSavingNewProgressMutation } from '../../services/coursesAPI';
 import { Layout, Skeleton } from 'antd';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,6 @@ const InforLesson = ({ currentInfo, chapterId, data, refetchProgress }) => {
     const user = useSelector(selectCurrentUser);
     const { data: infoDetail, isLoading: isInfoLoading, error: infoError } = useGetInfoDetailsQuery(currentInfo.infoId);
     const [saveLearningProgress] = useSavingNewProgressMutation();
-
 
     const handleView = async () => {
         const chapter = data[0];
@@ -44,7 +43,6 @@ const InforLesson = ({ currentInfo, chapterId, data, refetchProgress }) => {
         }
     };
 
-
     if (isInfoLoading) {
         return <Skeleton />;
     }
@@ -56,7 +54,6 @@ const InforLesson = ({ currentInfo, chapterId, data, refetchProgress }) => {
                 className='p-6 '
                 dangerouslySetInnerHTML={{ __html: infoDetail?.data?.content }}
             />
-            {/* <Button onClick={handleView}>Đã đọc hết</Button> */}
             <div className="text-center pb-5">
                 <button
                     onClick={handleView}
