@@ -20,8 +20,6 @@ const Package = () => {
     };
     const handlePayment = async () => {
         try {
-
-
             const payRes = await createPayment(body).unwrap();
             const payMess = payRes?.message;
             const payurl = payRes?.data?.checkoutUrl;
@@ -33,7 +31,7 @@ const Package = () => {
             console.log(error?.data?.error);
             notification.error({
                 message: "Thanh toán thất bại",
-                description: error?.data?.error,
+                description: "Bạn cần đăng nhập để thanh toán",
                 duration: 1.5
             });
         }
@@ -92,7 +90,7 @@ const Package = () => {
                     Tiết kiệm 7% so với mua gói theo tháng
                 </p>
 
-                <div className="text-3xl font-bold text-gray-900 mb-4">
+                <div className="text-3xl font-bold text-green-600 mb-4">
                     140.000 đ/quý
                     <span className='text-sm text-gray-400'>(3 tháng)</span>
                     <p className="text-sm text-gray-500">cho một thành viên</p>
@@ -132,7 +130,7 @@ const Package = () => {
                 <p className="text-red-600 font-bold text-base text-shadow-sm mb-4">
                     Tiết kiệm 17% so với mua gói theo tháng
                 </p>
-                <div className="text-3xl font-bold text-gray-900 mb-4">
+                <div className="text-3xl font-bold text-green-600 mb-4">
                     500.000 đ/năm
                     <p className="text-sm text-gray-500">cho một thành viên</p>
                 </div>

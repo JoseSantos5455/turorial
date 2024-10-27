@@ -54,6 +54,9 @@ const SecondLayout = ({ showFooter = true }) => {
                     duration: 1.5
                 });
                 navigate('/')
+                setTimeout(() => {
+                    window.location.reload();
+                }, 10);
             },
         });
     }, [dispatch]);

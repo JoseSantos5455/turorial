@@ -44,7 +44,6 @@ const LearningPage = () => {
     // console.log(courseDetail)
     // console.log(progressData)
 
-
     useEffect(() => {
         if (progressData) {
             setProgress(progressData);
