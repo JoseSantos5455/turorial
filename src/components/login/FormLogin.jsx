@@ -54,6 +54,7 @@ const LoginForm = ({ Islogin, handleOpenModalForgotPass, setIslogin, handleCance
     }
 
     const user = data.data;
+    console.log('user', user);
     const token = data.data.token;
     const avatar = data.data.avatar;
     dispatch(setUser(user));

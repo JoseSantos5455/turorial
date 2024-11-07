@@ -81,6 +81,7 @@ export const userAPI = createApi({
             },
             invalidatesTags: (res, err, arg) => [{ type: "UserList", id: arg.id }],
         }),
+
     }),
 });
 

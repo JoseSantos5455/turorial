@@ -19,7 +19,7 @@ const ManageUser = () => {
     const [filteredInfo, setFilteredInfo] = useState({});
     const [isVisible, setIsVisible] = useState(false);
     const [sortedInfo, setSortedInfo] = useState({});
-
+    console.log('users', users)
     let searchInput = null;
 
     const admin = useSelector(selectCurrentUser);
@@ -120,6 +120,7 @@ const ManageUser = () => {
         if (!searchText || !searchedColumn) return true;
         return user[searchedColumn].toString().toLowerCase().includes(searchText.toLowerCase());
     });
+    console.log(filteredUsers);
     const columns = [
         {
             title: 'Name',
@@ -171,14 +172,6 @@ const ManageUser = () => {
             ),
         },
         {
-            title: 'Khóa học đã mua',
-            dataIndex: 'course',
-            key: 'course',
-            align: "center",
-            ...getColumnSearchProps('course'),
-            sorter: (a, b) => a.course - b.course,
-        },
-        {
             title: 'Hành động',
             key: 'action',
             render: (_, record) => (
@@ -209,15 +202,6 @@ const ManageUser = () => {
             ),
         },
     ];
-
-    const transformedData = users?.users?.map((item, index) => ({
-        ...item,
-        key: index + 1,
-    }));
-
-    const handlePageChange = (newPage) => {
-        setPage(newPage - 1);
-    };
 
     return (
         <div className='flex flex-col justify-center items-center'>

@@ -1,5 +1,5 @@
 import { Button, Image, notification } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useCreatePaymentMutation } from '../../services/paymentAPI'
 import { useSelector } from 'react-redux';
 import { SketchOutlined } from '@ant-design/icons';
@@ -9,6 +9,8 @@ import crown from "../../assets/image/crown.png"
 const Package = () => {
     const [createPayment, { data: pay, error, isLoading }] = useCreatePaymentMutation();
     const userId = useSelector(state => state?.user?.user?.id);
+    const userPackage = useSelector(state => state?.user?.user?.packageStatus);
+    console.log(userPackage);
     console.log(userId);
 
     const handlePayment = async (productName, description, price, packageId) => {
@@ -37,6 +39,18 @@ const Package = () => {
         }
     };
 
+    if (userPackage === "ACTIVE") {
+        return (
+            <div className="text-center mt-20 p-8 bg-green-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-bold text-green-700 mb-4">Bạn đã mua gói thành công!</h2>
+                <p className="text-lg text-gray-700">
+                    Sau ngày gia hạn, hệ thống sẽ tự động thông báo việc mua gói tiếp tục.
+                </p>
+            </div>
+        );
+    }
+
+
     return (
         <div className="flex justify-center space-x-10 mt-14">
             {/* Monthly Plan */}
@@ -60,7 +74,7 @@ const Package = () => {
                     <p className="text-sm text-gray-500">cho một thành viên</p>
                 </div>
                 <button
-                    onClick={() => handlePayment("Blue Pro - Tháng", "Mở khóa tất cả các video", 18000, 1)}
+                    onClick={() => handlePayment("Mở khóa tất cả các video", "Blue Pro - Tháng", 18000, 1)}
                     className="w-full bg-[#a8caff] hover:bg-[#4096ff] text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6"
                 >
                     Nâng cấp ngay !
@@ -97,7 +111,7 @@ const Package = () => {
                 </div>
                 <button
                     type="text"
-                    onClick={() => handlePayment("Blue Pro - Quý", "Mở khóa tất cả các video", 50000, 2)}
+                    onClick={() => handlePayment("Mở khóa tất cả các video", "Blue Pro - Quý", 50000, 2)}
                     className="w-full bg-[#fbc27a] hover:bg-[#f9992a] text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6"
                 >
                     Nâng cấp ngay !
@@ -134,8 +148,8 @@ const Package = () => {
                     <p className="text-sm text-gray-500">cho một thành viên</p>
                 </div>
                 <button
-                    onClick={() => handlePayment("Blue Pro - Năm", "Mở khóa tất cả các video", 180000, 3)}
-                    className="w-full bg-[#f28b82] hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6">
+                    onClick={() => handlePayment("Mở khóa tất cả các video", "Blue Pro - Năm", 180000, 3)}
+                    className="w-full bg-[#f28b82] hover:bg-red-600 text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6">
                     Nâng cấp ngay !
                 </button>
                 <div className="text-gray-800">

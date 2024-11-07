@@ -19,8 +19,7 @@ const { Header, Sider, Content } = Layout;
 const getSelectedKey = (pathname) => {
     if (pathname.startsWith('/admin/users')) return '2';
     if (pathname.startsWith('/admin/courses')) return '3';
-    if (pathname.startsWith('/admin/quizs')) return '4';
-    if (pathname.startsWith('/admin/money')) return '5';
+    if (pathname.startsWith('/admin/orders')) return '4';
     return '1'; // Default to Dashboard
 };
 
@@ -66,6 +65,7 @@ const SecondLayout = ({ showFooter = true }) => {
             '1': '/admin/dashboard',
             '2': '/admin/users',
             '3': '/admin/courses',
+            '4': '/admin/orders',
             '6': null
         };
 
@@ -142,6 +142,11 @@ const SecondLayout = ({ showFooter = true }) => {
                                 key: "3",
                                 icon: <VideoCameraAddOutlined />,
                                 label: "Khóa Học",
+                            },
+                            {
+                                key: "4",
+                                icon: <DollarOutlined />,
+                                label: "Đơn Hàng",
                             },
                             {
                                 key: "6",
