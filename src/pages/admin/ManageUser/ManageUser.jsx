@@ -12,7 +12,7 @@ import Highlighter from 'react-highlight-words';
 
 const ManageUser = () => {
     const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(10);
+    const limit = 10
     const { data: users, error, reload, isLoading, refetch } = useGetAllUserQuery({ page, limit });
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -45,7 +45,7 @@ const ManageUser = () => {
         setSearchText('');
     };
 
-
+    console.log('users', users);
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -233,13 +233,13 @@ const ManageUser = () => {
                 pagination={{
                     current: page + 1,
                     pageSize: limit,
-                    total: users?.total,
-                    onChange: (pageNumber, pageSize) => {
+                    total: users?.totalPages * limit,
+                    onChange: (pageNumber) => {
                         setPage(pageNumber - 1);
-                        setLimit(pageSize);
                     },
                 }}
             />
+
         </div>
     );
 };
