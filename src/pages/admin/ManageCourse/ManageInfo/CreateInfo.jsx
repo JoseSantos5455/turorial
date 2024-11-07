@@ -39,9 +39,11 @@ const CreateVideo = ({ stt, lessonId, refetch, handleCloseModal }) => {
             >
                 <ReactQuill
                     style={{
-                        maxHeight: '180px',
+                        minHeight: '180px',
+                        maxHeight: 'auto',
                         backgroundColor: 'white',
                         border: '1px solid #d1d1d1',
+                        overflowY: 'auto'
                     }}
                     theme="snow"
                     placeholder="Nhập nội dung"

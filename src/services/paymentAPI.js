@@ -30,10 +30,17 @@ export const paymentAPI = createApi({
             }),
             providesTags: ["PayList"],
         }),
-
+        getAllOrder: builder.query({
+            query: () => ({
+                url: `purchase`,
+                method: "GET"
+            }),
+            providesTags: ["PayList"],
+        }),
     }),
 });
 
 export const {
     useCreatePaymentMutation,
+    useGetAllOrderQuery
 } = paymentAPI;

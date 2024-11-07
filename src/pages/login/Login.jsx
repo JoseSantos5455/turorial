@@ -138,7 +138,7 @@ function Login({ setIslogin, Islogin, handleCancel }) {
                     </button>
                   )}
 
-                  <button
+                  {/* <button
                     className="bg-white 
                   py-2 px-20 relative 
                   rounded-full border-[2.5px] 
@@ -172,7 +172,7 @@ function Login({ setIslogin, Islogin, handleCancel }) {
                   ">
                     <span className="absolute left-3">{ImportIcon.github()}</span>
                     <span className="font-SemiBold">Đăng nhập với Github</span>
-                  </button>
+                  </button> */}
                 </div>
                 <div>
                   <p className="mt-4">Bạn chưa có tài khoản?

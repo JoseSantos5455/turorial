@@ -47,7 +47,7 @@ const EditInfo = ({ lessonId, refetch, handleCloseEditModal }) => {
             <Form.Item
                 name="infoTitle"
                 label="Tiêu đề thông tin"
-                // rules={[{ required: true, message: 'Vui lòng nhập tiêu đề thông tin!' }]}
+            // rules={[{ required: true, message: 'Vui lòng nhập tiêu đề thông tin!' }]}
             >
                 <Input placeholder="Nhập tiêu đề thông tin" />
             </Form.Item>
@@ -58,9 +58,11 @@ const EditInfo = ({ lessonId, refetch, handleCloseEditModal }) => {
             >
                 <ReactQuill
                     style={{
-                        maxHeight: '180px',
+                        minHeight: '180px',
+                        maxHeight: 'auto',
                         backgroundColor: 'white',
                         border: '1px solid #d1d1d1',
+                        overflowY: 'auto'
                     }}
                     theme="snow"
                     placeholder="Nhập nội dung"

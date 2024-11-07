@@ -16,14 +16,13 @@ const CourseList = ({ courses }) => {
         } else {
             const hours = Math.floor(time / 60);
             const minutes = time % 60;
-            return <span>{hours} Giờ {minutes > 0 ? `${minutes} Phút` : ''}</span>;
+            return <span>{hours} Phút {minutes > 0 ? `${minutes} Giây` : ''}</span>;
         }
     }
 
     // Phân loại khóa học
     const freeCourses = courses?.filter(course => course.price === 0);
     const paidCourses = courses?.filter(course => course.price > 0);
-
 
     // Log isEnrolled for each course
     courses?.forEach(course => {
@@ -52,7 +51,7 @@ const CourseList = ({ courses }) => {
                                 <div className='bg-[#f7f7f7] py-2 rounded-b-[16px]'>
                                     <p className='font-Bold text-[17px] pt-3 pb-2 px-5 text-black'>{course.courseName}</p>
                                     <p className='px-5 font-SemiBold text-[16px] text-[#f05123]'>
-                                        {course.price.toLocaleString('vi-VN')}đ
+                                        Video phải trả phí
                                     </p>
                                     <div className='flex mt-6 mb-2 justify-between flex-row text-black items-center px-5'>
                                         <p className='flex gap-2 '>

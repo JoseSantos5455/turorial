@@ -11,6 +11,7 @@ import PaymentCheck from "./PaymentCheck";
 
 const Login = Loadable({ loader: () => import("../pages/login/Login") });
 const ManageUser = Loadable({ loader: () => import("../pages/admin/ManageUser/ManageUser") });
+const ManageOrder = Loadable({ loader: () => import("../pages/admin/ManageOrder/ManageOrder") });
 const Detail = Loadable({ loader: () => import("../pages/admin/ManageUser/Detail/Detail") });
 const ManageCourse = Loadable({ loader: () => import("../pages/admin/ManageCourse/ManageCourse") });
 const Cost = Loadable({ loader: () => import("../pages/admin/Cost") });
@@ -102,6 +103,7 @@ export const router = createBrowserRouter([
           { index: true, element: Admin },
           { index: true, path: "dashboard", element: Admin },
           { path: "users", element: ManageUser },
+          { path: "orders", element: ManageOrder },
           { path: "users/user-details/:userId", element: Detail },
           { path: "courses", element: ManageCourse },
           { path: "money", element: Cost },
