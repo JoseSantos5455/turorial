@@ -212,7 +212,7 @@ const ManageUser = () => {
             >
                 Quản lý tài khoản
             </p>
-            {Object.keys(filteredInfo).length > 0 && (
+            {/* {Object.keys(filteredInfo).length > 0 && (
                 <Button
                     onClick={() => clearAll()}
                     type='primary'
@@ -221,7 +221,7 @@ const ManageUser = () => {
                     Bỏ lọc <Image preview={false} width={25} src={clearFilter} />
                 </Button>
 
-            )}
+            )} */}
 
             <Table
                 className='w-full'
