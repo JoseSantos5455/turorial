@@ -16,6 +16,7 @@ const Package = () => {
             productName,
             description,
             price,
+            packageId,
             userId: userId,
         };
 
@@ -59,7 +60,7 @@ const Package = () => {
                     <p className="text-sm text-gray-500">cho một thành viên</p>
                 </div>
                 <button
-                    onClick={() => handlePayment("Blue Pro - Tháng", "Mở khóa tất cả các video", 18000)}
+                    onClick={() => handlePayment("Blue Pro - Tháng", "Mở khóa tất cả các video", 18000, 1)}
                     className="w-full bg-[#a8caff] hover:bg-[#4096ff] text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6"
                 >
                     Nâng cấp ngay !
@@ -96,7 +97,7 @@ const Package = () => {
                 </div>
                 <button
                     type="text"
-                    onClick={() => handlePayment("Blue Pro - Quý", "Mở khóa tất cả các video", 50000)}
+                    onClick={() => handlePayment("Blue Pro - Quý", "Mở khóa tất cả các video", 50000, 2)}
                     className="w-full bg-[#fbc27a] hover:bg-[#f9992a] text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6"
                 >
                     Nâng cấp ngay !
@@ -133,7 +134,7 @@ const Package = () => {
                     <p className="text-sm text-gray-500">cho một thành viên</p>
                 </div>
                 <button
-                    onClick={() => handlePayment("Blue Pro - Năm", "Mở khóa tất cả các video", 180000)}
+                    onClick={() => handlePayment("Blue Pro - Năm", "Mở khóa tất cả các video", 180000, 3)}
                     className="w-full bg-[#f28b82] hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors duration-300 mb-6">
                     Nâng cấp ngay !
                 </button>
