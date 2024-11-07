@@ -79,6 +79,15 @@ const Admin = () => {
     <div>
       <div className='flex justify-start'>
         {/* Tổng số doanh thu */}
+        {/* <div className='bg-[#3d4d76] w-[400px] h-[100px] m-5 rounded-xl flex justify-start items-center '>
+          <Statistic
+            valueStyle={{ color: 'white' }}
+            title={<span className='text-white text-xl font-bold'>Tổng số doanh thu</span>}
+            value={Statitic?.totalRevenue ?? "Chưa có doanh thu"} // Giữ lại logic kiểm tra dữ liệu
+            formatter={formatter}
+            className='text-white ml-5 '
+          />
+        </div> */}
         <div className='bg-[#3d4d76] w-[400px] h-[100px] m-5 rounded-xl flex justify-start items-center '>
           <Statistic
             valueStyle={{ color: 'white' }}
