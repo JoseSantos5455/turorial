@@ -91,3 +91,12 @@ $blue-main-color: #5c98f2;
         }
     }
 }
+
+@media (max-width: 768px) {
+    .relative {
+      margin-left: 0; 
+    }
+    .w {
+      width: 80px; 
+    }
+  }

@@ -39,7 +39,6 @@ const ManageCourse = () => {
     const [isChapterEdit, setisChapteredit] = useState(null);
     const [chapterStt, setChapterStt] = useState(null);
     const [isCourseEdit, setisCourseEdit] = useState(false);
-
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
     const { data: CourseData, isLoading: isLoadingCourses, refetch } = useGetAllCourseAdminQuery({ page, size });
@@ -116,7 +115,7 @@ const ManageCourse = () => {
                     style={{ marginBottom: 8, display: 'block' }}
                 />
                 <Space>
-                    <Button
+                <Button
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
