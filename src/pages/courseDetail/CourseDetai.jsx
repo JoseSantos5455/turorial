@@ -147,7 +147,7 @@ const CourseDetai = () => {
 
         return {
             title: (
-                <p className='text-[16px]  mb-2 px-3 font-semibold' >
+                <p className='text-[16px]  mb-2 px-3 font-semibold max-w-full' >
                     Chương {chapterIndex}: {chapter.chapterName}
                 </p>
             ),
@@ -155,17 +155,16 @@ const CourseDetai = () => {
             children: sortedLessons.filter(item => item.chapterName === chapter.chapterName).flatMap(item => item.items.map((lesson, lessonIndex) => {
                 return {
                     title: (
-                        <div className='text-black mb-1 flex items-center w-full'>
-                            <span className='px-2'>{handleDisplayTypeVideo[lesson.type]}</span>
-                            <span className='font-semibold'>Bài {lessonIndex + 1}</span>:
-                            <p className='mr-4 ml-1 flex justify-between min-w-[600px]'>  {lesson.videoName || lesson.infoTitle || lesson.title}
-                                <div className='text-left'>
-                                    <p >
-                                        {lesson.type === "video" ? <span>Video {handleDisplayTime(lesson.duration)}</span> :
-                                            lesson.type === "quiz" ? 'Kiểm tra' :
-                                                lesson.type === "info" ? 'Bài học' : null}
-                                    </p>
-                                </div>
+                        <div className='text-black mb-1 flex items-start w-[90%]'>
+                            <div className='flex items- min-w-[70px]'>
+                                <p className='px-2'>{handleDisplayTypeVideo[lesson.type]}</p>
+                                <p className='font-semibold'>Bài {lessonIndex + 1}</p>:
+                            </div>
+                            <p className='mr-4 ml-1 flex  max-w-[90%]'>
+                                {lesson.videoName || lesson.infoTitle || lesson.title}
+                                {/* {lesson.type === "video" ? <span>Video {handleDisplayTime(lesson.duration)}</span> :
+                                    lesson.type === "quiz" ? 'Kiểm tra' :
+                                        lesson.type === "info" ? 'Bài học' : null} */}
                             </p>
                         </div>
                     ),
@@ -187,7 +186,7 @@ const CourseDetai = () => {
 
     return (
         <Layout className='min-h-screen relative bg-white'>
-            <div style={{ padding: '20px', width: '65%' }}>
+            <div style={{ padding: '20px', width: '75%' }}>
                 <p className='font-bold text-[42px] pb-5 bg-custom-gradient bg-clip-text text-transparent' style={{ textShadow: '8px 8px 8px rgba(0, 0, 0, 0.2)' }}>{courseData.data.courseName}</p>
                 <p className='text-[15px]'>{courseData.data.description}</p>
                 <p className='font-bold text-xl mt-4 py-2'>Bạn sẽ học được gì ?</p>
@@ -251,7 +250,7 @@ const CourseDetai = () => {
                 </div>
             </div>
             <Sider
-                width={400}
+                width={300}
                 theme="light"
                 style={{ position: 'fixed', right: '5%', top: '20%' }}
                 className='h-full'
@@ -269,7 +268,7 @@ const CourseDetai = () => {
                     <p className='absolute bottom-10 text-white font-medium right-0 left-0 flex justify-center'> Ấn để xem giới thiệu</p>
                 </div>
                 <Modal
-                    title="Video giới thiệu kh��a học"
+                    title="Video giới thiệu khóa học"
                     width={'60%'}
                     open={isModalVisible}
                     onCancel={handleCancel}

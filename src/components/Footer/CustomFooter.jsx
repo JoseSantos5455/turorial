@@ -8,12 +8,12 @@ import { Link } from "react-router-dom";
 
 function CustomFooter() {
   return (
-    <Footer style={{ backgroundColor: "#f0f2f5", padding: "20px 50px 80px 50px" }}>
-      <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid #d9d9db', marginBottom: '40px' }}>
+    <Footer style={{ backgroundColor: "#f0f2f5", padding: "20px 10px 40px 10px" }}>
+      <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid #d9d9db', marginBottom: '20px' }}>
         <Image width={80} src={logo} className="mb-4" preview={false} />
       </div>
-      <Row justify={"space-between"} style={{ margin: '0 100px' }}>
-        <Col span={5}>
+      <Row justify={"space-between"} style={{ margin: '0 10px' }} gutter={[16, 16]}>
+        <Col xs={24} sm={12} md={6}>
           <div className="containerF">
             <p className="title">Liên hệ chúng tôi</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -38,7 +38,7 @@ function CustomFooter() {
             </div>
           </div>
         </Col>
-        <Col span={5}>
+        <Col xs={24} sm={12} md={6}>
           <div className="containerF">
             <p className="title">Về chúng tôi</p>
             <Row>
@@ -57,7 +57,7 @@ function CustomFooter() {
             </Row>
           </div>
         </Col>
-        <Col span={5}>
+        <Col xs={24} sm={12} md={6}>
           <div className="containerF">
             <h4 className="title">Đăng ký</h4>
             <p style={{ width: '200px' }} className="content">
@@ -67,7 +67,7 @@ function CustomFooter() {
             <Button type="primary" style={{ backgroundColor: '#1c4c93', height: '45px', width: '120px', marginTop: '20px' }}><p style={{ fontWeight: '600' }}>Đăng ký</p></Button>
           </div>
         </Col>
-        <Col span={5}>
+        <Col xs={24} sm={12} md={6}>
           <div className="containerF">
             <p className="title">Mạng xã hội</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

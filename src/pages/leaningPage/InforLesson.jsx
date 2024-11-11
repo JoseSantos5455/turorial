@@ -5,14 +5,13 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../slices/auth.slice';
 
 const InforLesson = ({ currentInfo, chapterId, data, refetchProgress }) => {
-    console.log(data)
     const user = useSelector(selectCurrentUser);
     const { data: infoDetail, isLoading: isInfoLoading, error: infoError } = useGetInfoDetailsQuery(currentInfo.infoId);
     const [saveLearningProgress] = useSavingNewProgressMutation();
 
     const handleView = async () => {
         const chapter = data[0];
-
+        console.log(chapter)
         const updatedInfoProgresses = chapter.infoProgresses.map((info) => {
             if (info.infoId === currentInfo.infoId) {
                 return {

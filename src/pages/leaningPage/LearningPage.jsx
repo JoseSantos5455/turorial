@@ -35,7 +35,7 @@ const LearningPage = () => {
     const [chapterId, setChapterId] = useState(null);
     const [isQuizStart, setIsQuizStart] = useState(false);
     const user = useSelector(selectCurrentUser)
-    const [ dataChapter,setDataChapter]=useState(null);
+    const [dataChapter, setDataChapter] = useState(null);
     const userId = user?.id;
     const { data: courseDetail, isLoading: isCourseLoading, error: courseError, refetch: refetchDetail } = useGetCourseDetailQuery({ courseId: courseId });
     const { data: progressData, isLoading: isProgressLoading, error: progressError, refetch: refetchProgress } = useGetLearningProgressQuery({ courseId, userId });
@@ -50,7 +50,7 @@ const LearningPage = () => {
     }, [progressData]);
 
     // update tiến độ
-    const updateProgress = useCallback(async (newProgress,chapterId) => {
+    const updateProgress = useCallback(async (newProgress, chapterId) => {
 
         try {
             await saveLearningProgress({
@@ -90,7 +90,7 @@ const LearningPage = () => {
                     chapterProgress.infoProgresses.every(info => info.viewed)
             };
 
-            await updateProgress(updatedChapter,chapterProgress.chapterId);
+            await updateProgress(updatedChapter, chapterProgress.chapterId);
         }
     }, [progress, updateProgress]);
 
@@ -173,7 +173,7 @@ const LearningPage = () => {
             playerRef.current.seekTo(watchedDuration, 'seconds');
 
         } else if (lesson.type === 'quiz') {
-  
+
             handlePanelClick(chapter?.id)
             setCurrentQuiz(lesson);
             setCurrentInfo(null);
@@ -208,107 +208,107 @@ const LearningPage = () => {
 
 
 
-    useEffect(() => {
-        const findNextLesson = () => {
-            if (progress.length > 0 && courseDetail) {
-                // Find the last completed chapter
-                const completedChapters = progress.filter(chapter => chapter.chapterCompleted);
-                const lastCompletedChapter = completedChapters[completedChapters.length - 1];
-                let nextLesson = null;
+    // useEffect(() => {
+    //     const findNextLesson = () => {
+    //         if (progress.length > 0 && courseDetail) {
+    //             // Find the last completed chapter
+    //             const completedChapters = progress.filter(chapter => chapter.chapterCompleted);
+    //             const lastCompletedChapter = completedChapters[completedChapters.length - 1];
+    //             let nextLesson = null;
 
-                if (lastCompletedChapter) {
-                    // Flatten and sort all lessons by 'stt'
-                    const flatLessons = courseDetail?.data?.chapters?.flatMap(chapter =>
-                        chapter.lesson.flatMap(lesson => [
-                            ...lesson.videos.map(video => ({ ...video, type: 'video' })),
-                            ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
-                            ...lesson.infos.map(info => ({ ...info, type: 'info' }))
-                        ])
-                    ).sort((a, b) => a.stt - b.stt);
+    //             if (lastCompletedChapter) {
+    //                 // Flatten and sort all lessons by 'stt'
+    //                 const flatLessons = courseDetail?.data?.chapters?.flatMap(chapter =>
+    //                     chapter.lesson.flatMap(lesson => [
+    //                         ...lesson.videos.map(video => ({ ...video, type: 'video' })),
+    //                         ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
+    //                         ...lesson.infos.map(info => ({ ...info, type: 'info' }))
+    //                     ])
+    //                 ).sort((a, b) => a.stt - b.stt);
 
-                    // Find the last completed lesson
-                    const lastCompletedLesson = flatLessons.find(lesson => {
-                        if (lesson.type === 'video') {
-                            return lastCompletedChapter.videoProgresses.some(video => video.videoId === lesson.videoId && video.completed);
-                        } else if (lesson.type === 'quiz') {
-                            return lastCompletedChapter.quizProgresses.some(quiz => quiz.quizId === lesson.id && quiz.completed);
-                        } else if (lesson.type === 'info') {
-                            return lastCompletedChapter.infoProgresses.some(info => info.infoId === lesson.infoId && info.viewed);
-                        }
-                        return false;
-                    });
+    //                 // Find the last completed lesson
+    //                 const lastCompletedLesson = flatLessons.find(lesson => {
+    //                     if (lesson.type === 'video') {
+    //                         return lastCompletedChapter.videoProgresses.some(video => video.videoId === lesson.videoId && video.completed);
+    //                     } else if (lesson.type === 'quiz') {
+    //                         return lastCompletedChapter.quizProgresses.some(quiz => quiz.quizId === lesson.id && quiz.completed);
+    //                     } else if (lesson.type === 'info') {
+    //                         return lastCompletedChapter.infoProgresses.some(info => info.infoId === lesson.infoId && info.viewed);
+    //                     }
+    //                     return false;
+    //                 });
 
-                    const lastLessonIndex = flatLessons.findIndex(lesson => lesson === lastCompletedLesson);
+    //                 const lastLessonIndex = flatLessons.findIndex(lesson => lesson === lastCompletedLesson);
 
-                    // Find the next lesson
-                    const nextLessonIndex = lastLessonIndex + 1;
-                    if (nextLessonIndex < flatLessons.length) {
-                        nextLesson = flatLessons[nextLessonIndex];
-                    }
-                }
+    //                 // Find the next lesson
+    //                 const nextLessonIndex = lastLessonIndex + 1;
+    //                 if (nextLessonIndex < flatLessons.length) {
+    //                     nextLesson = flatLessons[nextLessonIndex];
+    //                 }
+    //             }
 
-                // If no next lesson, select the first lesson
-                if (!nextLesson) {
-                    const firstChapter = courseDetail?.data?.chapters[0];
-                    const flatLessons = firstChapter.lesson.flatMap(lesson => [
-                        ...lesson.videos.map(video => ({ ...video, type: 'video' })),
-                        ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
-                        ...lesson.infos.map(info => ({ ...info, type: 'info' }))
-                    ]).sort((a, b) => a.stt - b.stt);
-                    nextLesson = flatLessons[0];
-                }
+    //             // If no next lesson, select the first lesson
+    //             if (!nextLesson) {
+    //                 const firstChapter = courseDetail?.data?.chapters[0];
+    //                 const flatLessons = firstChapter.lesson.flatMap(lesson => [
+    //                     ...lesson.videos.map(video => ({ ...video, type: 'video' })),
+    //                     ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
+    //                     ...lesson.infos.map(info => ({ ...info, type: 'info' }))
+    //                 ]).sort((a, b) => a.stt - b.stt);
+    //                 nextLesson = flatLessons[0];
+    //             }
 
-                // Update the current lesson and player state
-                if (nextLesson.type === 'video') {
-                    setCurrentVideo(nextLesson);
-                    setCurrentQuiz(null);
-                    setCurrentInfo(null);
-                    setPlaying(true);
-                } else if (nextLesson.type === 'quiz') {
-                    setCurrentQuiz(nextLesson);
-                    setCurrentVideo(null);
-                    setCurrentInfo(null);
-                    setPlaying(false);
-                } else if (nextLesson.type === 'info') {
-                    setCurrentInfo(nextLesson);
-                    setCurrentVideo(null);
-                    setCurrentQuiz(null);
-                    setPlaying(false);
-                }
-            } else if (courseDetail) {
-                // If no progress, select the first lesson of the course
-                const firstLesson = courseDetail?.data.chapters?.flatMap(chapter =>
-                    chapter.lesson.flatMap(lesson => [
-                        ...lesson.videos.map(video => ({ ...video, type: 'video' })),
-                        ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
-                        ...lesson.infos.map(info => ({ ...info, type: 'info' }))
-                    ])
-                ).sort((a, b) => a.stt - b.stt)[0];
+    //             // Update the current lesson and player state
+    //             if (nextLesson.type === 'video') {
+    //                 setCurrentVideo(nextLesson);
+    //                 setCurrentQuiz(null);
+    //                 setCurrentInfo(null);
+    //                 setPlaying(true);
+    //             } else if (nextLesson.type === 'quiz') {
+    //                 setCurrentQuiz(nextLesson);
+    //                 setCurrentVideo(null);
+    //                 setCurrentInfo(null);
+    //                 setPlaying(false);
+    //             } else if (nextLesson.type === 'info') {
+    //                 setCurrentInfo(nextLesson);
+    //                 setCurrentVideo(null);
+    //                 setCurrentQuiz(null);
+    //                 setPlaying(false);
+    //             }
+    //         } else if (courseDetail) {
+    //             // If no progress, select the first lesson of the course
+    //             const firstLesson = courseDetail?.data.chapters?.flatMap(chapter =>
+    //                 chapter.lesson.flatMap(lesson => [
+    //                     ...lesson.videos.map(video => ({ ...video, type: 'video' })),
+    //                     ...lesson.quizs.map(quiz => ({ ...quiz, type: 'quiz' })),
+    //                     ...lesson.infos.map(info => ({ ...info, type: 'info' }))
+    //                 ])
+    //             ).sort((a, b) => a.stt - b.stt)[0];
 
-                if (firstLesson.type === 'video') {
-                    setCurrentVideo(firstLesson);
-                    setCurrentQuiz(null);
-                    setCurrentInfo(null);
-                    setPlayedSeconds(0);
-                    setPlaying(true);
-                } else if (firstLesson.type === 'quiz') {
-                    setCurrentQuiz(firstLesson);
-                    setCurrentVideo(null);
-                    setCurrentInfo(null);
-                    setPlaying(false);
-                } else if (firstLesson.type === 'info') {
-                    setCurrentInfo(firstLesson);
-                    setCurrentVideo(null);
-                    setCurrentQuiz(null);
+    //             if (firstLesson.type === 'video') {
+    //                 setCurrentVideo(firstLesson);
+    //                 setCurrentQuiz(null);
+    //                 setCurrentInfo(null);
+    //                 setPlayedSeconds(0);
+    //                 setPlaying(true);
+    //             } else if (firstLesson.type === 'quiz') {
+    //                 setCurrentQuiz(firstLesson);
+    //                 setCurrentVideo(null);
+    //                 setCurrentInfo(null);
+    //                 setPlaying(false);
+    //             } else if (firstLesson.type === 'info') {
+    //                 setCurrentInfo(firstLesson);
+    //                 setCurrentVideo(null);
+    //                 setCurrentQuiz(null);
 
-                }
-            }
-        };
+    //             }
+    //         }
+    //     };
 
-        if (progress && courseDetail) {
-            findNextLesson();
-        }
-    }, [courseDetail, progress]);
+    //     if (progress && courseDetail) {
+    //         findNextLesson();
+    //     }
+    // }, [courseDetail, progress]);
 
 
     const handleSettakeNote = () => {
@@ -357,12 +357,14 @@ const LearningPage = () => {
                             width="100%"
                             height="60vh"
                         />
-                        <button
-                            onClick={() => setTakeNote(!takeNote)}
-                            className='flex items-center absolute top-12 right-10 bg-slate-100 px-3 py-2 rounded-xl shadow-lg hover:shadow-lg hover:shadow-cyan-300'>
-                            <Image width={30} preview={false} className='mr-3' src={takenote} />
-                            <span className='ml-4 font-bold'>+ Thêm ghi chú </span>
-                        </button>
+                        <div className='flex justify-end mt-5'>
+                            <button
+                                onClick={() => setTakeNote(!takeNote)}
+                                className='flex items-center top-12 right-10 bg-slate-100 px-3 py-2 rounded-xl shadow-lg hover:shadow-lg hover:shadow-cyan-300'>
+                                <Image width={30} preview={false} className='mr-3' src={takenote} />
+                                <span className='ml-4 font-bold'>+ Thêm ghi chú </span>
+                            </button>
+                        </div>
                     </>
                 ) : currentQuiz ? (
                     <QuestionDisplay data={dataChapter} chapterId={chapterId} quizz={currentQuiz} setIsQuizStart={setIsQuizStart} refetchProgress={refetchProgress} />
@@ -497,17 +499,18 @@ const LearningPage = () => {
                                                                                     lesson.type === 'quiz' ? lesson.title :
                                                                                         lesson.type === 'info' ? lesson.infoTitle : ''
                                                                                     }`}
-                                                                            </p>
-                                                                            {isLessonCompleted && (
+                                                                                {isLessonCompleted && (
 
-                                                                                <Image
-                                                                                    preview={false}
-                                                                                    width={15}
-                                                                                    src={checkIcon}
-                                                                                    alt="Completed"
-                                                                                    className="block ml-2"
-                                                                                />
-                                                                            )}
+                                                                                    <Image
+                                                                                        preview={false}
+                                                                                        width={15}
+                                                                                        src={checkIcon}
+                                                                                        alt="Completed"
+                                                                                        className="block ml-2"
+                                                                                    />
+                                                                                )}
+                                                                            </p>
+
                                                                         </div>
                                                                         <p>
                                                                             {lesson.type === 'video' ? handleDisplayTime(lesson.duration) : ''}
